@@ -1,10 +1,15 @@
-import { Button } from "@mantine/core";
-import Link from "next/link";
+import { getSession } from "@/components/hooks/useSession";
+import TopHeader from "@/components/top/header";
+import MainSection from "@/components/top/main-section";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+
   return (
-    <Button component={Link} href="/hello">
-      Next link button
-    </Button>
+    <>
+      <TopHeader session={session}>
+        <MainSection />
+      </TopHeader>
+    </>
   );
 }
