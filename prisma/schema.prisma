@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @db.Uuid
+  name          String?
+  email         String      @unique
+  avatarUrl     String?
+  todos         Todo[]      // ユーザーのTODOリスト
+  favorites     Favorite[]  // お気に入り
+  sharedArticles SharedArticle[] // 共有した記事
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("users")
+}
+
+model Todo {
+  id            String       @id @default(uuid()) @db.Uuid
+  title         String
+  url           String
+  text          String?     @db.Text
+  status        TodoStatus  @default(UNREAD)
+  category      String?     // カテゴリ
+  dueDate       DateTime    // 締切日
+  isPublic      Boolean     @default(false) // 全体共有フラグ
+  userId        String      @db.Uuid
+  user          User        @relation(fields: [userId], references: [id])
+  favorites     Favorite[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  completedAt   DateTime?
+
+  @@map("todos")
+}
+
+enum TodoStatus {
+  UNREAD    // 未読
+  READING   // 読書中
+  COMPLETED // 完了
+}
+
+model Favorite {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  todoId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+  todo      Todo     @relation(fields: [todoId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, todoId])
+  @@map("favorites")
+}
+
+// 全体共有用の記事モデル
+model SharedArticle {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String   // 記事のタイトル
+  url         String   // 記事のURL
+  comment     String?  @db.Text // 共有時のコメント
+  sharedById  String   @db.Uuid
+  sharedBy    User     @relation(fields: [sharedById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("shared_articles")
+}
