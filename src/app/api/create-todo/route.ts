@@ -15,26 +15,9 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { title, url, status, dueDate, category, isPublic } = await req.json();
+    const { title, url, status, dueDate, category, isPublic } =
+      await req.json();
 
-    // まずユーザーが存在するか確認
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-    });
-
-    // ユーザーが存在しない場合は作成
-    if (!user) {
-      await prisma.user.create({
-        data: {
-          id: session.user.id,
-          email: session.user.email!,
-          name: session.user.user_metadata.name,
-          avatarUrl: session.user.user_metadata.avatar_url,
-        },
-      });
-    }
-
-    // Todoを作成
     const todo = await prisma.todo.create({
       data: {
         title,
