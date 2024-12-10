@@ -1,9 +1,15 @@
+export enum TodoStatus {
+  UNREAD = "UNREAD",
+  READING = "READING",
+  COMPLETED = "COMPLETED"
+}
+
 export interface TodoList {
   id: string;
   title: string;
   url: string;
   text: string;
-  status: "unread" | "reading" | "completed";
+  status: TodoStatus;
   category: string;
   dueDate: Date;
   isPublic: boolean;

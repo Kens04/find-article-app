@@ -2,6 +2,7 @@
 
 import CategorySearch from "@/components/todo/category-search";
 import DeleteButton from "@/components/todo/delete-button";
+import StatusButton from "@/components/todo/status-button";
 import { type TodoList } from "@/components/todo/type";
 import {
   Card,
@@ -11,7 +12,6 @@ import {
   Stack,
   Title,
   Accordion,
-  Button,
   Anchor,
   Container,
 } from "@mantine/core";
@@ -21,33 +21,7 @@ interface TodoListContentProps {
   todosByCategory: { [key: string]: TodoList[] };
 }
 
-const TodoListContent = async ({todos, todosByCategory}: TodoListContentProps) => {
-
-  // ステータスに応じた色を返す関数
-  const getStatusColor = (status: TodoList["status"]) => {
-    switch (status) {
-      case "unread":
-        return "red";
-      case "reading":
-        return "yellow";
-      case "completed":
-        return "green";
-      default:
-        return "gray";
-    }
-  };
-
-  // ステータス変更ボタンを表示するかどうかを判定する関数
-  // const showStatusChangeButton = (status: TodoList["status"]) => {
-  //   switch (status) {
-  //     case "unread":
-  //       return "reading";
-  //     case "reading":
-  //       return "completed";
-  //     default:
-  //       return null;
-  //   }
-  // };
+const TodoListContent = ({todos, todosByCategory}: TodoListContentProps) => {
 
   return (
     <Container size="md" w="100%" mt="lg">
@@ -55,7 +29,7 @@ const TodoListContent = async ({todos, todosByCategory}: TodoListContentProps) =
         TODOリスト
       </Title>
       <CategorySearch todos={todos} />
-      <Accordion variant="separated">
+      <Accordion variant="separated" mt="md">
         {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
           <Accordion.Item key={category} value={category}>
             <Accordion.Control>
@@ -81,7 +55,6 @@ const TodoListContent = async ({todos, todosByCategory}: TodoListContentProps) =
                         {todo.title}
                       </Text>
                       <Badge
-                        color={getStatusColor(todo.status)}
                         variant="light"
                       >
                         {todo.status}
@@ -91,6 +64,8 @@ const TodoListContent = async ({todos, todosByCategory}: TodoListContentProps) =
                     <Text size="sm" c="dimmed" mb="md">
                       {todo.text}
                     </Text>
+
+                    <StatusButton todo={todo} />
 
                     <Anchor
                       href={todo.url}
@@ -106,33 +81,8 @@ const TodoListContent = async ({todos, todosByCategory}: TodoListContentProps) =
                       <Text size="xs" c="dimmed">
                         締切日: {new Date(todo.dueDate).toLocaleDateString()}
                       </Text>
+
                       <DeleteButton id={todo.id} />
-
-                      {/* {showStatusChangeButton(todo.status) && (
-                        <Button
-                          variant="light"
-                          size="xs"
-                          rightSection={<IconArrowRight size={14} />}
-                          onClick={async () => {
-                            const nextStatus = showStatusChangeButton(
-                              todo.status
-                            );
-                            if (!nextStatus) return;
-
-                            await fetch(
-                              `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${todo.id}`,
-                              {
-                                method: "PATCH",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ status: nextStatus }),
-                              }
-                            );
-                            // TODO: 状態を更新した後にリロードまたは再フェッチする処理を追加
-                          }}
-                        >
-                          Mark as {showStatusChangeButton(todo.status)}
-                        </Button>
-                      )} */}
                     </Group>
                   </Card>
                 ))}
