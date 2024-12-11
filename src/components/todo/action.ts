@@ -29,9 +29,11 @@ export const Todos = async () => {
 export const handleUpdateStatus = async ({
   id,
   status,
+  completedAt,
 }: {
   id: string;
   status: TodoStatus;
+  completedAt: string | null
 }) => {
   try {
     const response = await fetch(
@@ -41,7 +43,7 @@ export const handleUpdateStatus = async ({
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status, completedAt: completedAt ? new Date(completedAt) : null }),
       }
     );
 

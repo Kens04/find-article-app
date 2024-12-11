@@ -1,9 +1,9 @@
-import TodoList from "@/components/todo/todo-list";
+import CompleteTodoList from "@/components/todo/complete-todo-list";
 
 export default function Complete() {
   return (
     <>
-      <TodoList />
+      <CompleteTodoList />
     </>
   );
 }

@@ -21,12 +21,14 @@ const StatusButton = ({ todo }: StatusButtonProps) => {
   const handleStatusChange = async (selectedStatus: string | null) => {
     if (!selectedStatus) return;
 
-    console.log("Changing status to:", selectedStatus);
-
     try {
+      const newStatus = selectedStatus as TodoStatus;
+      const completedAt = newStatus === TodoStatus.COMPLETED ? new Date().toISOString() : null;
+
       await handleUpdateStatus({
         id: todo.id,
         status: selectedStatus as TodoStatus,
+        completedAt,
       });
       router.refresh();
     } catch (error) {

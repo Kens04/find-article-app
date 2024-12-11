@@ -23,11 +23,12 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { status } = await req.json();
+    const { status, completedAt } = await req.json();
 
     console.log("Received PATCH request:", {
       id: params.id,
       status,
+      completedAt
     });
 
     // statusが有効なTodoStatusの値であることを確認
@@ -44,6 +45,7 @@ export async function PATCH(
       },
       data: {
         status: status as TodoStatus,
+        completedAt: status === TodoStatus.COMPLETED ? new Date() : null,
       },
     });
 
