@@ -18,3 +18,9 @@ export interface TodoList {
   updatedAt: Date;
   completedAt: Date;
 }
+
+export interface CategorySearchProps {
+  todos: TodoList[];
+  selectedCategories?: string[];
+  onCategoryChange?: (categories: string[]) => void;
+}

@@ -1,9 +1,15 @@
-import CompleteTodoList from "@/components/todo/complete-todo-list";
+import { Todos } from "@/components/todo/action";
+import CompleteTodoListContent from "@/components/todo/complete-todo-list-content";
+import { TodoStatus, type TodoList } from "@/components/todo/type";
 
-export default function Complete() {
+const CompletedTodoList = async () => {
+  const allTodos = (await Todos()) as TodoList[];
+  const completedTodos = allTodos.filter((todo) => todo.status == TodoStatus.COMPLETED);
   return (
     <>
-      <CompleteTodoList />
+      <CompleteTodoListContent todos={completedTodos} />
     </>
   );
 }
+
+export default CompletedTodoList;

@@ -1,27 +1,25 @@
 "use client";
 
-import CategorySearch from "@/components/todo/category-search";
-import DeleteButton from "@/components/todo/delete-button";
-import StatusButton from "@/components/todo/status-button";
-import { TodoStatus, type TodoList } from "@/components/todo/type";
+import { useState } from "react";
+import { TodoList, TodoStatus } from "./type";
 import {
+  Container,
+  Title,
   Card,
   Text,
   Group,
   Badge,
   Stack,
-  Title,
-  Accordion,
   Anchor,
-  Container,
+  Accordion,
 } from "@mantine/core";
-import { useState } from "react";
+import CategorySearch from "@/components/todo/category-search";
 
 interface TodoListContentProps {
   todos: TodoList[];
 }
 
-const TodoListContent = ({ todos }: TodoListContentProps) => {
+const CompleteTodoListContent = ({ todos }: TodoListContentProps) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // 表示するTODOをフィルタリング
@@ -44,33 +42,17 @@ const TodoListContent = ({ todos }: TodoListContentProps) => {
   // ステータスを日本語に変換する関数
   const getStatusLabel = (status: TodoStatus) => {
     switch (status) {
-      case TodoStatus.UNREAD:
-        return "未読";
-      case TodoStatus.READING:
-        return "読書中";
+      case TodoStatus.COMPLETED:
+        return "完了";
       default:
         return status;
-    }
-  };
-
-  // ステータスに応じた色を返す関数
-  const getStatusColor = (status: TodoStatus) => {
-    switch (status) {
-      case TodoStatus.UNREAD:
-        return "red";
-      case TodoStatus.READING:
-        return "yellow";
-      case TodoStatus.COMPLETED:
-        return "green";
-      default:
-        return "gray";
     }
   };
 
   return (
     <Container size="md" w="100%" mt="lg">
       <Title order={2} mb="md">
-        TODOリスト
+        完了リスト
       </Title>
       <CategorySearch
         todos={todos}
@@ -102,10 +84,7 @@ const TodoListContent = ({ todos }: TodoListContentProps) => {
                       <Text fw={500} size="lg">
                         {todo.title}
                       </Text>
-                      <Badge
-                        color={getStatusColor(todo.status)}
-                        variant="light"
-                      >
+                      <Badge variant="light" color="green">
                         {getStatusLabel(todo.status)}
                       </Badge>
                     </Group>
@@ -113,8 +92,6 @@ const TodoListContent = ({ todos }: TodoListContentProps) => {
                     <Text size="sm" c="dimmed" mb="md">
                       {todo.text}
                     </Text>
-
-                    <StatusButton todo={todo} />
 
                     <Anchor
                       href={todo.url}
@@ -128,10 +105,11 @@ const TodoListContent = ({ todos }: TodoListContentProps) => {
 
                     <Group justify="space-between" align="center">
                       <Text size="xs" c="dimmed">
-                        締切日: {new Date(todo.dueDate).toLocaleDateString()}
+                        完了日:{" "}
+                        {todo.completedAt
+                          ? new Date(todo.completedAt).toLocaleDateString()
+                          : "未設定"}
                       </Text>
-
-                      <DeleteButton id={todo.id} />
                     </Group>
                   </Card>
                 ))}
@@ -144,4 +122,4 @@ const TodoListContent = ({ todos }: TodoListContentProps) => {
   );
 };
 
-export default TodoListContent;
+export default CompleteTodoListContent;

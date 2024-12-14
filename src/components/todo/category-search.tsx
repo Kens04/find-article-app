@@ -1,14 +1,17 @@
 "use client";
 
-import { TodoList } from "@/components/todo/type";
+import { CategorySearchProps } from "@/components/todo/type";
 import { MultiSelect } from "@mantine/core";
 
-const CategorySearch = ({ todos }: { todos: TodoList[] }) => {
-
-  // カテゴリの一覧をMultiSelect用のデータ形式に変換
+const CategorySearch = ({
+  todos,
+  selectedCategories,
+  onCategoryChange,
+}: CategorySearchProps) => {
+  // カテゴリの選択肢を作成（重複を除去）
   const categoryOptions = Array.from(
-    new Set(todos.map((todo) => todo.category))
-  ).map((category) => ({
+    new Set(todos.map(todo => todo.category || ""))
+  ).map(category => ({
     value: category,
     label: category,
   }));
@@ -19,7 +22,10 @@ const CategorySearch = ({ todos }: { todos: TodoList[] }) => {
         label="カテゴリ絞り込み"
         placeholder="カテゴリを選択"
         data={categoryOptions}
+        value={selectedCategories}
+        onChange={onCategoryChange}
         clearable
+        searchable
       />
     </>
   );
