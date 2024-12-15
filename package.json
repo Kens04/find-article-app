@@ -9,17 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@mantine/core": "^7.14.3",
-    "@mantine/dates": "^7.14.3",
+    "@mantine/charts": "^7.15.1",
+    "@mantine/core": "^7.15.1",
+    "@mantine/dates": "^7.15.1",
     "@mantine/form": "^7.14.3",
-    "@mantine/hooks": "^7.14.3",
+    "@mantine/hooks": "^7.15.1",
     "@prisma/client": "^6.0.1",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@tabler/icons-react": "^3.23.0",
     "dayjs": "^1.11.13",
     "next": "14.2.18",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "recharts": "^2.15.0"
   },
   "devDependencies": {
     "@types/node": "^20",
