@@ -11,6 +11,7 @@ import {
   Title,
 } from "@mantine/core";
 import { IconBook, IconDashboard, IconFolder } from "@tabler/icons-react";
+import Link from "next/link";
 
 const MainSection = () => {
   return (
@@ -30,8 +31,8 @@ const MainSection = () => {
             効率的な情報管理を実現します。
           </Text>
           <Group justify="center">
-            <Button>無料で始める</Button>
-            <Button variant="outline">使い方を見る</Button>
+            <Button component={Link} href="/login" >新規登録</Button>
+            <Button component={Link} href="/register" variant="outline">ログイン</Button>
           </Group>
         </Flex>
       </Container>
