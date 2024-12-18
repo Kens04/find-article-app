@@ -14,11 +14,13 @@ const TopDashboardContent = ({
   todos: TodoList[];
   session: Session | null;
 }) => {
+  const user = session?.user;
+  const userTodos = todos.filter(todo => todo.userId === user?.id);
   // ステータスごとのTODO数を集計
   const statusCounts = {
-    unread: todos.filter((todo) => todo.status === TodoStatus.UNREAD).length,
-    reading: todos.filter((todo) => todo.status === TodoStatus.READING).length,
-    completed: todos.filter((todo) => todo.status === TodoStatus.COMPLETED)
+    unread: userTodos.filter((todo) => todo.status === TodoStatus.UNREAD).length,
+    reading: userTodos.filter((todo) => todo.status === TodoStatus.READING).length,
+    completed: userTodos.filter((todo) => todo.status === TodoStatus.COMPLETED)
       .length,
   };
 
@@ -59,7 +61,7 @@ const TopDashboardContent = ({
                 カテゴリ分布
               </Title>
               <PieChart
-                data={calculateCategoryData(todos)}
+                data={calculateCategoryData(userTodos)}
                 size={250}
                 withLabels
                 withTooltip
