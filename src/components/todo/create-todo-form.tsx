@@ -26,7 +26,7 @@ const CreateTodoForm = () => {
 
   const handleCreateTodo = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title || !url || !dueDate) {
       alert("必須項目を入力してください");
       return;

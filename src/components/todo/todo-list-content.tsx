@@ -1,6 +1,7 @@
 "use client";
 
 import CategorySearch from "@/components/todo/category-search";
+import AuthGuard from "@/components/todo/components/auth-auard";
 import DeleteButton from "@/components/todo/delete-button";
 import StatusButton from "@/components/todo/status-button";
 import { TodoStatus, type TodoList } from "@/components/todo/type";
@@ -15,13 +16,16 @@ import {
   Anchor,
   Container,
 } from "@mantine/core";
+import { Session } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 
-interface TodoListContentProps {
+const TodoListContent = ({
+  todos,
+  session,
+}: {
   todos: TodoList[];
-}
-
-const TodoListContent = ({ todos }: TodoListContentProps) => {
+  session: Session | null;
+}) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // 表示するTODOをフィルタリング
@@ -72,74 +76,76 @@ const TodoListContent = ({ todos }: TodoListContentProps) => {
       <Title order={2} mb="md">
         TODOリスト
       </Title>
-      <CategorySearch
-        todos={todos}
-        selectedCategories={selectedCategories}
-        onCategoryChange={setSelectedCategories}
-      />
-      <Accordion variant="separated" mt="md">
-        {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
-          <Accordion.Item key={category} value={category}>
-            <Accordion.Control>
-              <Group justify="space-between">
-                <Text fw={500}>{category}</Text>
-                <Badge size="sm" variant="light">
-                  {categoryTodos.length} タスク
-                </Badge>
-              </Group>
-            </Accordion.Control>
-            <Accordion.Panel>
-              <Stack gap="md">
-                {categoryTodos.map((todo: TodoList) => (
-                  <Card
-                    key={todo.id}
-                    shadow="sm"
-                    padding="lg"
-                    radius="md"
-                    withBorder
-                  >
-                    <Group justify="space-between" mb="xs">
-                      <Text fw={500} size="lg">
-                        {todo.title}
-                      </Text>
-                      <Badge
-                        color={getStatusColor(todo.status)}
-                        variant="light"
-                      >
-                        {getStatusLabel(todo.status)}
-                      </Badge>
-                    </Group>
-
-                    <Text size="sm" c="dimmed" mb="md">
-                      {todo.text}
-                    </Text>
-
-                    <StatusButton todo={todo} />
-
-                    <Anchor
-                      href={todo.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="sm"
-                      mb="md"
+      <AuthGuard todos={todos} session={session}>
+        <CategorySearch
+          todos={todos}
+          selectedCategories={selectedCategories}
+          onCategoryChange={setSelectedCategories}
+        />
+        <Accordion variant="separated" mt="md">
+          {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
+            <Accordion.Item key={category} value={category}>
+              <Accordion.Control>
+                <Group justify="space-between">
+                  <Text fw={500}>{category}</Text>
+                  <Badge size="sm" variant="light">
+                    {categoryTodos.length} タスク
+                  </Badge>
+                </Group>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <Stack gap="md">
+                  {categoryTodos.map((todo: TodoList) => (
+                    <Card
+                      key={todo.id}
+                      shadow="sm"
+                      padding="lg"
+                      radius="md"
+                      withBorder
                     >
-                      {todo.url}
-                    </Anchor>
+                      <Group justify="space-between" mb="xs">
+                        <Text fw={500} size="lg">
+                          {todo.title}
+                        </Text>
+                        <Badge
+                          color={getStatusColor(todo.status)}
+                          variant="light"
+                        >
+                          {getStatusLabel(todo.status)}
+                        </Badge>
+                      </Group>
 
-                    <Group justify="space-between" align="center">
-                      <Text size="xs" c="dimmed">
-                        締切日: {new Date(todo.dueDate).toLocaleDateString()}
+                      <Text size="sm" c="dimmed" mb="md">
+                        {todo.text}
                       </Text>
 
-                      <DeleteButton id={todo.id} />
-                    </Group>
-                  </Card>
-                ))}
-              </Stack>
-            </Accordion.Panel>
-          </Accordion.Item>
-        ))}
-      </Accordion>
+                      <StatusButton todo={todo} />
+
+                      <Anchor
+                        href={todo.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        size="sm"
+                        mb="md"
+                      >
+                        {todo.url}
+                      </Anchor>
+
+                      <Group justify="space-between" align="center">
+                        <Text size="xs" c="dimmed">
+                          締切日: {new Date(todo.dueDate).toLocaleDateString()}
+                        </Text>
+
+                        <DeleteButton id={todo.id} />
+                      </Group>
+                    </Card>
+                  ))}
+                </Stack>
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </AuthGuard>
     </Container>
   );
 };

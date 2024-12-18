@@ -14,19 +14,28 @@ import {
   Accordion,
 } from "@mantine/core";
 import CategorySearch from "@/components/todo/category-search";
+import { Session } from "@supabase/auth-helpers-nextjs";
+import AuthGuard from "@/components/todo/components/auth-auard";
 
 interface TodoListContentProps {
   todos: TodoList[];
+  session: Session | null;
 }
 
-const CompleteTodoListContent = ({ todos }: TodoListContentProps) => {
+const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  // 完了したTODOのみをフィルタリング
+  const uncompletedTodos = todos.filter(
+    (todo) =>
+      todo.status == TodoStatus.COMPLETED && todo.userId === session?.user?.id
+  );
 
   // 表示するTODOをフィルタリング
   const filteredTodos =
     selectedCategories.length === 0
-      ? todos // カテゴリ未選択時は全て表示
-      : todos.filter((todo) =>
+      ? uncompletedTodos // カテゴリ未選択時は全て表示
+      : uncompletedTodos.filter((todo) =>
           selectedCategories.includes(todo.category || "")
         );
 
@@ -54,70 +63,72 @@ const CompleteTodoListContent = ({ todos }: TodoListContentProps) => {
       <Title order={2} mb="md">
         完了リスト
       </Title>
-      <CategorySearch
-        todos={todos}
-        selectedCategories={selectedCategories}
-        onCategoryChange={setSelectedCategories}
-      />
-      <Accordion variant="separated" mt="md">
-        {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
-          <Accordion.Item key={category} value={category}>
-            <Accordion.Control>
-              <Group justify="space-between">
-                <Text fw={500}>{category}</Text>
-                <Badge size="sm" variant="light">
-                  {categoryTodos.length} タスク
-                </Badge>
-              </Group>
-            </Accordion.Control>
-            <Accordion.Panel>
-              <Stack gap="md">
-                {categoryTodos.map((todo: TodoList) => (
-                  <Card
-                    key={todo.id}
-                    shadow="sm"
-                    padding="lg"
-                    radius="md"
-                    withBorder
-                  >
-                    <Group justify="space-between" mb="xs">
-                      <Text fw={500} size="lg">
-                        {todo.title}
-                      </Text>
-                      <Badge variant="light" color="green">
-                        {getStatusLabel(todo.status)}
-                      </Badge>
-                    </Group>
-
-                    <Text size="sm" c="dimmed" mb="md">
-                      {todo.text}
-                    </Text>
-
-                    <Anchor
-                      href={todo.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="sm"
-                      mb="md"
+      <AuthGuard todos={todos} session={session}>
+        <CategorySearch
+          todos={todos}
+          selectedCategories={selectedCategories}
+          onCategoryChange={setSelectedCategories}
+        />
+        <Accordion variant="separated" mt="md">
+          {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
+            <Accordion.Item key={category} value={category}>
+              <Accordion.Control>
+                <Group justify="space-between">
+                  <Text fw={500}>{category}</Text>
+                  <Badge size="sm" variant="light">
+                    {categoryTodos.length} タスク
+                  </Badge>
+                </Group>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <Stack gap="md">
+                  {categoryTodos.map((todo: TodoList) => (
+                    <Card
+                      key={todo.id}
+                      shadow="sm"
+                      padding="lg"
+                      radius="md"
+                      withBorder
                     >
-                      {todo.url}
-                    </Anchor>
+                      <Group justify="space-between" mb="xs">
+                        <Text fw={500} size="lg">
+                          {todo.title}
+                        </Text>
+                        <Badge variant="light" color="green">
+                          {getStatusLabel(todo.status)}
+                        </Badge>
+                      </Group>
 
-                    <Group justify="space-between" align="center">
-                      <Text size="xs" c="dimmed">
-                        完了日:{" "}
-                        {todo.completedAt
-                          ? new Date(todo.completedAt).toLocaleDateString()
-                          : "未設定"}
+                      <Text size="sm" c="dimmed" mb="md">
+                        {todo.text}
                       </Text>
-                    </Group>
-                  </Card>
-                ))}
-              </Stack>
-            </Accordion.Panel>
-          </Accordion.Item>
-        ))}
-      </Accordion>
+
+                      <Anchor
+                        href={todo.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        size="sm"
+                        mb="md"
+                      >
+                        {todo.url}
+                      </Anchor>
+
+                      <Group justify="space-between" align="center">
+                        <Text size="xs" c="dimmed">
+                          完了日:{" "}
+                          {todo.completedAt
+                            ? new Date(todo.completedAt).toLocaleDateString()
+                            : "未設定"}
+                        </Text>
+                      </Group>
+                    </Card>
+                  ))}
+                </Stack>
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </AuthGuard>
     </Container>
   );
 };
