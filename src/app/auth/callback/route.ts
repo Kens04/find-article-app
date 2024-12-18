@@ -16,5 +16,5 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(requestUrl.origin);
+  return NextResponse.redirect(`${requestUrl.origin}/dashboard`);
 }

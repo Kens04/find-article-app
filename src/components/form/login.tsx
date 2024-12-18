@@ -34,7 +34,7 @@ const LoginForm = () => {
         password: values.password,
       });
       router.refresh();
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
     } finally {

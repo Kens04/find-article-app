@@ -44,7 +44,7 @@ const RegisterForm = () => {
         },
       });
       router.refresh();
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Register error:", error);
     } finally {
