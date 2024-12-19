@@ -23,7 +23,7 @@ const CreateTodoForm = () => {
   const [status, setStatus] = useState<TodoStatus>("UNREAD");
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [isPublic, setIsPublic] = useState(false);
-
+  const [isFavorite, setIsFavorite] = useState(false);
   const handleCreateTodo = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -43,6 +43,7 @@ const CreateTodoForm = () => {
           dueDate: dueDate.toISOString(),
           category,
           isPublic,
+          isFavorite,
         }),
       });
 
@@ -107,6 +108,12 @@ const CreateTodoForm = () => {
           label="全体に共有する"
           checked={isPublic}
           onChange={(e) => setIsPublic(e.target.checked)}
+          mt="sm"
+        />
+        <Checkbox
+          label="お気に入りに追加する"
+          checked={isFavorite}
+          onChange={(e) => setIsFavorite(e.target.checked)}
           mt="sm"
         />
         <Flex

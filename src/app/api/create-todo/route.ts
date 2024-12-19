@@ -15,7 +15,7 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { title, url, status, dueDate, category, isPublic } =
+    const { title, url, status, dueDate, category, isPublic, isFavorite } =
       await req.json();
 
     const todo = await prisma.todo.create({
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
         dueDate: new Date(dueDate),
         category,
         isPublic,
+        isFavorite,
         userId: session.user.id,
       },
     });

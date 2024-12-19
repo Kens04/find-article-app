@@ -13,6 +13,7 @@ export interface TodoList {
   category: string;
   dueDate: Date;
   isPublic: boolean;
+  isFavorite: boolean;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
