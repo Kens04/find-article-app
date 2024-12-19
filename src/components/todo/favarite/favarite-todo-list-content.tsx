@@ -27,12 +27,17 @@ const FavariteTodoListContent = ({
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  console.log(todos);
+    // お気に入りのTODOのみをフィルタリング
+    const favariteTodos = todos.filter(
+      (todo) =>
+        todo.isFavorite && todo.userId === session?.user?.id
+    );
+
   // 表示するTODOをフィルタリング
   const filteredTodos =
     selectedCategories.length === 0
-      ? todos // カテゴリ未選択時は全て表示
-      : todos.filter((todo) =>
+      ? favariteTodos // カテゴリ未選択時は全て表示
+      : favariteTodos.filter((todo) =>
           selectedCategories.includes(todo.category || "")
         );
 
