@@ -1,9 +1,9 @@
-import TodoList from "@/components/todo/todo-list";
+import ShareTodoList from "@/components/todo/share/share-todo-list";
 
 export default function Share() {
   return (
     <>
-      <TodoList />
+      <ShareTodoList />
     </>
   );
 }
