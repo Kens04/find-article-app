@@ -28,11 +28,17 @@ const TodoListContent = ({
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+    // 未完了のTODOのみをフィルタリング
+    const activeTodos = todos.filter(
+      (todo) =>
+        todo.status !== TodoStatus.COMPLETED && todo.userId === session?.user?.id
+    );
+
   // 表示するTODOをフィルタリング
   const filteredTodos =
     selectedCategories.length === 0
-      ? todos // カテゴリ未選択時は全て表示
-      : todos.filter((todo) =>
+      ? activeTodos // カテゴリ未選択時は全て表示
+      : activeTodos.filter((todo) =>
           selectedCategories.includes(todo.category || "")
         );
 
