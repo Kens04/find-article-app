@@ -26,6 +26,22 @@ export const Todos = async () => {
   }
 };
 
+export const TodoDetail = async ({ params }: {params: {id: string}}) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${params.id}`,
+      {
+        cache: "no-store",
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return await response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const handleUpdateStatus = async ({
   id,
   status,
@@ -39,11 +55,43 @@ export const handleUpdateStatus = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
+        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ status, completedAt: completedAt ? new Date(completedAt) : null }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update status: ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error updating status:", error);
+    throw error;
+  }
+};
+
+
+export const handleTextSave = async ({
+  id,
+  text
+}: {
+  id: string;
+  text: string
+}) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text}),
       }
     );
 
