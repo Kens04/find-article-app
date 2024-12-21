@@ -15,8 +15,11 @@ import {
   Accordion,
   Anchor,
   Container,
+  Button,
+  Flex,
 } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
 import { useState } from "react";
 
 const TodoListContent = ({
@@ -28,11 +31,11 @@ const TodoListContent = ({
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    // 未完了のTODOのみをフィルタリング
-    const activeTodos = todos.filter(
-      (todo) =>
-        todo.status !== TodoStatus.COMPLETED && todo.userId === session?.user?.id
-    );
+  // 未完了のTODOのみをフィルタリング
+  const activeTodos = todos.filter(
+    (todo) =>
+      todo.status !== TodoStatus.COMPLETED && todo.userId === session?.user?.id
+  );
 
   // 表示するTODOをフィルタリング
   const filteredTodos =
@@ -121,27 +124,32 @@ const TodoListContent = ({
                         </Badge>
                       </Group>
 
-                      <Text size="sm" c="dimmed" mb="md">
-                        {todo.text}
-                      </Text>
-
                       <StatusButton todo={todo} />
 
-                      <Anchor
-                        href={todo.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size="sm"
-                        mb="md"
-                      >
-                        {todo.url}
-                      </Anchor>
-
-                      <Group justify="space-between" align="center">
+                      <Flex justify="space-between" align="center">
+                        <Group gap="xs">
+                          <Text>URL：</Text>
+                          <Anchor
+                            href={todo.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            size="md"
+                          >
+                            {todo.url}
+                          </Anchor>
+                        </Group>
                         <Text size="xs" c="dimmed">
                           締切日: {new Date(todo.dueDate).toLocaleDateString()}
                         </Text>
+                      </Flex>
 
+                      <Group justify="flex-end" align="center" mt="xs">
+                        <Button
+                          component={Link}
+                          href={`/dashboard/todo-list/${todo.id}`}
+                        >
+                          詳細ページへ
+                        </Button>
                         <DeleteButton id={todo.id} />
                       </Group>
                     </Card>

@@ -1,9 +1,16 @@
-import TodoList from "@/components/todo/todo-list";
+import { getSession } from "@/components/hooks/useSession";
+import { Todos } from "@/components/todo/action";
+import TodoListContent from "@/components/todo/todo-list-content";
+import { TodoStatus, type TodoList } from "@/components/todo/type";
 
-export default function Login() {
+const TodoList = async () => {
+  const allTodos = (await Todos()) as TodoList[];
+  const activeTodos = allTodos.filter((todo) => todo.status !== TodoStatus.COMPLETED);
+  const session = await getSession();
+
   return (
-    <>
-      <TodoList />
-    </>
+    <TodoListContent todos={activeTodos} session={session} />
   );
-}
+};
+
+export default TodoList;

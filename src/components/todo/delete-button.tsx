@@ -18,7 +18,7 @@ const DeleteButton = ({ id }: { id: string }) => {
 
   return (
     <>
-      <Button onClick={handleClick}>削除</Button>
+      <Button onClick={handleClick} color="red">削除</Button>
     </>
   );
 };
