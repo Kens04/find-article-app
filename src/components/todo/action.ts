@@ -26,7 +26,7 @@ export const Todos = async () => {
   }
 };
 
-export const TodoDetail = async ({ params }: {params: {id: string}}) => {
+export const TodoDetail = async ({ params }: { params: { id: string } }) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${params.id}`,
@@ -49,7 +49,7 @@ export const handleUpdateStatus = async ({
 }: {
   id: string;
   status: TodoStatus;
-  completedAt: string | null
+  completedAt: string | null;
 }) => {
   try {
     const response = await fetch(
@@ -58,9 +58,12 @@ export const handleUpdateStatus = async ({
         cache: "no-store",
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status, completedAt: completedAt ? new Date(completedAt) : null }),
+        body: JSON.stringify({
+          status,
+          completedAt: completedAt ? new Date(completedAt) : null,
+        }),
       }
     );
 
@@ -75,13 +78,12 @@ export const handleUpdateStatus = async ({
   }
 };
 
-
 export const handleTextSave = async ({
   id,
-  text
+  text,
 }: {
   id: string;
-  text: string
+  text: string;
 }) => {
   try {
     const response = await fetch(
@@ -89,9 +91,9 @@ export const handleTextSave = async ({
       {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text}),
+        body: JSON.stringify({ text }),
       }
     );
 
@@ -102,6 +104,36 @@ export const handleTextSave = async ({
     return response.json();
   } catch (error) {
     console.error("Error updating status:", error);
+    throw error;
+  }
+};
+
+export const handleIsPublic = async ({
+  id,
+  isPublic,
+}: {
+  id: string;
+  isPublic: boolean;
+}) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isPublic: isPublic }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update public`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error updating public:", error);
     throw error;
   }
 };

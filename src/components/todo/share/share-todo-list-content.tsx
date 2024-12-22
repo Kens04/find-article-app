@@ -1,7 +1,7 @@
 "use client";
 
 import CategorySearch from "@/components/todo/category-search";
-import DeleteButton from "@/components/todo/delete-button";
+import IsPublicButton from "@/components/todo/share/ispublic-button";
 import { type TodoList } from "@/components/todo/type";
 import {
   Card,
@@ -14,12 +14,15 @@ import {
   Anchor,
   Container,
 } from "@mantine/core";
+import { Session } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 
 const ShareTodoListContent = ({
-  todos
+  todos,
+  session,
 }: {
   todos: TodoList[];
+  session: Session | null;
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -45,58 +48,62 @@ const ShareTodoListContent = ({
       <Title order={2} mb="md">
         全体共有
       </Title>
-        <CategorySearch
-          todos={todos}
-          selectedCategories={selectedCategories}
-          onCategoryChange={setSelectedCategories}
-        />
-        <Accordion variant="separated" mt="md">
-          {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
-            <Accordion.Item key={category} value={category}>
-              <Accordion.Control>
-                <Group justify="space-between">
-                  <Text fw={500}>{category}</Text>
-                  <Badge size="sm" variant="light">
-                    {categoryTodos.length} タスク
-                  </Badge>
-                </Group>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <Stack gap="md">
-                  {categoryTodos.map((todo: TodoList) => (
-                    <Card
-                      key={todo.id}
-                      shadow="sm"
-                      padding="lg"
-                      radius="md"
-                      withBorder
-                    >
-                      <Group justify="space-between" mb="xs">
-                        <Text fw={500} size="lg">
-                          {todo.title}
-                        </Text>
-                      </Group>
+      <CategorySearch
+        todos={todos}
+        selectedCategories={selectedCategories}
+        onCategoryChange={setSelectedCategories}
+      />
+      <Accordion variant="separated" mt="md">
+        {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
+          <Accordion.Item key={category} value={category}>
+            <Accordion.Control>
+              <Group justify="space-between">
+                <Text fw={500}>{category}</Text>
+                <Badge size="sm" variant="light">
+                  {categoryTodos.length} つ
+                </Badge>
+              </Group>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Stack gap="md">
+                {categoryTodos.map((todo: TodoList) => (
+                  <Card
+                    key={todo.id}
+                    shadow="sm"
+                    padding="lg"
+                    radius="md"
+                    withBorder
+                  >
+                    <Group justify="space-between" mb="xs">
+                      <Text fw={500} size="lg">
+                        {todo.title}
+                      </Text>
+                    </Group>
 
+                    <Group gap="xs">
+                      <Text>URL：</Text>
                       <Anchor
                         href={todo.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        size="sm"
-                        mb="md"
+                        size="md"
                       >
                         {todo.url}
                       </Anchor>
+                    </Group>
 
-                      <Group justify="space-between" align="center">
-                        <DeleteButton id={todo.id} />
+                    {todo.userId === session?.user.id ? (
+                      <Group justify="space-between" align="center" mt="md">
+                        <IsPublicButton id={todo.id} />
                       </Group>
-                    </Card>
-                  ))}
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-          ))}
-        </Accordion>
+                    ) : null}
+                  </Card>
+                ))}
+              </Stack>
+            </Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
     </Container>
   );
 };
