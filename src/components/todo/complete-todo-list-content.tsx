@@ -14,12 +14,17 @@ import {
   Accordion,
   Flex,
   Button,
+  UnstyledButton,
 } from "@mantine/core";
 import CategorySearch from "@/components/todo/category-search";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import AuthGuard from "@/components/todo/components/auth-auard";
 import Link from "next/link";
 import DeleteButton from "@/components/todo/delete-button";
+import { IconStar, IconStarFilled } from "@tabler/icons-react";
+import { handleFavorite } from "@/components/todo/action";
+import { notifications } from "@mantine/notifications";
+import { useRouter } from "next/navigation";
 
 interface TodoListContentProps {
   todos: TodoList[];
@@ -27,6 +32,7 @@ interface TodoListContentProps {
 }
 
 const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
+  const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // 完了したTODOのみをフィルタリング
@@ -59,6 +65,25 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
         return "完了";
       default:
         return status;
+    }
+  };
+
+  const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
+    try {
+      await handleFavorite({
+        id: id,
+        isFavorite: !isFavorite,
+      });
+      notifications.show({
+        title: !isFavorite ? "お気に入りに追加" : "お気に入りから削除",
+        message: !isFavorite
+          ? "お気に入りに追加しました"
+          : "お気に入りから削除しました",
+        color: !isFavorite ? "yellow" : "gray",
+      });
+      router.refresh();
+    } catch (error) {
+      console.error("favorite update failed:", error);
     }
   };
 
@@ -95,15 +120,28 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
                       withBorder
                     >
                       <Group justify="space-between" mb="xs">
-                        <Text fw={500} size="lg">
-                          {todo.title}
-                        </Text>
+                      <Flex align="center" gap="xs" wrap="wrap">
+                          <Text fw={700} size="lg">
+                            {todo.title}
+                          </Text>
+                          <UnstyledButton
+                            onClick={() =>
+                              handleFavoriteClick(todo.id, todo.isFavorite)
+                            }
+                          >
+                            {todo.isFavorite ? (
+                              <IconStarFilled size={16} color="orange" />
+                            ) : (
+                              <IconStar size={16} />
+                            )}
+                          </UnstyledButton>
+                        </Flex>
                         <Badge variant="light" color="green">
                           {getStatusLabel(todo.status)}
                         </Badge>
                       </Group>
 
-                      <Flex justify="space-between" align="center">
+                      <Flex justify="space-between" align="center" gap="xs" wrap="wrap">
                         <Group gap="xs">
                           <Text>URL：</Text>
                           <Anchor

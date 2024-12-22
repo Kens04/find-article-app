@@ -45,7 +45,8 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { status, completedAt, text, isPublic } = await req.json();
+    const { status, completedAt, text, isPublic, isFavorite } =
+      await req.json();
 
     console.log("Received PATCH request:", {
       id: params.id,
@@ -53,6 +54,7 @@ export async function PATCH(
       completedAt,
       text,
       isPublic,
+      isFavorite,
     });
 
     // テキストのみの更新の場合
@@ -76,6 +78,19 @@ export async function PATCH(
         },
         data: {
           isPublic,
+        },
+      });
+      return NextResponse.json({ success: true, data: todo }, { status: 200 });
+    }
+
+    // お気に入りのみの更新の場合
+    if (isFavorite !== undefined) {
+      const todo = await prisma.todo.update({
+        where: {
+          id: params.id,
+        },
+        data: {
+          isFavorite,
         },
       });
       return NextResponse.json({ success: true, data: todo }, { status: 200 });

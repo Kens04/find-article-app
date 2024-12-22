@@ -137,3 +137,33 @@ export const handleIsPublic = async ({
     throw error;
   }
 };
+
+export const handleFavorite = async ({
+  id,
+  isFavorite,
+}: {
+  id: string;
+  isFavorite: boolean;
+}) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isFavorite: isFavorite }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update favorite`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error updating favorite:", error);
+    throw error;
+  }
+};
