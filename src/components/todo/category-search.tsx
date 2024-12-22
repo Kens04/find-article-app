@@ -26,6 +26,7 @@ const CategorySearch = ({
         onChange={onCategoryChange}
         clearable
         searchable
+        w="100%"
       />
     </>
   );

@@ -13,8 +13,13 @@ import {
   Accordion,
   Anchor,
   Container,
+  Table,
+  Menu,
+  ActionIcon,
 } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
+import { IconDots, IconStar, IconStarFilled } from "@tabler/icons-react";
+import Link from "next/link";
 import { useState } from "react";
 
 const ShareTodoListContent = ({
@@ -44,66 +49,61 @@ const ShareTodoListContent = ({
   }, {} as Record<string, TodoList[]>);
 
   return (
-    <Container size="md" w="100%" mt="lg">
+    <Container maw="100%" w="100%" mt="lg">
       <Title order={2} mb="md">
         全体共有
       </Title>
       <CategorySearch
-        todos={todos}
+        todos={filteredTodos}
         selectedCategories={selectedCategories}
         onCategoryChange={setSelectedCategories}
       />
-      <Accordion variant="separated" mt="md">
-        {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
-          <Accordion.Item key={category} value={category}>
-            <Accordion.Control>
-              <Group justify="space-between">
-                <Text fw={500}>{category}</Text>
-                <Badge size="sm" variant="light">
-                  {categoryTodos.length} つ
-                </Badge>
-              </Group>
-            </Accordion.Control>
-            <Accordion.Panel>
-              <Stack gap="md">
-                {categoryTodos.map((todo: TodoList) => (
-                  <Card
-                    key={todo.id}
-                    shadow="sm"
-                    padding="lg"
-                    radius="md"
-                    withBorder
+      <Table.ScrollContainer minWidth={1000} w="100%" maw="100%" type="native">
+        <Table highlightOnHover mt="md">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>タイトル</Table.Th>
+              <Table.Th>URL</Table.Th>
+              <Table.Th>カテゴリ</Table.Th>
+              <Table.Th style={{ textAlign: "center" }}>お気に入り</Table.Th>
+              <Table.Th style={{ textAlign: "center" }}>アクション</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {filteredTodos.map((todo) => (
+              <Table.Tr key={todo.id}>
+                <Table.Td>
+                  <Text>{todo.title}</Text>
+                </Table.Td>
+                <Table.Td>
+                  <Anchor
+                    href={todo.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    <Group justify="space-between" mb="xs">
-                      <Text fw={500} size="lg">
-                        {todo.title}
-                      </Text>
-                    </Group>
-
-                    <Group gap="xs">
-                      <Text>URL：</Text>
-                      <Anchor
-                        href={todo.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size="md"
-                      >
-                        {todo.url}
-                      </Anchor>
-                    </Group>
-
-                    {todo.userId === session?.user.id ? (
-                      <Group justify="space-between" align="center" mt="md">
-                        <IsPublicButton id={todo.id} />
-                      </Group>
-                    ) : null}
-                  </Card>
-                ))}
-              </Stack>
-            </Accordion.Panel>
-          </Accordion.Item>
-        ))}
-      </Accordion>
+                    <Text lineClamp={1} size="sm">
+                      {todo.url}
+                    </Text>
+                  </Anchor>
+                </Table.Td>
+                <Table.Td>{todo.category || "未分類"}</Table.Td>
+                <Table.Td style={{ textAlign: "center" }}>
+                  {todo.isFavorite ? (
+                    <IconStarFilled size={16} color="orange" />
+                  ) : (
+                    <IconStar size={16} />
+                  )}
+                </Table.Td>
+                <Table.Td style={{ textAlign: "center" }}>
+                  {todo.userId === session?.user.id ? (
+                    <IsPublicButton id={todo.id} />
+                  ) : null}
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
     </Container>
   );
 };

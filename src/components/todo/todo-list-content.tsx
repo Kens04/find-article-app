@@ -1,26 +1,26 @@
 "use client";
 
 import "@mantine/notifications/styles.css";
-import { handleFavorite } from "@/components/todo/action";
+import { handleDeleteClick, handleFavorite } from "@/components/todo/action";
+import { ActionIcon, Menu, Table, Tabs } from "@mantine/core";
+import {
+  IconBookOff,
+  IconBook,
+  IconTrash,
+  IconDots,
+  IconEye,
+} from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import CategorySearch from "@/components/todo/category-search";
 import AuthGuard from "@/components/todo/components/auth-auard";
-import DeleteButton from "@/components/todo/delete-button";
 import StatusButton from "@/components/todo/status-button";
 import { TodoStatus, type TodoList } from "@/components/todo/type";
 import {
-  Card,
   Text,
   Group,
-  Badge,
-  Stack,
   Title,
-  Accordion,
   Anchor,
   Container,
-  Button,
-  Flex,
-  UnstyledButton,
 } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
@@ -38,53 +38,30 @@ const TodoListContent = ({
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   // 未完了のTODOのみをフィルタリング
-  const activeTodos = todos.filter(
+  const unreadTodos = todos.filter(
     (todo) =>
-      todo.status !== TodoStatus.COMPLETED && todo.userId === session?.user?.id
+      todo.status == TodoStatus.UNREAD && todo.userId === session?.user?.id
+  );
+
+  const readingTodos = todos.filter(
+    (todo) =>
+      todo.status === TodoStatus.READING && todo.userId === session?.user?.id
   );
 
   // 表示するTODOをフィルタリング
-  const filteredTodos =
+  const filteredUnreadTodos =
     selectedCategories.length === 0
-      ? activeTodos // カテゴリ未選択時は全て表示
-      : activeTodos.filter((todo) =>
+      ? unreadTodos // カテゴリ未選択時は全て表示
+      : unreadTodos.filter((todo) =>
           selectedCategories.includes(todo.category || "")
         );
 
-  // カテゴリごとにTODOをグループ化
-  const todosByCategory = filteredTodos.reduce((groups, todo) => {
-    const category = todo.category || "";
-    return {
-      ...groups,
-      [category]: [...(groups[category] || []), todo],
-    };
-  }, {} as Record<string, TodoList[]>);
-
-  // ステータスを日本語に変換する関数
-  const getStatusLabel = (status: TodoStatus) => {
-    switch (status) {
-      case TodoStatus.UNREAD:
-        return "未読";
-      case TodoStatus.READING:
-        return "読書中";
-      default:
-        return status;
-    }
-  };
-
-  // ステータスに応じた色を返す関数
-  const getStatusColor = (status: TodoStatus) => {
-    switch (status) {
-      case TodoStatus.UNREAD:
-        return "red";
-      case TodoStatus.READING:
-        return "yellow";
-      case TodoStatus.COMPLETED:
-        return "green";
-      default:
-        return "gray";
-    }
-  };
+  const filteredReadingTodos =
+    selectedCategories.length === 0
+      ? readingTodos // カテゴリ未選択時は全て表示
+      : readingTodos.filter((todo) =>
+          selectedCategories.includes(todo.category || "")
+        );
 
   const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
     try {
@@ -106,97 +83,253 @@ const TodoListContent = ({
   };
 
   return (
-    <Container size="md" w="100%" mt="lg">
+    <Container maw="100%" w="100%" mt="lg">
       <Title order={2} mb="md">
         TODOリスト
       </Title>
       <AuthGuard todos={todos} session={session}>
-        <CategorySearch
-          todos={activeTodos}
-          selectedCategories={selectedCategories}
-          onCategoryChange={setSelectedCategories}
-        />
-        <Accordion variant="separated" mt="md">
-          {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
-            <Accordion.Item key={category} value={category}>
-              <Accordion.Control>
-                <Group justify="space-between">
-                  <Text fw={500}>{category}</Text>
-                  <Badge size="sm" variant="light">
-                    {categoryTodos.length} タスク
-                  </Badge>
-                </Group>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <Stack gap="md">
-                  {categoryTodos.map((todo: TodoList) => (
-                    <Card
-                      key={todo.id}
-                      shadow="sm"
-                      padding="lg"
-                      radius="md"
-                      withBorder
-                    >
-                      <Group justify="space-between" mb="xs">
-                        <Flex align="center" gap="xs" wrap="wrap">
-                          <Text fw={700} size="lg">
-                            {todo.title}
-                          </Text>
-                          <UnstyledButton
-                            onClick={() =>
-                              handleFavoriteClick(todo.id, todo.isFavorite)
-                            }
-                          >
-                            {todo.isFavorite ? (
-                              <IconStarFilled size={16} color="orange" />
-                            ) : (
-                              <IconStar size={16} />
-                            )}
-                          </UnstyledButton>
-                        </Flex>
-                        <Badge
-                          color={getStatusColor(todo.status)}
-                          variant="light"
+        <Tabs defaultValue="todolist" mt="md">
+          <Tabs.List>
+            <Tabs.Tab value="todolist" leftSection={<IconBookOff />}>
+              未読
+            </Tabs.Tab>
+            <Tabs.Tab value="reading" leftSection={<IconBook />}>
+              読書中
+            </Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panel value="todolist">
+            <Group mt="md">
+              <CategorySearch
+                todos={unreadTodos}
+                selectedCategories={selectedCategories}
+                onCategoryChange={setSelectedCategories}
+              />
+            </Group>
+            <Table.ScrollContainer
+              minWidth={1000}
+              w="100%"
+              maw="100%"
+              type="native"
+            >
+              <Table highlightOnHover mt="md">
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>タイトル</Table.Th>
+                    <Table.Th>URL</Table.Th>
+                    <Table.Th>カテゴリ</Table.Th>
+                    <Table.Th>締切日</Table.Th>
+                    <Table.Th>ステータス変更</Table.Th>
+                    <Table.Th style={{ textAlign: "center" }}>
+                      アクション
+                    </Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {filteredUnreadTodos.map((todo) => (
+                    <Table.Tr key={todo.id}>
+                      <Table.Td>
+                        <Text>{todo.title}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Anchor
+                          href={todo.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          {getStatusLabel(todo.status)}
-                        </Badge>
-                      </Group>
-
-                      <StatusButton todo={todo} />
-
-                      <Flex justify="space-between" align="center" gap="xs" wrap="wrap">
-                        <Group gap="xs">
-                          <Text>URL：</Text>
-                          <Anchor
-                            href={todo.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            size="md"
-                          >
+                          <Text lineClamp={1} size="sm">
                             {todo.url}
-                          </Anchor>
-                        </Group>
-                        <Text size="xs" c="dimmed">
-                          締切日: {new Date(todo.dueDate).toLocaleDateString()}
-                        </Text>
-                      </Flex>
+                          </Text>
+                        </Anchor>
+                      </Table.Td>
+                      <Table.Td>{todo.category || "未分類"}</Table.Td>
+                      <Table.Td>
+                        {new Date(todo.dueDate).toLocaleDateString()}
+                      </Table.Td>
+                      <Table.Td>
+                        <StatusButton todo={todo} />
+                      </Table.Td>
+                      <Table.Td>
+                        <Group justify="center">
+                          <Menu shadow="md" width={200}>
+                            <Menu.Target>
+                              <ActionIcon variant="subtle">
+                                <IconDots size={16} />
+                              </ActionIcon>
+                            </Menu.Target>
 
-                      <Group justify="flex-end" align="center" mt="xs">
-                        <Button
-                          component={Link}
-                          href={`/dashboard/todo-list/${todo.id}`}
+                            <Menu.Dropdown>
+                              <Menu.Label>アクション</Menu.Label>
+
+                              <Menu.Item
+                                component={Link}
+                                href={`/dashboard/todo-list/${todo.id}`}
+                                leftSection={<IconEye size={16} />}
+                              >
+                                詳細を表示
+                              </Menu.Item>
+
+                              <Menu.Item
+                                onClick={() =>
+                                  handleFavoriteClick(todo.id, todo.isFavorite)
+                                }
+                                leftSection={
+                                  todo.isFavorite ? (
+                                    <IconStarFilled size={16} color="orange" />
+                                  ) : (
+                                    <IconStar size={16} />
+                                  )
+                                }
+                              >
+                                {todo.isFavorite
+                                  ? "お気に入りから削除"
+                                  : "お気に入りに追加"}
+                              </Menu.Item>
+
+                              {/* <Menu.Item
+                          onClick={() => handleShareClick(todo.id, todo.isPublic)}
+                          leftSection={<IconShare size={16} />}
                         >
-                          詳細
-                        </Button>
-                        <DeleteButton id={todo.id} />
-                      </Group>
-                    </Card>
+                          {todo.isPublic ? '共有を解除' : '共有する'}
+                        </Menu.Item> */}
+
+                              <Menu.Divider />
+
+                              <Menu.Item
+                                color="red"
+                                leftSection={<IconTrash size={16} />}
+                                onClick={() =>
+                                  handleDeleteClick(router, todo.id)
+                                }
+                              >
+                                削除
+                              </Menu.Item>
+                            </Menu.Dropdown>
+                          </Menu>
+                        </Group>
+                      </Table.Td>
+                    </Table.Tr>
                   ))}
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-          ))}
-        </Accordion>
+                </Table.Tbody>
+              </Table>
+            </Table.ScrollContainer>
+          </Tabs.Panel>
+          <Tabs.Panel value="reading">
+            <Group mt="md">
+              <CategorySearch
+                todos={readingTodos}
+                selectedCategories={selectedCategories}
+                onCategoryChange={setSelectedCategories}
+              />
+            </Group>
+            <Table.ScrollContainer
+              minWidth={1000}
+              w="100%"
+              maw="100%"
+              type="native"
+            >
+              <Table highlightOnHover mt="md">
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>タイトル</Table.Th>
+                    <Table.Th>URL</Table.Th>
+                    <Table.Th>カテゴリ</Table.Th>
+                    <Table.Th>締切日</Table.Th>
+                    <Table.Th>ステータス変更</Table.Th>
+                    <Table.Th style={{ textAlign: "center" }}>
+                      アクション
+                    </Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {filteredReadingTodos.map((todo) => (
+                    <Table.Tr key={todo.id}>
+                      <Table.Td>
+                        <Text>{todo.title}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Anchor
+                          href={todo.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Text lineClamp={1} size="sm">
+                            {todo.url}
+                          </Text>
+                        </Anchor>
+                      </Table.Td>
+                      <Table.Td>{todo.category || "未分類"}</Table.Td>
+                      <Table.Td>
+                        {new Date(todo.dueDate).toLocaleDateString()}
+                      </Table.Td>
+                      <Table.Td>
+                        <StatusButton todo={todo} />
+                      </Table.Td>
+                      <Table.Td>
+                        <Group justify="center">
+                          <Menu shadow="md" width={200}>
+                            <Menu.Target>
+                              <ActionIcon variant="subtle">
+                                <IconDots size={16} />
+                              </ActionIcon>
+                            </Menu.Target>
+
+                            <Menu.Dropdown>
+                              <Menu.Label>アクション</Menu.Label>
+
+                              <Menu.Item
+                                component={Link}
+                                href={`/dashboard/todo-list/${todo.id}`}
+                                leftSection={<IconEye size={16} />}
+                              >
+                                詳細を表示
+                              </Menu.Item>
+
+                              <Menu.Item
+                                onClick={() =>
+                                  handleFavoriteClick(todo.id, todo.isFavorite)
+                                }
+                                leftSection={
+                                  todo.isFavorite ? (
+                                    <IconStarFilled size={16} color="orange" />
+                                  ) : (
+                                    <IconStar size={16} />
+                                  )
+                                }
+                              >
+                                {todo.isFavorite
+                                  ? "お気に入りから削除"
+                                  : "お気に入りに追加"}
+                              </Menu.Item>
+
+                              {/* <Menu.Item
+                          onClick={() => handleShareClick(todo.id, todo.isPublic)}
+                          leftSection={<IconShare size={16} />}
+                        >
+                          {todo.isPublic ? '共有を解除' : '共有する'}
+                        </Menu.Item> */}
+
+                              <Menu.Divider />
+
+                              <Menu.Item
+                                color="red"
+                                leftSection={<IconTrash size={16} />}
+                                onClick={() =>
+                                  handleDeleteClick(router, todo.id)
+                                }
+                              >
+                                削除
+                              </Menu.Item>
+                            </Menu.Dropdown>
+                          </Menu>
+                        </Group>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Table.ScrollContainer>
+          </Tabs.Panel>
+        </Tabs>
       </AuthGuard>
     </Container>
   );

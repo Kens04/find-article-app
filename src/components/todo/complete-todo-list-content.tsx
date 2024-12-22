@@ -5,26 +5,28 @@ import { TodoList, TodoStatus } from "./type";
 import {
   Container,
   Title,
-  Card,
   Text,
   Group,
-  Badge,
-  Stack,
   Anchor,
-  Accordion,
-  Flex,
-  Button,
-  UnstyledButton,
+  Table,
+  Menu,
+  ActionIcon,
 } from "@mantine/core";
 import CategorySearch from "@/components/todo/category-search";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import AuthGuard from "@/components/todo/components/auth-auard";
 import Link from "next/link";
-import DeleteButton from "@/components/todo/delete-button";
-import { IconStar, IconStarFilled } from "@tabler/icons-react";
-import { handleFavorite } from "@/components/todo/action";
+import {
+  IconDots,
+  IconEye,
+  IconStar,
+  IconStarFilled,
+  IconTrash,
+} from "@tabler/icons-react";
+import { handleDeleteClick, handleFavorite } from "@/components/todo/action";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
+import StatusButton from "@/components/todo/status-button";
 
 interface TodoListContentProps {
   todos: TodoList[];
@@ -49,25 +51,6 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
           selectedCategories.includes(todo.category || "")
         );
 
-  // カテゴリごとにTODOをグループ化
-  const todosByCategory = filteredTodos.reduce((groups, todo) => {
-    const category = todo.category || "";
-    return {
-      ...groups,
-      [category]: [...(groups[category] || []), todo],
-    };
-  }, {} as Record<string, TodoList[]>);
-
-  // ステータスを日本語に変換する関数
-  const getStatusLabel = (status: TodoStatus) => {
-    switch (status) {
-      case TodoStatus.COMPLETED:
-        return "完了";
-      default:
-        return status;
-    }
-  };
-
   const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
     try {
       await handleFavorite({
@@ -88,7 +71,7 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
   };
 
   return (
-    <Container size="md" w="100%" mt="lg">
+    <Container maw="100%" w="100%" mt="lg">
       <Title order={2} mb="md">
         完了リスト
       </Title>
@@ -98,85 +81,111 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
           selectedCategories={selectedCategories}
           onCategoryChange={setSelectedCategories}
         />
-        <Accordion variant="separated" mt="md">
-          {Object.entries(todosByCategory).map(([category, categoryTodos]) => (
-            <Accordion.Item key={category} value={category}>
-              <Accordion.Control>
-                <Group justify="space-between">
-                  <Text fw={500}>{category}</Text>
-                  <Badge size="sm" variant="light">
-                    {categoryTodos.length} タスク
-                  </Badge>
-                </Group>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <Stack gap="md">
-                  {categoryTodos.map((todo: TodoList) => (
-                    <Card
-                      key={todo.id}
-                      shadow="sm"
-                      padding="lg"
-                      radius="md"
-                      withBorder
+        <Table.ScrollContainer
+          minWidth={1000}
+          w="100%"
+          maw="100%"
+          type="native"
+        >
+          <Table highlightOnHover mt="md">
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>タイトル</Table.Th>
+                <Table.Th>URL</Table.Th>
+                <Table.Th>カテゴリ</Table.Th>
+                <Table.Th>完了日</Table.Th>
+                <Table.Th>ステータス変更</Table.Th>
+                <Table.Th style={{ textAlign: "center" }}>アクション</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {filteredTodos.map((todo) => (
+                <Table.Tr key={todo.id}>
+                  <Table.Td>
+                    <Text>{todo.title}</Text>
+                  </Table.Td>
+                  <Table.Td>
+                    <Anchor
+                      href={todo.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      <Group justify="space-between" mb="xs">
-                      <Flex align="center" gap="xs" wrap="wrap">
-                          <Text fw={700} size="lg">
-                            {todo.title}
-                          </Text>
-                          <UnstyledButton
+                      <Text lineClamp={1} size="sm">
+                        {todo.url}
+                      </Text>
+                    </Anchor>
+                  </Table.Td>
+                  <Table.Td>{todo.category || "未分類"}</Table.Td>
+                  <Table.Td>
+                    {todo.completedAt
+                      ? new Date(todo.completedAt).toLocaleDateString()
+                      : "未設定"}
+                  </Table.Td>
+                  <Table.Td>
+                    <StatusButton todo={todo} />
+                  </Table.Td>
+                  <Table.Td>
+                    <Group justify="center">
+                      <Menu shadow="md" width={200}>
+                        <Menu.Target>
+                          <ActionIcon variant="subtle">
+                            <IconDots size={16} />
+                          </ActionIcon>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                          <Menu.Label>アクション</Menu.Label>
+
+                          <Menu.Item
+                            component={Link}
+                            href={`/dashboard/todo-list/${todo.id}`}
+                            leftSection={<IconEye size={16} />}
+                          >
+                            詳細を表示
+                          </Menu.Item>
+
+                          <Menu.Item
                             onClick={() =>
                               handleFavoriteClick(todo.id, todo.isFavorite)
                             }
+                            leftSection={
+                              todo.isFavorite ? (
+                                <IconStarFilled size={16} color="orange" />
+                              ) : (
+                                <IconStar size={16} />
+                              )
+                            }
                           >
-                            {todo.isFavorite ? (
-                              <IconStarFilled size={16} color="orange" />
-                            ) : (
-                              <IconStar size={16} />
-                            )}
-                          </UnstyledButton>
-                        </Flex>
-                        <Badge variant="light" color="green">
-                          {getStatusLabel(todo.status)}
-                        </Badge>
-                      </Group>
+                            {todo.isFavorite
+                              ? "お気に入りから削除"
+                              : "お気に入りに追加"}
+                          </Menu.Item>
 
-                      <Flex justify="space-between" align="center" gap="xs" wrap="wrap">
-                        <Group gap="xs">
-                          <Text>URL：</Text>
-                          <Anchor
-                            href={todo.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            size="md"
-                          >
-                            {todo.url}
-                          </Anchor>
-                        </Group>
-                        <Text size="xs" c="dimmed">
-                          完了日:{" "}
-                          {todo.completedAt
-                            ? new Date(todo.completedAt).toLocaleDateString()
-                            : "未設定"}
-                        </Text>
-                      </Flex>
-
-                      <Group justify="flex-end" align="center" mt="xs">
-                        <Button
-                          component={Link}
-                          href={`/dashboard/todo-list/${todo.id}`}
+                          {/* <Menu.Item
+                          onClick={() => handleShareClick(todo.id, todo.isPublic)}
+                          leftSection={<IconShare size={16} />}
                         >
-                          詳細ページへ
-                        </Button>
-                        <DeleteButton id={todo.id} />
-                      </Group>
-                    </Card>
-                  ))}
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-          ))}
-        </Accordion>
+                          {todo.isPublic ? '共有を解除' : '共有する'}
+                        </Menu.Item> */}
+
+                          <Menu.Divider />
+
+                          <Menu.Item
+                            color="red"
+                            leftSection={<IconTrash size={16} />}
+                            onClick={() => handleDeleteClick(router, todo.id)}
+                          >
+                            削除
+                          </Menu.Item>
+                        </Menu.Dropdown>
+                      </Menu>
+                    </Group>
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+          </Table>
+        </Table.ScrollContainer>
       </AuthGuard>
     </Container>
   );
