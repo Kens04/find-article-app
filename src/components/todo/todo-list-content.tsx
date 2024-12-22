@@ -30,7 +30,6 @@ const TodoListContent = ({
   session: Session | null;
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
   // 未完了のTODOのみをフィルタリング
   const activeTodos = todos.filter(
     (todo) =>
@@ -87,7 +86,7 @@ const TodoListContent = ({
       </Title>
       <AuthGuard todos={todos} session={session}>
         <CategorySearch
-          todos={todos}
+          todos={activeTodos}
           selectedCategories={selectedCategories}
           onCategoryChange={setSelectedCategories}
         />
@@ -148,7 +147,7 @@ const TodoListContent = ({
                           component={Link}
                           href={`/dashboard/todo-list/${todo.id}`}
                         >
-                          詳細ページへ
+                          詳細
                         </Button>
                         <DeleteButton id={todo.id} />
                       </Group>
