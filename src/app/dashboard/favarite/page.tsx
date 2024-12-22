@@ -1,9 +1,15 @@
-import FavariteTodoList from "@/components/todo/favarite/favarite-todo-list";
+import { getSession } from "@/components/hooks/useSession";
+import { Todos } from "@/components/todo/action";
+import FavariteTodoListContent from "@/components/todo/favarite/favarite-todo-list-content";
 
-export default function Favarite() {
+import { type TodoList } from "@/components/todo/type";
+
+export default async function Favarite() {
+  const allTodos = (await Todos()) as TodoList[];
+  const activeTodos = allTodos.filter((todo) => todo.isFavorite);
+  const session = await getSession();
+
   return (
-    <>
-      <FavariteTodoList />
-    </>
+    <FavariteTodoListContent todos={activeTodos} session={session} />
   );
-}
+};
