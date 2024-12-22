@@ -14,8 +14,11 @@ import {
   Accordion,
   Anchor,
   Container,
+  Button,
+  Flex,
 } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
 import { useState } from "react";
 
 const FavariteTodoListContent = ({
@@ -27,11 +30,10 @@ const FavariteTodoListContent = ({
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    // お気に入りのTODOのみをフィルタリング
-    const favariteTodos = todos.filter(
-      (todo) =>
-        todo.isFavorite && todo.userId === session?.user?.id
-    );
+  // お気に入りのTODOのみをフィルタリング
+  const favariteTodos = todos.filter(
+    (todo) => todo.isFavorite && todo.userId === session?.user?.id
+  );
 
   // 表示するTODOをフィルタリング
   const filteredTodos =
@@ -88,17 +90,27 @@ const FavariteTodoListContent = ({
                         </Text>
                       </Group>
 
-                      <Anchor
-                        href={todo.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size="sm"
-                        mb="md"
-                      >
-                        {todo.url}
-                      </Anchor>
+                      <Flex justify="space-between" align="center">
+                        <Group gap="xs">
+                          <Text>URL：</Text>
+                          <Anchor
+                            href={todo.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            size="md"
+                          >
+                            {todo.url}
+                          </Anchor>
+                        </Group>
+                      </Flex>
 
-                      <Group justify="space-between" align="center">
+                      <Group justify="flex-end" align="center">
+                        <Button
+                          component={Link}
+                          href={`/dashboard/todo-list/${todo.id}`}
+                        >
+                          詳細
+                        </Button>
                         <DeleteButton id={todo.id} />
                       </Group>
                     </Card>

@@ -106,20 +106,30 @@ const TodoDetailText = ({ todo }: { todo: TodoList }) => {
         </>
       ) : (
         <>
-          <Group mb="md">
-            <Button onClick={() => setIsEdit(true)}>テキスト編集</Button>
-          </Group>
-          <Card key={todo.id} shadow="sm" padding="md" radius="md" withBorder>
-            <TypographyStylesProvider>
-              <div dangerouslySetInnerHTML={{ __html: text }} />
-            </TypographyStylesProvider>
-          </Card>
+          {text ? (
+            <>
+              <Group mb="md">
+                <Button onClick={() => setIsEdit(true)}>テキスト編集</Button>
+              </Group>
+              <Card
+                key={todo.id}
+                shadow="sm"
+                padding="md"
+                radius="md"
+                withBorder
+              >
+                <TypographyStylesProvider>
+                  <div dangerouslySetInnerHTML={{ __html: text }} />
+                </TypographyStylesProvider>
+              </Card>
+            </>
+          ) : (
+            <Group mb="md">
+              <Button onClick={() => setIsEdit(true)} color="orange">テキスト追加</Button>
+            </Group>
+          )}
           <Group justify="center" mt="lg">
-            <Button
-              onClick={() => router.back()}
-              fullWidth
-              maw={300}
-            >
+            <Button onClick={() => router.back()} fullWidth maw={300}>
               戻る
             </Button>
           </Group>

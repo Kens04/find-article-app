@@ -12,10 +12,14 @@ import {
   Stack,
   Anchor,
   Accordion,
+  Flex,
+  Button,
 } from "@mantine/core";
 import CategorySearch from "@/components/todo/category-search";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import AuthGuard from "@/components/todo/components/auth-auard";
+import Link from "next/link";
+import DeleteButton from "@/components/todo/delete-button";
 
 interface TodoListContentProps {
   todos: TodoList[];
@@ -99,27 +103,34 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
                         </Badge>
                       </Group>
 
-                      <Text size="sm" c="dimmed" mb="md">
-                        {todo.text}
-                      </Text>
-
-                      <Anchor
-                        href={todo.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size="sm"
-                        mb="md"
-                      >
-                        {todo.url}
-                      </Anchor>
-
-                      <Group justify="space-between" align="center">
+                      <Flex justify="space-between" align="center">
+                        <Group gap="xs">
+                          <Text>URL：</Text>
+                          <Anchor
+                            href={todo.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            size="md"
+                          >
+                            {todo.url}
+                          </Anchor>
+                        </Group>
                         <Text size="xs" c="dimmed">
                           完了日:{" "}
                           {todo.completedAt
                             ? new Date(todo.completedAt).toLocaleDateString()
                             : "未設定"}
                         </Text>
+                      </Flex>
+
+                      <Group justify="flex-end" align="center" mt="xs">
+                        <Button
+                          component={Link}
+                          href={`/dashboard/todo-list/${todo.id}`}
+                        >
+                          詳細ページへ
+                        </Button>
+                        <DeleteButton id={todo.id} />
                       </Group>
                     </Card>
                   ))}
