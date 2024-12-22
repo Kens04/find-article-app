@@ -43,6 +43,7 @@ const AuthClientButton = ({
         type="submit"
         loading={loading}
         disabled={loading}
+        loaderProps={{ type: "dots" }}
       >
         {text}
       </Button>
@@ -53,6 +54,7 @@ const AuthClientButton = ({
         leftSection={<BrandGoogle size={20} />}
         loading={googleLoading}
         disabled={loading || googleLoading}
+        loaderProps={{ type: "dots" }}
       >
         Googleでログイン
       </Button>
