@@ -41,7 +41,7 @@ const TodoDetailContent = ({ todo }: { todo: TodoList }) => {
   };
 
   return (
-    <Container size="md" w="100%" mt="lg">
+    <Container maw="100%" w="100%" mt="lg">
       <Stack>
         <Group>
           <Title order={2}>{todo.title}</Title>

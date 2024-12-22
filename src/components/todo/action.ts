@@ -167,3 +167,12 @@ export const handleFavorite = async ({
     throw error;
   }
 };
+
+export const handleDeleteClick = async (router: any, id: string) => {
+  try {
+    await handleDelete(id);
+    router.refresh();
+  } catch (err) {
+    console.log(err);
+  }
+};

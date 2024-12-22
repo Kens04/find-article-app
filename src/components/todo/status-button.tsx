@@ -38,13 +38,13 @@ const StatusButton = ({ todo }: StatusButtonProps) => {
 
   return (
     <Select
-      label="ステータス"
+      // label="ステータス"
       placeholder="ステータスを選択"
       data={statusOptions}
       value={todo.status}
       onChange={handleStatusChange}
       clearable={false}
-      mb="md"
+      // mb="md"
     />
   );
 };
