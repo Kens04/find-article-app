@@ -19,11 +19,16 @@ import Link from "next/link";
 import {
   IconDots,
   IconEye,
+  IconShare,
   IconStar,
   IconStarFilled,
   IconTrash,
 } from "@tabler/icons-react";
-import { handleDeleteClick, handleFavorite } from "@/components/todo/action";
+import {
+  handleDeleteClick,
+  handleFavorite,
+  handleShareClick,
+} from "@/components/todo/action";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
 import StatusButton from "@/components/todo/status-button";
@@ -36,6 +41,7 @@ interface TodoListContentProps {
 const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [sort, setSort] = useState<"asc" | "desc" | null>(null);
 
   // 完了したTODOのみをフィルタリング
   const uncompletedTodos = todos.filter(
@@ -43,13 +49,26 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
       todo.status == TodoStatus.COMPLETED && todo.userId === session?.user?.id
   );
 
+
+  // ソート関数を適用したTODOリストを取得
+  const getSortedTodos = (todos: TodoList[]) => {
+    if (!sort) return todos;
+
+    return [...todos].sort((a, b) => {
+      const dateA = new Date(a.completedAt).getTime();
+      const dateB = new Date(b.completedAt).getTime();
+      return sort === "asc" ? dateA - dateB : dateB - dateA;
+    });
+  };
+
   // 表示するTODOをフィルタリング
-  const filteredTodos =
+  const filteredTodos = getSortedTodos(
     selectedCategories.length === 0
       ? uncompletedTodos // カテゴリ未選択時は全て表示
       : uncompletedTodos.filter((todo) =>
           selectedCategories.includes(todo.category || "")
-        );
+        )
+  );
 
   const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
     try {
@@ -80,6 +99,9 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
           todos={todos}
           selectedCategories={selectedCategories}
           onCategoryChange={setSelectedCategories}
+          onSortChange={setSort}
+          sort={sort}
+          label="完了日"
         />
         <Table.ScrollContainer
           minWidth={1000}
@@ -161,12 +183,14 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
                               : "お気に入りに追加"}
                           </Menu.Item>
 
-                          {/* <Menu.Item
-                          onClick={() => handleShareClick(todo.id, todo.isPublic)}
-                          leftSection={<IconShare size={16} />}
-                        >
-                          {todo.isPublic ? '共有を解除' : '共有する'}
-                        </Menu.Item> */}
+                          <Menu.Item
+                            onClick={() =>
+                              handleShareClick(router, todo.id, todo.isPublic, todo.sharedAt)
+                            }
+                            leftSection={<IconShare size={16} />}
+                          >
+                            {todo.isPublic ? "共有を解除" : "共有する"}
+                          </Menu.Item>
 
                           <Menu.Divider />
 

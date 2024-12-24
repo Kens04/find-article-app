@@ -4,22 +4,13 @@ import CategorySearch from "@/components/todo/category-search";
 import IsPublicButton from "@/components/todo/share/ispublic-button";
 import { type TodoList } from "@/components/todo/type";
 import {
-  Card,
   Text,
-  Group,
-  Badge,
-  Stack,
   Title,
-  Accordion,
   Anchor,
   Container,
   Table,
-  Menu,
-  ActionIcon,
 } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
-import { IconDots, IconStar, IconStarFilled } from "@tabler/icons-react";
-import Link from "next/link";
 import { useState } from "react";
 
 const ShareTodoListContent = ({
@@ -30,23 +21,27 @@ const ShareTodoListContent = ({
   session: Session | null;
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [sort, setSort] = useState<"asc" | "desc" | null>(null);
+
+    // ソート関数を適用したTODOリストを取得
+    const getSortedTodos = (todos: TodoList[]) => {
+      if (!sort) return todos;
+  
+      return [...todos].sort((a, b) => {
+        const dateA = new Date(a.sharedAt).getTime();
+        const dateB = new Date(b.sharedAt).getTime();
+        return sort === "asc" ? dateA - dateB : dateB - dateA;
+      });
+    };
 
   // 表示するTODOをフィルタリング
-  const filteredTodos =
+  const filteredTodos = getSortedTodos(
     selectedCategories.length === 0
       ? todos // カテゴリ未選択時は全て表示
       : todos.filter((todo) =>
           selectedCategories.includes(todo.category || "")
-        );
-
-  // カテゴリごとにTODOをグループ化
-  const todosByCategory = filteredTodos.reduce((groups, todo) => {
-    const category = todo.category || "";
-    return {
-      ...groups,
-      [category]: [...(groups[category] || []), todo],
-    };
-  }, {} as Record<string, TodoList[]>);
+        )
+  );
 
   return (
     <Container maw="100%" w="100%" mt="lg">
@@ -57,6 +52,9 @@ const ShareTodoListContent = ({
         todos={filteredTodos}
         selectedCategories={selectedCategories}
         onCategoryChange={setSelectedCategories}
+        onSortChange={setSort}
+        sort={sort}
+        label="公開日"
       />
       <Table.ScrollContainer minWidth={1000} w="100%" maw="100%" type="native">
         <Table highlightOnHover mt="md">
@@ -65,7 +63,7 @@ const ShareTodoListContent = ({
               <Table.Th>タイトル</Table.Th>
               <Table.Th>URL</Table.Th>
               <Table.Th>カテゴリ</Table.Th>
-              <Table.Th style={{ textAlign: "center" }}>お気に入り</Table.Th>
+              <Table.Th>公開日</Table.Th>
               <Table.Th style={{ textAlign: "center" }}>アクション</Table.Th>
             </Table.Tr>
           </Table.Thead>
@@ -87,12 +85,10 @@ const ShareTodoListContent = ({
                   </Anchor>
                 </Table.Td>
                 <Table.Td>{todo.category || "未分類"}</Table.Td>
-                <Table.Td style={{ textAlign: "center" }}>
-                  {todo.isFavorite ? (
-                    <IconStarFilled size={16} color="orange" />
-                  ) : (
-                    <IconStar size={16} />
-                  )}
+                <Table.Td>
+                  {todo.sharedAt
+                    ? new Date(todo.sharedAt).toLocaleDateString()
+                    : "未設定"}
                 </Table.Td>
                 <Table.Td style={{ textAlign: "center" }}>
                   {todo.userId === session?.user.id ? (
