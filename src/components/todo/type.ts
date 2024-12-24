@@ -18,10 +18,14 @@ export interface TodoList {
   createdAt: Date;
   updatedAt: Date;
   completedAt: Date;
+  sharedAt: Date;
 }
 
 export interface CategorySearchProps {
   todos: TodoList[];
   selectedCategories?: string[];
   onCategoryChange?: (categories: string[]) => void;
+  onSortChange?: (sort: "asc" | "desc") => void;
+  sort?: "asc" | "desc" | null;
+  label?: string;
 }
