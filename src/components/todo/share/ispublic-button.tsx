@@ -14,6 +14,7 @@ const IsPublicButton = ({ id }: { id: string }) => {
       await handleIsPublic({
         id: id,
         isPublic: false,
+        sharedAt: new Date(),
       });
       router.refresh();
     } catch (error) {
@@ -25,8 +26,8 @@ const IsPublicButton = ({ id }: { id: string }) => {
     <>
       <Modal opened={opened} onClose={close} title="共有設定" centered>
         <Text ta="center" fw={500} fs="lg">共有を解除しますか？</Text>
-        <Group justify="center" mt="xs">
-          <Button onClick={close} color="green">
+        <Group justify="center" mt="xl">
+          <Button onClick={close} color="green" variant="outline" >
             いいえ
           </Button>
           <Button onClick={handleClick} color="red">

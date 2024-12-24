@@ -45,7 +45,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { status, completedAt, text, isPublic, isFavorite } =
+    const { status, completedAt, text, isPublic, isFavorite, sharedAt } =
       await req.json();
 
     console.log("Received PATCH request:", {
@@ -55,6 +55,7 @@ export async function PATCH(
       text,
       isPublic,
       isFavorite,
+      sharedAt,
     });
 
     // テキストのみの更新の場合
@@ -78,6 +79,7 @@ export async function PATCH(
         },
         data: {
           isPublic,
+          sharedAt: isPublic ? new Date() : null,
         },
       });
       return NextResponse.json({ success: true, data: todo }, { status: 200 });

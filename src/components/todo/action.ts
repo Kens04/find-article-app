@@ -1,4 +1,4 @@
-import { TodoStatus } from "@/components/todo/type";
+import { TodoList, TodoStatus } from "@/components/todo/type";
 
 export const handleDelete = async (id: string) => {
   const response = await fetch(
@@ -111,9 +111,11 @@ export const handleTextSave = async ({
 export const handleIsPublic = async ({
   id,
   isPublic,
+  sharedAt,
 }: {
   id: string;
   isPublic: boolean;
+  sharedAt: Date;
 }) => {
   try {
     const response = await fetch(
@@ -123,7 +125,7 @@ export const handleIsPublic = async ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ isPublic: isPublic }),
+        body: JSON.stringify({ isPublic: isPublic, sharedAt: sharedAt }),
       }
     );
 
@@ -174,5 +176,23 @@ export const handleDeleteClick = async (router: any, id: string) => {
     router.refresh();
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const handleShareClick = async (
+  router: any,
+  id: string,
+  isPublic: boolean,
+  sharedAt: Date
+) => {
+  try {
+    await handleIsPublic({
+      id: id,
+      isPublic: !isPublic,
+      sharedAt: new Date(sharedAt),
+    });
+    router.refresh();
+  } catch (error) {
+    console.error("public update failed:", error);
   }
 };

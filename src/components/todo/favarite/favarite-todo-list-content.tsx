@@ -1,6 +1,10 @@
 "use client";
 
-import { handleDeleteClick, handleFavorite } from "@/components/todo/action";
+import {
+  handleDeleteClick,
+  handleFavorite,
+  handleShareClick,
+} from "@/components/todo/action";
 import CategorySearch from "@/components/todo/category-search";
 import AuthGuard from "@/components/todo/components/auth-auard";
 import { type TodoList } from "@/components/todo/type";
@@ -19,6 +23,7 @@ import { Session } from "@supabase/auth-helpers-nextjs";
 import {
   IconDots,
   IconEye,
+  IconShare,
   IconStar,
   IconStarFilled,
   IconTrash,
@@ -79,6 +84,7 @@ const FavariteTodoListContent = ({
           todos={filteredTodos}
           selectedCategories={selectedCategories}
           onCategoryChange={setSelectedCategories}
+          label="お気に入り"
         />
         <Table.ScrollContainer
           minWidth={1000}
@@ -150,12 +156,14 @@ const FavariteTodoListContent = ({
                               : "お気に入りに追加"}
                           </Menu.Item>
 
-                          {/* <Menu.Item
-                          onClick={() => handleShareClick(todo.id, todo.isPublic)}
-                          leftSection={<IconShare size={16} />}
-                        >
-                          {todo.isPublic ? '共有を解除' : '共有する'}
-                        </Menu.Item> */}
+                          <Menu.Item
+                            onClick={() =>
+                              handleShareClick(router, todo.id, todo.isPublic, todo.sharedAt)
+                            }
+                            leftSection={<IconShare size={16} />}
+                          >
+                            {todo.isPublic ? "共有を解除" : "共有する"}
+                          </Menu.Item>
 
                           <Menu.Divider />
 

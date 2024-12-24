@@ -33,6 +33,7 @@ model Todo {
   userId      String     @db.Uuid
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  sharedAt    DateTime?
   completedAt DateTime?
   user        User       @relation(fields: [userId], references: [id])
 
