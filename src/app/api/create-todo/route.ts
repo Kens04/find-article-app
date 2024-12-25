@@ -1,12 +1,11 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { prisma } from "@/components/lib/db";
+import { prisma } from "@/lib/db";
+import { supabaseRouteHandlerClient } from "@/utils/supabase-route-handler-client";
 
 export async function POST(req: Request) {
   try {
     // Supabaseからユーザー情報を取得
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = supabaseRouteHandlerClient();
     const {
       data: { session },
     } = await supabase.auth.getSession();

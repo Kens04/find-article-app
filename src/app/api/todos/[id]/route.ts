@@ -1,5 +1,5 @@
-import { prisma } from "@/components/lib/db";
 import { TodoStatus } from "@/components/todo/type";
+import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(
