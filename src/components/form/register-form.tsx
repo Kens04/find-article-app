@@ -34,7 +34,7 @@ const RegisterForm = () => {
   const handleSignUp = async (values: typeof form.values) => {
     try {
       setLoading(true);
-      const { data, error } = await supabase.auth.signUp({
+      await supabase.auth.signUp({
         email: values.email,
         password: values.password,
         options: {

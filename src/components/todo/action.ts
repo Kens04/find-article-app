@@ -1,4 +1,5 @@
-import { TodoList, TodoStatus } from "@/components/todo/type";
+import { TodoStatus } from "@/components/todo/type";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export const handleDelete = async (id: string) => {
   const response = await fetch(
@@ -170,7 +171,10 @@ export const handleFavorite = async ({
   }
 };
 
-export const handleDeleteClick = async (router: any, id: string) => {
+export const handleDeleteClick = async (
+  router: AppRouterInstance,
+  id: string
+) => {
   try {
     await handleDelete(id);
     router.refresh();
@@ -180,7 +184,7 @@ export const handleDeleteClick = async (router: any, id: string) => {
 };
 
 export const handleShareClick = async (
-  router: any,
+  router: AppRouterInstance,
   id: string,
   isPublic: boolean,
   sharedAt: Date
