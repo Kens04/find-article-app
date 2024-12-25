@@ -21,7 +21,7 @@ CREATE TABLE "todos" (
     "url" TEXT NOT NULL,
     "text" TEXT,
     "status" "TodoStatus" NOT NULL DEFAULT 'UNREAD',
-    "category" TEXT,
+    "category" TEXT NOT NULL DEFAULT '未分類',
     "dueDate" TIMESTAMP(3) NOT NULL,
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "isFavorite" BOOLEAN NOT NULL DEFAULT false,

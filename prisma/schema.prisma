@@ -26,10 +26,10 @@ model Todo {
   url         String     @db.Text
   text        String?    @db.Text
   status      TodoStatus @default(UNREAD)
-  category    String?
+  category    String?    @default("未分類")
   dueDate     DateTime
   isPublic    Boolean    @default(false)
-  isFavorite    Boolean    @default(false)
+  isFavorite  Boolean    @default(false)
   userId      String     @db.Uuid
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt

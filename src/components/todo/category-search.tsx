@@ -1,7 +1,7 @@
 "use client";
 
 import { CategorySearchProps } from "@/components/todo/type";
-import { Flex, Group, MultiSelect, Select } from "@mantine/core";
+import { Flex, MultiSelect, Select } from "@mantine/core";
 
 const CategorySearch = ({
   todos,
@@ -13,7 +13,7 @@ const CategorySearch = ({
 }: CategorySearchProps) => {
   // カテゴリの選択肢を作成（重複を除去）
   const categoryOptions = Array.from(
-    new Set(todos.map((todo) => todo.category || ""))
+    new Set(todos.map((todo) => todo.category || "未分類"))
   ).map((category) => ({
     value: category,
     label: category,

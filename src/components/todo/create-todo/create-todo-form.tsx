@@ -43,7 +43,7 @@ const CreateTodoForm = () => {
           url,
           status,
           dueDate: dueDate.toISOString(),
-          category,
+          category: category || "未分類",
           isPublic,
           isFavorite,
         }),

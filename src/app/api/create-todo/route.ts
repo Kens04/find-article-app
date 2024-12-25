@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         url,
         status,
         dueDate: new Date(dueDate),
-        category,
+        category: category || "未分類",
         isPublic,
         isFavorite,
         userId: session.user.id,
