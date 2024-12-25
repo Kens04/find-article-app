@@ -7,6 +7,7 @@ import {
 } from "@/components/todo/action";
 import CategorySearch from "@/components/todo/category-search";
 import AuthGuard from "@/components/todo/components/auth-auard";
+import { PAGINATION } from "@/components/todo/pagination";
 import { type TodoList } from "@/components/todo/type";
 import {
   Text,
@@ -17,7 +18,9 @@ import {
   Table,
   Menu,
   ActionIcon,
+  Pagination,
 } from "@mantine/core";
+import { usePagination } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import {
@@ -41,6 +44,10 @@ const FavariteTodoListContent = ({
 }) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const pagination = usePagination({
+    total: Math.ceil(todos.length / PAGINATION.ITEMS_PER_PAGE),
+    initialPage: 1,
+  });
 
   // お気に入りのTODOのみをフィルタリング
   const favariteTodos = todos.filter(
@@ -54,6 +61,10 @@ const FavariteTodoListContent = ({
       : favariteTodos.filter((todo) =>
           selectedCategories.includes(todo.category || "")
         );
+
+  const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
+  const end = start + PAGINATION.ITEMS_PER_PAGE;
+  const paginatedTodos = filteredTodos.slice(start, end);
 
   const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
     try {
@@ -102,7 +113,7 @@ const FavariteTodoListContent = ({
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {filteredTodos.map((todo) => (
+              {paginatedTodos.map((todo) => (
                 <Table.Tr key={todo.id}>
                   <Table.Td>
                     <Text>{todo.title}</Text>
@@ -158,7 +169,12 @@ const FavariteTodoListContent = ({
 
                           <Menu.Item
                             onClick={() =>
-                              handleShareClick(router, todo.id, todo.isPublic, todo.sharedAt)
+                              handleShareClick(
+                                router,
+                                todo.id,
+                                todo.isPublic,
+                                todo.sharedAt
+                              )
                             }
                             leftSection={<IconShare size={16} />}
                           >
@@ -183,6 +199,18 @@ const FavariteTodoListContent = ({
             </Table.Tbody>
           </Table>
         </Table.ScrollContainer>
+        {filteredTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+          <Group justify="center" mt="md">
+            <Pagination
+              value={pagination.active}
+              onChange={pagination.setPage}
+              total={Math.ceil(
+                filteredTodos.length / PAGINATION.ITEMS_PER_PAGE
+              )}
+              siblings={PAGINATION.SIBLINGS}
+            />
+          </Group>
+        )}
       </AuthGuard>
     </Container>
   );

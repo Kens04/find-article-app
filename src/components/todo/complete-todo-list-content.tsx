@@ -11,6 +11,7 @@ import {
   Table,
   Menu,
   ActionIcon,
+  Pagination,
 } from "@mantine/core";
 import CategorySearch from "@/components/todo/category-search";
 import { Session } from "@supabase/auth-helpers-nextjs";
@@ -32,6 +33,8 @@ import {
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
 import StatusButton from "@/components/todo/status-button";
+import { usePagination } from "@mantine/hooks";
+import { PAGINATION } from "@/components/todo/pagination";
 
 interface TodoListContentProps {
   todos: TodoList[];
@@ -42,13 +45,16 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
+  const pagination = usePagination({
+    total: Math.ceil(todos.length / PAGINATION.ITEMS_PER_PAGE),
+    initialPage: 1,
+  });
 
   // 完了したTODOのみをフィルタリング
   const uncompletedTodos = todos.filter(
     (todo) =>
       todo.status == TodoStatus.COMPLETED && todo.userId === session?.user?.id
   );
-
 
   // ソート関数を適用したTODOリストを取得
   const getSortedTodos = (todos: TodoList[]) => {
@@ -69,6 +75,10 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
           selectedCategories.includes(todo.category || "")
         )
   );
+
+  const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
+  const end = start + PAGINATION.ITEMS_PER_PAGE;
+  const paginatedTodos = filteredTodos.slice(start, end);
 
   const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
     try {
@@ -121,7 +131,7 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {filteredTodos.map((todo) => (
+              {paginatedTodos.map((todo) => (
                 <Table.Tr key={todo.id}>
                   <Table.Td>
                     <Text>{todo.title}</Text>
@@ -185,7 +195,12 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
 
                           <Menu.Item
                             onClick={() =>
-                              handleShareClick(router, todo.id, todo.isPublic, todo.sharedAt)
+                              handleShareClick(
+                                router,
+                                todo.id,
+                                todo.isPublic,
+                                todo.sharedAt
+                              )
                             }
                             leftSection={<IconShare size={16} />}
                           >
@@ -210,6 +225,18 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
             </Table.Tbody>
           </Table>
         </Table.ScrollContainer>
+        {filteredTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+          <Group justify="center" mt="md">
+            <Pagination
+              value={pagination.active}
+              onChange={pagination.setPage}
+              total={Math.ceil(
+                filteredTodos.length / PAGINATION.ITEMS_PER_PAGE
+              )}
+              siblings={PAGINATION.SIBLINGS}
+            />
+          </Group>
+        )}
       </AuthGuard>
     </Container>
   );

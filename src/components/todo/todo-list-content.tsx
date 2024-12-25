@@ -6,7 +6,7 @@ import {
   handleFavorite,
   handleShareClick,
 } from "@/components/todo/action";
-import { ActionIcon, Menu, Table, Tabs } from "@mantine/core";
+import { ActionIcon, Menu, Pagination, Table, Tabs } from "@mantine/core";
 import {
   IconBookOff,
   IconBook,
@@ -26,6 +26,8 @@ import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { usePagination } from "@mantine/hooks";
+import { PAGINATION } from "@/components/todo/pagination";
 
 const TodoListContent = ({
   todos,
@@ -37,6 +39,11 @@ const TodoListContent = ({
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
+  const pagination = usePagination({
+    total: Math.ceil(todos.length / PAGINATION.ITEMS_PER_PAGE),
+    initialPage: 1,
+  });
+
   // 未完了のTODOのみをフィルタリング
   const unreadTodos = todos.filter(
     (todo) =>
@@ -75,6 +82,11 @@ const TodoListContent = ({
           selectedCategories.includes(todo.category || "")
         )
   );
+
+  const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
+  const end = start + PAGINATION.ITEMS_PER_PAGE;
+  const paginatedUnreadTodos = filteredUnreadTodos.slice(start, end);
+  const paginatedReadingTodos = filteredReadingTodos.slice(start, end);
 
   const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
     try {
@@ -141,7 +153,7 @@ const TodoListContent = ({
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {filteredUnreadTodos.map((todo) => (
+                  {paginatedUnreadTodos.map((todo) => (
                     <Table.Tr key={todo.id}>
                       <Table.Td>
                         <Text>{todo.title}</Text>
@@ -235,6 +247,18 @@ const TodoListContent = ({
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            {filteredUnreadTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+              <Group justify="center" mt="md">
+                <Pagination
+                  value={pagination.active}
+                  onChange={pagination.setPage}
+                  total={Math.ceil(
+                    filteredUnreadTodos.length / PAGINATION.ITEMS_PER_PAGE
+                  )}
+                  siblings={PAGINATION.SIBLINGS}
+                />
+              </Group>
+            )}
           </Tabs.Panel>
           <Tabs.Panel value="reading">
             <Group mt="md">
@@ -267,7 +291,7 @@ const TodoListContent = ({
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {filteredReadingTodos.map((todo) => (
+                  {paginatedReadingTodos.map((todo) => (
                     <Table.Tr key={todo.id}>
                       <Table.Td>
                         <Text>{todo.title}</Text>
@@ -361,6 +385,18 @@ const TodoListContent = ({
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            {filteredReadingTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+              <Group justify="center" mt="md">
+                <Pagination
+                  value={pagination.active}
+                  onChange={pagination.setPage}
+                  total={Math.ceil(
+                    filteredReadingTodos.length / PAGINATION.ITEMS_PER_PAGE
+                  )}
+                  siblings={PAGINATION.SIBLINGS}
+                />
+              </Group>
+            )}
           </Tabs.Panel>
         </Tabs>
       </AuthGuard>
