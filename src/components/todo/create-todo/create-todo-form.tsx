@@ -50,8 +50,8 @@ const CreateTodoForm = () => {
       });
 
       if (response.ok) {
-        router.push("/dashboard/todo-list");
         router.refresh();
+        router.push("/dashboard/todo-list");
       } else {
         throw new Error("TODO作成に失敗しました");
       }
