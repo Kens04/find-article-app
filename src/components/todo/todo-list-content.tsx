@@ -25,7 +25,7 @@ import { Session } from "@supabase/auth-helpers-nextjs";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { usePagination } from "@mantine/hooks";
 import { PAGINATION } from "@/components/todo/pagination";
 
@@ -67,21 +67,25 @@ const TodoListContent = ({
   };
 
   // フィルタリングとソートを適用
-  const filteredUnreadTodos = getSortedTodos(
-    selectedCategories.length === 0
-      ? unreadTodos
-      : unreadTodos.filter((todo) =>
-          selectedCategories.includes(todo.category || "")
-        )
-  );
+  const filteredUnreadTodos = useMemo(() => {
+    return getSortedTodos(
+      selectedCategories.length === 0
+        ? unreadTodos
+        : unreadTodos.filter((todo) =>
+            selectedCategories.includes(todo.category || "")
+          )
+    );
+  }, [selectedCategories, sort]);
 
-  const filteredReadingTodos = getSortedTodos(
-    selectedCategories.length === 0
-      ? readingTodos
-      : readingTodos.filter((todo) =>
-          selectedCategories.includes(todo.category || "")
-        )
-  );
+  const filteredReadingTodos = useMemo(() => {
+    return getSortedTodos(
+      selectedCategories.length === 0
+        ? readingTodos
+        : readingTodos.filter((todo) =>
+            selectedCategories.includes(todo.category || "")
+          )
+    );
+  }, [selectedCategories, sort]);
 
   const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const end = start + PAGINATION.ITEMS_PER_PAGE;

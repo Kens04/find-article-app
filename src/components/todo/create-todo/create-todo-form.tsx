@@ -38,7 +38,6 @@ const CreateTodoForm = () => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_APP_URL}/api/create-todo`,
         {
-          cache: "no-store",
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -54,7 +53,6 @@ const CreateTodoForm = () => {
       );
 
       if (response.ok) {
-        router.refresh();
         router.push("/dashboard/todo-list");
       } else {
         throw new Error("TODO作成に失敗しました");
