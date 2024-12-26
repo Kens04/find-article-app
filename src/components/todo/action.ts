@@ -1,6 +1,5 @@
 import { TodoStatus } from "@/components/todo/type";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-export const dynamic = "force-dynamic";
 
 export const handleDelete = async (id: string) => {
   const response = await fetch(
@@ -18,6 +17,7 @@ export const Todos = async () => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos`,
       {
+        cache: "no-store",
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
@@ -33,6 +33,7 @@ export const TodoDetail = async ({ params }: { params: { id: string } }) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${params.id}`,
       {
+        cache: "no-store",
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
@@ -56,6 +57,7 @@ export const handleUpdateStatus = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
+        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -89,6 +91,7 @@ export const handleTextSave = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
+        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -121,6 +124,7 @@ export const handleIsPublic = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
+        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -151,6 +155,7 @@ export const handleFavorite = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
+        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
