@@ -14,7 +14,9 @@ export const handleDelete = async (id: string) => {
   if (!response.ok) {
     throw new Error(`Failed to delete todo: ${response.statusText}`);
   }
-  return response.json();
+  // return response.json();
+  const { data } = await response.json();
+  return data;
 };
 
 export const Todos = async () => {
@@ -27,7 +29,14 @@ export const Todos = async () => {
         cache: "no-store",
       }
     );
-    return await response.json();
+
+    if (!response.ok) {
+      throw new Error(`Failed to get todos: ${response.statusText}`);
+    }
+
+    // return await response.json();
+    const { data } = await response.json();
+    return data;
   } catch (err) {
     console.log(err);
     throw err;
@@ -44,7 +53,14 @@ export const TodoDetail = async ({ params }: { params: { id: string } }) => {
         cache: "no-store",
       }
     );
-    return await response.json();
+
+    if (!response.ok) {
+      throw new Error(`Failed to get todo detail: ${response.statusText}`);
+    }
+
+    // return await response.json();
+    const { data } = await response.json();
+    return data;
   } catch (err) {
     console.log(err);
     throw err;
@@ -80,7 +96,9 @@ export const handleUpdateStatus = async ({
       throw new Error(`Failed to update status: ${response.statusText}`);
     }
 
-    return response.json();
+    // return response.json();
+    const { data } = await response.json();
+    return data;
   } catch (error) {
     console.error("Error updating status:", error);
     throw error;
@@ -111,7 +129,9 @@ export const handleTextSave = async ({
       throw new Error(`Failed to update status: ${response.statusText}`);
     }
 
-    return response.json();
+    // return response.json();
+    const { data } = await response.json();
+    return data;
   } catch (error) {
     console.error("Error updating status:", error);
     throw error;
@@ -144,7 +164,9 @@ export const handleIsPublic = async ({
       throw new Error(`Failed to update public`);
     }
 
-    return response.json();
+    // return response.json();
+    const { data } = await response.json();
+    return data;
   } catch (error) {
     console.error("Error updating public:", error);
     throw error;
@@ -175,7 +197,9 @@ export const handleFavorite = async ({
       throw new Error(`Failed to update favorite`);
     }
 
-    return response.json();
+    // return response.json();
+    const { data } = await response.json();
+    return data;
   } catch (error) {
     console.error("Error updating favorite:", error);
     throw error;

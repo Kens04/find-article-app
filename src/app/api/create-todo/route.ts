@@ -27,25 +27,10 @@ export async function POST(req: Request) {
         isPublic,
         isFavorite,
         userId: session.user.id,
-        sharedAt: isPublic ? new Date() : null,
-        text: "",
-        completedAt: null,
-      },
-      select: {
-        id: true,
-        title: true,
-        url: true,
-        status: true,
-        dueDate: true,
-        category: true,
-        isPublic: true,
-        isFavorite: true,
-        userId: true,
-        sharedAt: true,
       },
     });
 
-    return NextResponse.json(todo);
+    return NextResponse.json({ data: todo });
   } catch (error) {
     console.error("Error creating todo:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
