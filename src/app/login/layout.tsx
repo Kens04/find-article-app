@@ -1,3 +1,5 @@
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 import TopHeader from "@/components/top/header";
 import type { Metadata } from "next";
 
@@ -11,5 +13,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <TopHeader>{children}</TopHeader>;
+  return (
+    <TopHeader>
+      <Notifications position="bottom-right" />
+      {children}
+    </TopHeader>
+  );
 }

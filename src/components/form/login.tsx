@@ -6,6 +6,7 @@ import AuthClientButton from "@/components/form/auth-client-button";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { notifications } from "@mantine/notifications";
 
 const LoginForm = () => {
   const supabase = createClientComponentClient();
@@ -29,10 +30,22 @@ const LoginForm = () => {
   const handleSignIn = async (values: typeof form.values) => {
     try {
       setLoading(true);
-      await supabase.auth.signInWithPassword({
+      const { data } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
+      if (!data.user) {
+        notifications.show({
+          title: "ログインに失敗しました。",
+          message: "メールアドレスまたはパスワードが間違っています。",
+          color: "red",
+        });
+        form.setValues({
+          email: "",
+          password: "",
+        });
+        return;
+      }
       router.refresh();
       router.push("/dashboard");
     } catch (error) {
@@ -57,6 +70,7 @@ const LoginForm = () => {
         <TextInput
           label="パスワード"
           placeholder="パスワード"
+          type="password"
           withAsterisk
           key={form.key("password")}
           {...form.getInputProps("password")}
