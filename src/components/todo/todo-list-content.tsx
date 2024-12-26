@@ -67,25 +67,21 @@ const TodoListContent = ({
   };
 
   // フィルタリングとソートを適用
-  const filteredUnreadTodos = useMemo(() => {
-    return getSortedTodos(
-      selectedCategories.length === 0
-        ? unreadTodos
-        : unreadTodos.filter((todo) =>
-            selectedCategories.includes(todo.category || "")
-          )
-    );
-  }, [selectedCategories, sort]);
+  const filteredUnreadTodos = getSortedTodos(
+    selectedCategories.length === 0
+      ? unreadTodos
+      : unreadTodos.filter((todo) =>
+          selectedCategories.includes(todo.category || "")
+        )
+  );
 
-  const filteredReadingTodos = useMemo(() => {
-    return getSortedTodos(
-      selectedCategories.length === 0
-        ? readingTodos
-        : readingTodos.filter((todo) =>
-            selectedCategories.includes(todo.category || "")
-          )
-    );
-  }, [selectedCategories, sort]);
+  const filteredReadingTodos = getSortedTodos(
+    selectedCategories.length === 0
+      ? readingTodos
+      : readingTodos.filter((todo) =>
+          selectedCategories.includes(todo.category || "")
+        )
+  );
 
   const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const end = start + PAGINATION.ITEMS_PER_PAGE;
