@@ -27,6 +27,23 @@ export async function POST(req: Request) {
         isPublic,
         isFavorite,
         userId: session.user.id,
+        // 初期値を設定
+        sharedAt: isPublic ? new Date() : null,
+        text: "",
+        completedAt: null,
+      },
+      // 必要なフィールドのみを選択
+      select: {
+        id: true,
+        title: true,
+        url: true,
+        status: true,
+        dueDate: true,
+        category: true,
+        isPublic: true,
+        isFavorite: true,
+        userId: true,
+        sharedAt: true,
       },
     });
 

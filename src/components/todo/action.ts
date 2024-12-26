@@ -10,6 +10,10 @@ export const handleDelete = async (id: string) => {
       cache: "no-store",
     }
   );
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete todo: ${response.statusText}`);
+  }
   return response.json();
 };
 
