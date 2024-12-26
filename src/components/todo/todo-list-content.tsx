@@ -25,7 +25,7 @@ import { Session } from "@supabase/auth-helpers-nextjs";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { usePagination } from "@mantine/hooks";
 import { PAGINATION } from "@/components/todo/pagination";
 
