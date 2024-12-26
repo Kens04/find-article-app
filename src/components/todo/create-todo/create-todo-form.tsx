@@ -35,19 +35,23 @@ const CreateTodoForm = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/create-todo`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          url,
-          status,
-          dueDate: dueDate.toISOString(),
-          category: category || "未分類",
-          isPublic,
-          isFavorite,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/create-todo`,
+        {
+          cache: "no-store",
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title,
+            url,
+            status,
+            dueDate: dueDate.toISOString(),
+            category: category || "未分類",
+            isPublic,
+            isFavorite,
+          }),
+        }
+      );
 
       if (response.ok) {
         router.refresh();
