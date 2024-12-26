@@ -7,6 +7,7 @@ export const handleDelete = async (id: string) => {
     {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
+      cache: "no-store",
     }
   );
   return response.json();
@@ -17,14 +18,15 @@ export const Todos = async () => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos`,
       {
-        cache: "no-store",
         method: "GET",
         headers: { "Content-Type": "application/json" },
+        cache: "no-store",
       }
     );
     return await response.json();
   } catch (err) {
     console.log(err);
+    throw err;
   }
 };
 
@@ -33,14 +35,15 @@ export const TodoDetail = async ({ params }: { params: { id: string } }) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${params.id}`,
       {
-        cache: "no-store",
         method: "GET",
         headers: { "Content-Type": "application/json" },
+        cache: "no-store",
       }
     );
     return await response.json();
   } catch (err) {
     console.log(err);
+    throw err;
   }
 };
 
@@ -57,11 +60,11 @@ export const handleUpdateStatus = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
-        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
+        cache: "no-store",
         body: JSON.stringify({
           status,
           completedAt: completedAt ? new Date(completedAt) : null,
@@ -91,11 +94,11 @@ export const handleTextSave = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
-        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
+        cache: "no-store",
         body: JSON.stringify({ text }),
       }
     );
@@ -124,11 +127,11 @@ export const handleIsPublic = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
-        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
+        cache: "no-store",
         body: JSON.stringify({ isPublic: isPublic, sharedAt: sharedAt }),
       }
     );
@@ -155,11 +158,11 @@ export const handleFavorite = async ({
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
-        cache: "no-store",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
+        cache: "no-store",
         body: JSON.stringify({ isFavorite: isFavorite }),
       }
     );
@@ -184,6 +187,7 @@ export const handleDeleteClick = async (
     router.refresh();
   } catch (err) {
     console.log(err);
+    throw err;
   }
 };
 
@@ -202,5 +206,6 @@ export const handleShareClick = async (
     router.refresh();
   } catch (error) {
     console.error("public update failed:", error);
+    throw error;
   }
 };
