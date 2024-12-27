@@ -2,7 +2,7 @@
 
 import CategorySearch from "@/components/todo/category-search";
 import { PAGINATION } from "@/components/todo/pagination";
-import IsPublicButton from "@/components/todo/share/ispublic-button";
+// import IsPublicButton from "@/components/todo/share/ispublic-button";
 import { type TodoList } from "@/components/todo/type";
 import {
   Text,
@@ -100,11 +100,11 @@ const ShareTodoListContent = ({
                     ? new Date(todo.sharedAt).toLocaleDateString()
                     : "未設定"}
                 </Table.Td>
-                <Table.Td style={{ textAlign: "center" }}>
+                {/* <Table.Td style={{ textAlign: "center" }}>
                   {todo.userId === session?.user.id ? (
                     <IsPublicButton id={todo.id} />
                   ) : null}
-                </Table.Td>
+                </Table.Td> */}
               </Table.Tr>
             ))}
           </Table.Tbody>
