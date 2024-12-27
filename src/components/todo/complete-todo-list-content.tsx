@@ -93,7 +93,6 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
           : "お気に入りから削除しました",
         color: !isFavorite ? "yellow" : "gray",
       });
-      router.refresh();
     } catch (error) {
       console.error("favorite update failed:", error);
     }

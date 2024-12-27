@@ -48,7 +48,6 @@ const CreateTodoForm = () => {
 
       await createTodo(todoInput);
       router.push("/dashboard/todo-list");
-      router.refresh();
     } catch (err) {
       console.error(err);
       alert("エラーが発生しました");
