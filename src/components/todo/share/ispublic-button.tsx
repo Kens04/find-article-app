@@ -3,11 +3,9 @@
 import { handleIsPublic } from "@/components/todo/action";
 import { Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useRouter } from "next/navigation";
 
 const IsPublicButton = ({ id }: { id: string }) => {
   const [opened, { open, close }] = useDisclosure(false);
-  const router = useRouter();
 
   const handleClick = async () => {
     try {

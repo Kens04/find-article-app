@@ -1,7 +1,6 @@
 "use client";
 
 import { Select } from "@mantine/core";
-import { useRouter } from "next/navigation";
 import { handleUpdateStatus } from "@/components/todo/action";
 import { TodoList, TodoStatus } from "./type";
 
@@ -10,7 +9,6 @@ interface StatusButtonProps {
 }
 
 const StatusButton = ({ todo }: StatusButtonProps) => {
-  const router = useRouter();
 
   const statusOptions = [
     { value: TodoStatus.UNREAD, label: "未読" },
