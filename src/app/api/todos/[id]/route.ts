@@ -18,9 +18,9 @@ export async function GET(
         { status: 404 }
       );
     }
-    return NextResponse.json({ todo }, { status: 200 });
+    return NextResponse.json({ success: true, data: todo }, { status: 200 });
   } catch (err) {
-    return NextResponse.json({ message: err });
+    return NextResponse.json({ success: false, message: err }, { status: 500 });
   }
 }
 
@@ -34,9 +34,9 @@ export async function DELETE(
         id: params.id,
       },
     });
-    return NextResponse.json(todo, { status: 200 });
+    return NextResponse.json({ data: todo }, { status: 200 });
   } catch (err) {
-    return NextResponse.json(err);
+    return NextResponse.json({ message: err }, { status: 500 });
   }
 }
 
