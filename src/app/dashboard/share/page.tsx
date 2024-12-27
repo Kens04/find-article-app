@@ -6,8 +6,9 @@ import { type TodoList } from "@/components/todo/type";
 
 export default async function Share() {
   const session = await getSession();
-  const allTodos = (await Todos()) as TodoList[];
-  const activeTodos = allTodos.filter((todo) => todo.isPublic);
+  const todos = await Todos();
+  const allTodos = todos || [];
+  const activeTodos = allTodos.filter((todo: TodoList) => todo.isPublic);
 
   return (
     <ShareTodoListContent todos={activeTodos} session={session} />
