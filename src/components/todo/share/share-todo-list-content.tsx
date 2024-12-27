@@ -14,15 +14,15 @@ import {
   Pagination,
 } from "@mantine/core";
 import { usePagination } from "@mantine/hooks";
-import { Session } from "@supabase/auth-helpers-nextjs";
+// import { Session } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 
 const ShareTodoListContent = ({
   todos,
-  session,
+  // session,
 }: {
   todos: TodoList[];
-  session?: Session | null;
+  // session: Session | null;
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
