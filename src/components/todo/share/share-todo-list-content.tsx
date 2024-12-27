@@ -2,7 +2,7 @@
 
 import CategorySearch from "@/components/todo/category-search";
 import { PAGINATION } from "@/components/todo/pagination";
-// import IsPublicButton from "@/components/todo/share/ispublic-button";
+import IsPublicButton from "@/components/todo/share/ispublic-button";
 import { type TodoList } from "@/components/todo/type";
 import {
   Text,
@@ -14,15 +14,15 @@ import {
   Pagination,
 } from "@mantine/core";
 import { usePagination } from "@mantine/hooks";
-// import { Session } from "@supabase/auth-helpers-nextjs";
+import { Session } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 
 const ShareTodoListContent = ({
   todos,
-  // session,
+  session,
 }: {
   todos: TodoList[];
-  // session: Session | null;
+  session: Session | null;
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
@@ -100,11 +100,11 @@ const ShareTodoListContent = ({
                     ? new Date(todo.sharedAt).toLocaleDateString()
                     : "未設定"}
                 </Table.Td>
-                {/* <Table.Td style={{ textAlign: "center" }}>
+                <Table.Td style={{ textAlign: "center" }}>
                   {todo.userId === session?.user.id ? (
                     <IsPublicButton id={todo.id} />
                   ) : null}
-                </Table.Td> */}
+                </Table.Td>
               </Table.Tr>
             ))}
           </Table.Tbody>

@@ -45,6 +45,7 @@ export const Todos = async () => {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         cache: "no-store",
+        next: { tags: ['todos'] },
       }
     );
 
