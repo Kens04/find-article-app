@@ -30,7 +30,6 @@ const StatusButton = ({ todo }: StatusButtonProps) => {
         status: selectedStatus as TodoStatus,
         completedAt,
       });
-      router.refresh();
     } catch (error) {
       console.error("Status update failed:", error);
     }

@@ -230,7 +230,6 @@ export const handleDeleteClick = async (
 ) => {
   try {
     await handleDelete(id);
-    router.refresh();
   } catch (err) {
     console.log(err);
     throw err;
@@ -249,7 +248,6 @@ export const handleShareClick = async (
       isPublic: !isPublic,
       sharedAt: new Date(sharedAt),
     });
-    router.refresh();
   } catch (error) {
     console.error("public update failed:", error);
     throw error;

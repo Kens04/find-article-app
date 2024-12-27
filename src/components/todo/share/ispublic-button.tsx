@@ -16,7 +16,6 @@ const IsPublicButton = ({ id }: { id: string }) => {
         isPublic: false,
         sharedAt: new Date(),
       });
-      router.refresh();
     } catch (error) {
       console.error("public update failed:", error);
     }
