@@ -5,7 +5,8 @@ import { type TodoList } from "@/components/todo/type";
 import { Suspense } from "react";
 
 export default async function Dashboard() {
-  const allTodos = (await Todos()) as TodoList[];
+  const todos: TodoList[] = await Todos();
+  const allTodos = todos || [];
   const session = await getSession();
 
   return (
