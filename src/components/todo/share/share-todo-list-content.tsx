@@ -22,7 +22,7 @@ const ShareTodoListContent = ({
   session,
 }: {
   todos: TodoList[];
-  session: Session | null;
+  session?: Session | null;
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
