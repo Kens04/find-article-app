@@ -21,6 +21,16 @@ export interface TodoList {
   sharedAt: Date;
 }
 
+export interface CreateTodoInput {
+  title: string;
+  url: string;
+  status: TodoStatus;
+  dueDate: Date;
+  category?: string;
+  isPublic: boolean;
+  isFavorite: boolean;
+}
+
 export interface CategorySearchProps {
   todos: TodoList[];
   selectedCategories?: string[];

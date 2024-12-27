@@ -1,4 +1,4 @@
-import { TodoStatus } from "@/components/todo/type";
+import { CreateTodoInput, TodoStatus } from "@/components/todo/type";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export const handleDelete = async (id: string) => {
@@ -15,6 +15,24 @@ export const handleDelete = async (id: string) => {
     throw new Error(`Failed to delete todo: ${response.statusText}`);
   }
   // return response.json();
+  const { data } = await response.json();
+  return data;
+};
+
+export const createTodo = async (todo: CreateTodoInput) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/create-todo`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to create todo: ${response.statusText}`);
+  }
+
   const { data } = await response.json();
   return data;
 };

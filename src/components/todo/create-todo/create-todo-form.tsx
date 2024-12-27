@@ -12,8 +12,8 @@ import { useState } from "react";
 import { DateInput } from "@mantine/dates";
 import { useRouter } from "next/navigation";
 import "@mantine/dates/styles.css";
-
-type TodoStatus = "UNREAD" | "READING" | "COMPLETED";
+import { createTodo } from "@/components/todo/action";
+import { type CreateTodoInput, TodoStatus } from "@/components/todo/type";
 
 const CreateTodoForm = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const CreateTodoForm = () => {
   const [title, setTitle] = useState("");
   const [url, setURL] = useState("");
   const [category, setCategory] = useState("");
-  const [status, setStatus] = useState<TodoStatus>("UNREAD");
+  const [status, setStatus] = useState<TodoStatus>(TodoStatus.UNREAD);
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [isPublic, setIsPublic] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -35,29 +35,20 @@ const CreateTodoForm = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/create-todo`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title,
-            url,
-            status,
-            dueDate: dueDate.toISOString(),
-            category: category || "未分類",
-            isPublic,
-            isFavorite,
-          }),
-        }
-      );
 
-      if (response.ok) {
-        router.refresh();
-        router.push("/dashboard/todo-list");
-      } else {
-        throw new Error("TODO作成に失敗しました");
-      }
+      const todoInput: CreateTodoInput = {
+        title,
+        url,
+        status,
+        dueDate,
+        category: category || "未分類",
+        isPublic,
+        isFavorite,
+      };
+
+      await createTodo(todoInput);
+      router.push("/dashboard/todo-list");
+      router.refresh();
     } catch (err) {
       console.error(err);
       alert("エラーが発生しました");
