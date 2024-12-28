@@ -50,26 +50,31 @@ export const createTodo = async (todo: CreateTodoInput) => {
 
 export const Todos = async () => {
   try {
+    console.log("Fetching todos...");
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         cache: "no-store",
-        next: { tags: ["todos"] },
       }
     );
 
     if (!response.ok) {
+      console.error(
+        "Todos fetch failed:",
+        response.status,
+        response.statusText
+      );
       throw new Error(`Failed to get todos: ${response.statusText}`);
     }
 
-    // return await response.json();
     const { data } = await response.json();
-    return data;
+    console.log("Todos fetched successfully:", data);
+    return data || [];
   } catch (err) {
-    console.log(err);
-    throw err;
+    console.error("Error in Todos function:", err);
+    return [];
   }
 };
 

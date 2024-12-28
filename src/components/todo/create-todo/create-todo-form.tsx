@@ -35,15 +35,7 @@ const CreateTodoForm = () => {
 
     try {
       setIsLoading(true);
-      console.log("Submitting todo:", {
-        title,
-        url,
-        status,
-        dueDate,
-        category,
-        isPublic,
-        isFavorite,
-      });
+      console.log("Creating todo...");
 
       const todoInput: CreateTodoInput = {
         title,
@@ -56,11 +48,13 @@ const CreateTodoForm = () => {
       };
 
       const result = await createTodo(todoInput);
-      console.log("Todo created successfully:", result);
+      console.log("Todo created:", result);
 
-      // 作成後にキャッシュを無効化してリフレッシュ
-      router.refresh();
+      // リダイレクト前に少し待機
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       router.push("/dashboard/todo-list");
+      router.refresh();
     } catch (err) {
       console.error("Error creating todo:", err);
       alert("エラーが発生しました");

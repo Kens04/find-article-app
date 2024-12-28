@@ -37,15 +37,21 @@ const TodoListContent = ({
   session: Session | null;
 }) => {
   const router = useRouter();
-  console.log("Session:", session);
-  console.log("Initial todos:", todos);
-
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
   const pagination = usePagination({
     total: Math.ceil(todos.length / PAGINATION.ITEMS_PER_PAGE),
     initialPage: 1,
   });
+
+  // 初期データのバリデーション
+  if (!Array.isArray(todos)) {
+    console.error("Todos is not an array:", todos);
+    return <div>データの読み込みに失敗しました</div>;
+  }
+
+  console.log("Rendering TodoListContent with todos:", todos);
+  console.log("Current session:", session);
 
   // 未完了のTODOのみをフィルタリング
   const unreadTodos = todos.filter((todo) => {
@@ -76,7 +82,7 @@ const TodoListContent = ({
     });
   };
 
-  // フィルタリングとソートを適用
+  // フィルタリ���グとソートを適用
   const filteredUnreadTodos = getSortedTodos(
     selectedCategories.length === 0
       ? unreadTodos
