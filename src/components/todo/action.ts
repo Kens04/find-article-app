@@ -48,33 +48,24 @@ export const createTodo = async (todo: CreateTodoInput) => {
   }
 };
 
-// export const Todos = async () => {
-//   try {
-//     const response = await fetch(
-//       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos`,
-//       {
-//         method: "GET",
-//         headers: { "Content-Type": "application/json" },
-//         cache: "no-store",
-//       }
-//     );
+export const Todos = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+      }
+    );
 
-//     if (!response.ok) {
-//       console.error(
-//         "Todos fetch failed:",
-//         response.status,
-//         response.statusText
-//       );
-//       throw new Error(`Failed to get todos: ${response.statusText}`);
-//     }
-
-//     const { data } = await response.json();
-//     return data;
-//   } catch (err) {
-//     console.error("Error in Todos function:", err);
-//     throw err;
-//   }
-// };
+    const { data } = await response.json();
+    return data;
+  } catch (err) {
+    console.error("Error in Todos function:", err);
+    throw err;
+  }
+};
 
 export const TodoDetail = async ({ params }: { params: { id: string } }) => {
   try {
