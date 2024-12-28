@@ -50,7 +50,6 @@ export const createTodo = async (todo: CreateTodoInput) => {
 
 export const Todos = async () => {
   try {
-    console.log("Fetching todos...");
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/todos`,
       {
@@ -70,11 +69,10 @@ export const Todos = async () => {
     }
 
     const { data } = await response.json();
-    console.log("Todos fetched successfully:", data);
-    return data || [];
+    return data;
   } catch (err) {
     console.error("Error in Todos function:", err);
-    return [];
+    throw err;
   }
 };
 
@@ -247,6 +245,7 @@ export const handleDeleteClick = async (
 ) => {
   try {
     await handleDelete(id);
+    router.refresh();
   } catch (err) {
     console.log(err);
     throw err;
@@ -265,6 +264,7 @@ export const handleShareClick = async (
       isPublic: !isPublic,
       sharedAt: new Date(sharedAt),
     });
+    router.refresh();
   } catch (error) {
     console.error("public update failed:", error);
     throw error;
