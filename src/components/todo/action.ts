@@ -20,21 +20,32 @@ export const handleDelete = async (id: string) => {
 };
 
 export const createTodo = async (todo: CreateTodoInput) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/create-todo`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(todo),
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/create-todo`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(todo),
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        "Create todo response:",
+        response.status,
+        response.statusText
+      );
+      throw new Error(`Failed to create todo: ${response.statusText}`);
     }
-  );
 
-  if (!response.ok) {
-    throw new Error(`Failed to create todo: ${response.statusText}`);
+    const { data } = await response.json();
+    console.log("Created todo data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error in createTodo:", error);
+    throw error;
   }
-
-  const { data } = await response.json();
-  return data;
 };
 
 export const Todos = async () => {
@@ -45,7 +56,7 @@ export const Todos = async () => {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         cache: "no-store",
-        next: { tags: ['todos'] },
+        next: { tags: ["todos"] },
       }
     );
 

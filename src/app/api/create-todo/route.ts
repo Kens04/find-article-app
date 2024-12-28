@@ -11,11 +11,15 @@ export async function POST(req: Request) {
     } = await supabase.auth.getSession();
 
     if (!session) {
+      console.log("No session found");
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    const body = await req.json();
+    console.log("Received todo data:", body);
+
     const { title, url, status, dueDate, category, isPublic, isFavorite } =
-      await req.json();
+      body;
 
     const todo = await prisma.todo.create({
       data: {
@@ -30,9 +34,13 @@ export async function POST(req: Request) {
       },
     });
 
+    console.log("Created todo:", todo);
     return NextResponse.json({ data: todo });
   } catch (error) {
     console.error("Error creating todo:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return new NextResponse(
+      JSON.stringify({ error: "Internal Server Error", details: error }),
+      { status: 500 }
+    );
   }
 }

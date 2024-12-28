@@ -35,6 +35,15 @@ const CreateTodoForm = () => {
 
     try {
       setIsLoading(true);
+      console.log("Submitting todo:", {
+        title,
+        url,
+        status,
+        dueDate,
+        category,
+        isPublic,
+        isFavorite,
+      });
 
       const todoInput: CreateTodoInput = {
         title,
@@ -46,10 +55,14 @@ const CreateTodoForm = () => {
         isFavorite,
       };
 
-      await createTodo(todoInput);
+      const result = await createTodo(todoInput);
+      console.log("Todo created successfully:", result);
+
+      // 作成後にキャッシュを無効化してリフレッシュ
+      router.refresh();
       router.push("/dashboard/todo-list");
     } catch (err) {
-      console.error(err);
+      console.error("Error creating todo:", err);
       alert("エラーが発生しました");
     } finally {
       setIsLoading(false);
