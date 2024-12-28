@@ -37,6 +37,9 @@ const TodoListContent = ({
   session: Session | null;
 }) => {
   const router = useRouter();
+  console.log("Session:", session);
+  console.log("Initial todos:", todos);
+
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
   const pagination = usePagination({
@@ -45,19 +48,26 @@ const TodoListContent = ({
   });
 
   // 未完了のTODOのみをフィルタリング
-  const unreadTodos = todos.filter(
-    (todo) =>
+  const unreadTodos = todos.filter((todo) => {
+    console.log("Filtering todo:", todo);
+    return (
       todo.status == TodoStatus.UNREAD && todo.userId === session?.user?.id
-  );
+    );
+  });
+  console.log("Filtered unread todos:", unreadTodos);
 
-  const readingTodos = todos.filter(
-    (todo) =>
+  const readingTodos = todos.filter((todo) => {
+    console.log("Filtering reading todo:", todo);
+    return (
       todo.status === TodoStatus.READING && todo.userId === session?.user?.id
-  );
+    );
+  });
+  console.log("Filtered reading todos:", readingTodos);
 
   // ソート関数を適用したTODOリストを取得
   const getSortedTodos = (todos: TodoList[]) => {
     if (!sort) return todos;
+    console.log("Sorting todos with sort:", sort);
 
     return [...todos].sort((a, b) => {
       const dateA = new Date(a.dueDate).getTime();
@@ -74,6 +84,7 @@ const TodoListContent = ({
           selectedCategories.includes(todo.category || "")
         )
   );
+  console.log("Final filtered unread todos:", filteredUnreadTodos);
 
   const filteredReadingTodos = getSortedTodos(
     selectedCategories.length === 0
@@ -82,11 +93,25 @@ const TodoListContent = ({
           selectedCategories.includes(todo.category || "")
         )
   );
+  console.log("Final filtered reading todos:", filteredReadingTodos);
 
+  // ページネーション処理
   const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const end = start + PAGINATION.ITEMS_PER_PAGE;
+  console.log("Pagination range:", { start, end, active: pagination.active });
+
   const paginatedUnreadTodos = filteredUnreadTodos.slice(start, end);
   const paginatedReadingTodos = filteredReadingTodos.slice(start, end);
+  console.log("Paginated todos:", {
+    unread: paginatedUnreadTodos,
+    reading: paginatedReadingTodos,
+  });
+
+  // エラーハンドリングの追加
+  if (!todos) {
+    console.error("Todos is undefined or null");
+    return <div>データの読み込みに失敗しました</div>;
+  }
 
   const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
     try {
