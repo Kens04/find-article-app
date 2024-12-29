@@ -45,18 +45,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { status, completedAt, text, isPublic, isFavorite, sharedAt } =
-      await req.json();
-
-    console.log("Received PATCH request:", {
-      id: params.id,
-      status,
-      completedAt,
-      text,
-      isPublic,
-      isFavorite,
-      sharedAt,
-    });
+    const { status, text, isPublic, isFavorite } = await req.json();
 
     // テキストのみの更新の場合
     if (text) {
@@ -116,7 +105,6 @@ export async function PATCH(
       },
     });
 
-    console.log("Updated todo:", todo);
     return NextResponse.json({ success: true, data: todo }, { status: 200 });
   } catch (err) {
     console.error("Error in PATCH handler:", err);

@@ -1,18 +1,20 @@
-// import { getSession } from "@/components/hooks/useSession";
-// import { Todos } from "@/components/todo/action";
-// import CompleteTodoListContent from "@/components/todo/complete-todo-list-content";
-// import { TodoStatus, type TodoList } from "@/components/todo/type";
+import { getSession } from "@/components/hooks/useSession";
+import CompleteTodoListContent from "@/components/todo/complete-todo-list-content";
+import { TodoStatus, type TodoList } from "@/components/todo/type";
+import { prisma } from "@/lib/db";
 
 const CompletedTodoList = async () => {
-  // const session = await getSession();
-  // const allTodos = (await Todos()) as TodoList[];
-  // const completedTodos = allTodos.filter((todo) => todo.status == TodoStatus.COMPLETED);
+  const session = await getSession();
+  const todos = await prisma.todo.findMany();
+  const allTodos = todos || [];
+  const completedTodos = allTodos.filter(
+    (todo) => todo.status == TodoStatus.COMPLETED
+  ) as TodoList[];
   return (
     <>
-      {/* <CompleteTodoListContent todos={completedTodos} session={session} /> */}
-      Hello
+      <CompleteTodoListContent todos={completedTodos} session={session} />
     </>
   );
-}
+};
 
 export default CompletedTodoList;

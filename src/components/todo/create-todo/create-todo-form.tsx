@@ -35,8 +35,6 @@ const CreateTodoForm = () => {
 
     try {
       setIsLoading(true);
-      console.log("Creating todo...");
-
       const todoInput: CreateTodoInput = {
         title,
         url,
@@ -46,12 +44,7 @@ const CreateTodoForm = () => {
         isPublic,
         isFavorite,
       };
-
-      const result = await createTodo(todoInput);
-      console.log("Todo created:", result);
-
-      // リダイレクト前に少し待機
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await createTodo(todoInput);
 
       router.push("/dashboard/todo-list");
       router.refresh();

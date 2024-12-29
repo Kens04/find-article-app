@@ -58,7 +58,6 @@ const TodoListContent = ({
   // ソート関数を適用したTODOリストを取得
   const getSortedTodos = (todos: TodoList[]) => {
     if (!sort) return todos;
-    console.log("Sorting todos with sort:", sort);
 
     return [...todos].sort((a, b) => {
       const dateA = new Date(a.dueDate).getTime();
