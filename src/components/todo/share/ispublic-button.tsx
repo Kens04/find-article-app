@@ -3,8 +3,10 @@
 import { handleIsPublic } from "@/components/todo/action";
 import { Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useRouter } from "next/navigation";
 
 const IsPublicButton = ({ id }: { id: string }) => {
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleClick = async () => {
@@ -14,6 +16,7 @@ const IsPublicButton = ({ id }: { id: string }) => {
         isPublic: false,
         sharedAt: new Date(),
       });
+      router.refresh();
     } catch (error) {
       console.error("public update failed:", error);
     }

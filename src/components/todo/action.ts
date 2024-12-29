@@ -61,7 +61,7 @@ export const TodoDetail = async ({ params }: { params: { id: string } }) => {
       throw new Error(`Failed to get todo detail: ${response.statusText}`);
     }
 
-    const { data } = await response.json();
+    const data = await response.json();
     return data;
   } catch (err) {
     throw err;

@@ -42,6 +42,7 @@ const TodoDetailText = ({ todo }: { todo: TodoList }) => {
         id: todo.id,
         text: editorText,
       });
+      router.refresh();
     } catch (error) {
       console.error("Status update failed:", error);
     } finally {

@@ -7,6 +7,7 @@ export default async function TodoDetailPage({
 }: {
   params: { id: string };
 }) {
-  const { todo } = await TodoDetail({ params });
+  const data = await TodoDetail({ params });
+  const todo = data.data;
   return <TodoDetailContent todo={todo} />;
 }
