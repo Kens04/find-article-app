@@ -50,14 +50,11 @@ export const createTodo = async (todo: CreateTodoInput) => {
 
 export const Todos = async () => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        cache: "no-store",
-      }
-    );
+    const response = await fetch("/api/todos", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
