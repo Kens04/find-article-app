@@ -59,11 +59,21 @@ export const Todos = async () => {
       }
     );
 
-    const { data } = await response.json();
-    return data;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const text = await response.text(); // まず文字列として読み込む
+    try {
+      const json = JSON.parse(text); // JSONとしてパース
+      return json.data;
+    } catch {
+      console.error("Invalid JSON response:", text);
+      throw new Error("Invalid JSON response from server");
+    }
   } catch (err) {
     console.error("Error in Todos function:", err);
-    throw err;
+    return []; // エラー時は空配列を返す
   }
 };
 
