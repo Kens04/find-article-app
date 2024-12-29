@@ -50,27 +50,20 @@ export const createTodo = async (todo: CreateTodoInput) => {
 
 export const Todos = async () => {
   try {
-    const response = await fetch("/api/todos", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+      }
+    );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const text = await response.text(); // まず文字列として読み込む
-    try {
-      const json = JSON.parse(text); // JSONとしてパース
-      return json.data;
-    } catch {
-      console.error("Invalid JSON response:", text);
-      throw new Error("Invalid JSON response from server");
-    }
+    const { data } = await response.json();
+    return data;
   } catch (err) {
     console.error("Error in Todos function:", err);
-    return []; // エラー時は空配列を返す
+    throw err;
   }
 };
 

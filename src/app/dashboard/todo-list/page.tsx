@@ -1,29 +1,24 @@
 import { getSession } from "@/components/hooks/useSession";
-import { Todos } from "@/components/todo/action";
+// import { Todos } from "@/components/todo/action";
 import TodoListContent from "@/components/todo/todo-list-content";
 import { TodoStatus, type TodoList } from "@/components/todo/type";
+import { prisma } from "@/lib/db";
 import { Suspense } from "react";
 
 const TodoList = async () => {
-  try {
-    const todos = await Todos();
-    const allTodos = todos || [];
-    const activeTodos = allTodos.filter(
-      (todo: TodoList) => todo.status !== TodoStatus.COMPLETED
-    );
-    const session = await getSession();
+  // const todos = await Todos();
+  const todos = await prisma.todo.findMany();
+  const allTodos = todos || [];
+  const activeTodos = allTodos.filter(
+    (todo) => todo.status !== TodoStatus.COMPLETED
+  ) as TodoList[];
+  const session = await getSession();
 
-    return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <TodoListContent todos={activeTodos} session={session} />
-      </Suspense>
-    );
-  } catch (error) {
-    console.error("Error in TodoList:", error);
-    return (
-      <div>エラーが発生しました。しばらく経ってから再度お試しください。</div>
-    );
-  }
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TodoListContent todos={activeTodos} session={session} />
+    </Suspense>
+  );
 };
 
 export default TodoList;
