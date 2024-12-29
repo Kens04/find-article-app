@@ -81,7 +81,7 @@ const ShareTodoListContent = ({
             {paginatedTodos.map((todo) => (
               <Table.Tr key={todo.id}>
                 <Table.Td>
-                  <Text>{todo.title}</Text>
+                  <Text>{todo.title.slice(0, 10)}...</Text>
                 </Table.Td>
                 <Table.Td>
                   <Anchor
@@ -90,7 +90,7 @@ const ShareTodoListContent = ({
                     rel="noopener noreferrer"
                   >
                     <Text lineClamp={1} size="sm">
-                      {todo.url}
+                      {todo.url.slice(0, 30)}...
                     </Text>
                   </Anchor>
                 </Table.Td>

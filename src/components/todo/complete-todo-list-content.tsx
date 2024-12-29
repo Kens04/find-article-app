@@ -93,6 +93,7 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
           : "お気に入りから削除しました",
         color: !isFavorite ? "yellow" : "gray",
       });
+      router.refresh();
     } catch (error) {
       console.error("favorite update failed:", error);
     }
@@ -105,7 +106,7 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
       </Title>
       <AuthGuard todos={todos} session={session}>
         <CategorySearch
-          todos={todos}
+          todos={uncompletedTodos}
           selectedCategories={selectedCategories}
           onCategoryChange={setSelectedCategories}
           onSortChange={setSort}
@@ -133,7 +134,7 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
               {paginatedTodos.map((todo) => (
                 <Table.Tr key={todo.id}>
                   <Table.Td>
-                    <Text>{todo.title}</Text>
+                    <Text>{todo.title.slice(0, 10)}...</Text>
                   </Table.Td>
                   <Table.Td>
                     <Anchor
@@ -142,7 +143,7 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
                       rel="noopener noreferrer"
                     >
                       <Text lineClamp={1} size="sm">
-                        {todo.url}
+                        {todo.url.slice(0, 30)}...
                       </Text>
                     </Anchor>
                   </Table.Td>
