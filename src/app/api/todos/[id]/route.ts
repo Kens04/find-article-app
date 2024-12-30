@@ -4,12 +4,17 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
 ) {
+  const { id } = await params;
   try {
     const todo = await prisma.todo.findUnique({
       where: {
-        id: params.id,
+        id: id,
       },
     });
     if (!todo) {
@@ -26,12 +31,17 @@ export async function GET(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
 ) {
   try {
+    const { id } = await params;
     const todo = await prisma.todo.delete({
       where: {
-        id: params.id,
+        id: id,
       },
     });
     return NextResponse.json({ data: todo }, { status: 200 });
@@ -42,16 +52,21 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
 ) {
   try {
+    const { id } = await params;
     const { status, text, isPublic, isFavorite } = await req.json();
 
     // テキストのみの更新の場合
     if (text) {
       const todo = await prisma.todo.update({
         where: {
-          id: params.id,
+          id: id,
         },
         data: {
           text,
@@ -64,7 +79,7 @@ export async function PATCH(
     if (isPublic !== undefined) {
       const todo = await prisma.todo.update({
         where: {
-          id: params.id,
+          id: id,
         },
         data: {
           isPublic,
@@ -78,7 +93,7 @@ export async function PATCH(
     if (isFavorite !== undefined) {
       const todo = await prisma.todo.update({
         where: {
-          id: params.id,
+          id: id,
         },
         data: {
           isFavorite,
@@ -97,7 +112,7 @@ export async function PATCH(
 
     const todo = await prisma.todo.update({
       where: {
-        id: params.id,
+        id: id,
       },
       data: {
         status: status as TodoStatus,

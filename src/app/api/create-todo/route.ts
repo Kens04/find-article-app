@@ -5,7 +5,7 @@ import { supabaseRouteHandlerClient } from "@/utils/supabase-route-handler-clien
 export async function POST(req: Request) {
   try {
     // Supabaseからユーザー情報を取得
-    const supabase = supabaseRouteHandlerClient();
+    const supabase = await supabaseRouteHandlerClient();
     const {
       data: { session },
     } = await supabase.auth.getSession();

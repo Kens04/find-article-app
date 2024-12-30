@@ -46,10 +46,15 @@ export const createTodo = async (todo: CreateTodoInput) => {
   }
 };
 
-export const TodoDetail = async ({ params }: { params: { id: string } }) => {
+export const TodoDetail = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
+  const { id } = await params;
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${params.id}`,
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },

@@ -6,12 +6,14 @@ export async function GET(req: NextRequest) {
   const code = requestUrl.searchParams.get("code");
 
   if (code) {
+    const supabase = await supabaseRouteHandlerClient();
     try {
-      const supabase = supabaseRouteHandlerClient();
       await supabase.auth.exchangeCodeForSession(code);
     } catch (error) {
       console.error("Error in auth callback:", error);
-      return NextResponse.redirect(`${requestUrl.origin}?error=Authentication failed`);
+      return NextResponse.redirect(
+        `${requestUrl.origin}?error=Authentication failed`
+      );
     }
   }
 

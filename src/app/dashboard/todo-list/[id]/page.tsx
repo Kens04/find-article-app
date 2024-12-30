@@ -5,7 +5,7 @@ import TodoDetailContent from "@/components/todo/todo-detail-content";
 export default async function TodoDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const data = await TodoDetail({ params });
   const todo = data.data;

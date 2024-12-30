@@ -1,10 +1,15 @@
 import { supabaseServer } from "@/utils/supabase-server";
-import { Session } from "@supabase/auth-helpers-nextjs";
+import { cache } from "react";
 
-export async function getSession(): Promise<Session | null> {
-  const supabase = supabaseServer();
-  const { data: user } = await supabase.auth.getSession();
-  const session = user.session;
-
-  return session;
-};
+export const getSession = cache(async () => {
+  const supabase = await supabaseServer();
+  try {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    return session;
+  } catch (error) {
+    console.error("Error getting session:", error);
+    return null;
+  }
+});
