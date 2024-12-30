@@ -1,5 +1,5 @@
 import { getSession } from "@/components/hooks/useSession";
-import CompleteTodoListContent from "@/components/todo/complete-todo-list-content";
+import CompleteTodoListContent from "@/components/todo/complete-todo-list/complete-todo-list-content";
 import { TodoStatus, type TodoList } from "@/components/todo/type";
 import { prisma } from "@/lib/db";
 import { Suspense } from "react";
