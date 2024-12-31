@@ -60,7 +60,22 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const { status, text, isPublic, isFavorite } = await req.json();
+    const body = await req.json();
+    const { status, text, isPublic, isFavorite, title, url, category, dueDate } = body;
+
+        // 編集フォームからの更新の場合
+        if (title !== undefined) {
+          const todo = await prisma.todo.update({
+            where: { id },
+            data: {
+              title,
+              url,
+              category,
+              dueDate: new Date(dueDate),
+            },
+          });
+          return NextResponse.json({ success: true, data: todo });
+        }
 
     // テキストのみの更新の場合
     if (text) {

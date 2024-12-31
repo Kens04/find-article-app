@@ -8,10 +8,14 @@ import {
   Anchor,
   Stack,
   Flex,
+  Card,
+  TypographyStylesProvider,
+  Button,
 } from "@mantine/core";
-import TodoDetailText from "@/components/todo/todo-detail-text";
+import Link from "next/link";
 
 const TodoDetailContent = ({ todo }: { todo: TodoList }) => {
+  const text = todo.text;
   // ステータスを日本語に変換する関数
   const getStatusLabel = (status: TodoStatus) => {
     switch (status) {
@@ -62,7 +66,22 @@ const TodoDetailContent = ({ todo }: { todo: TodoList }) => {
               {todo.url}
             </Anchor>
           </Flex>
-          <TodoDetailText todo={todo} />
+          {/* <TodoDetailText todo={todo} /> */}
+          <Card key={todo.id} shadow="sm" padding="md" radius="md" withBorder>
+            <TypographyStylesProvider>
+              <div dangerouslySetInnerHTML={{ __html: text }} />
+            </TypographyStylesProvider>
+          </Card>
+          <Group justify="center" mt="lg">
+            <Button
+              component={Link}
+              href={`/dashboard/todo-list/edit/${todo.id}`}
+              fullWidth
+              maw={300}
+            >
+              編集する
+            </Button>
+          </Group>
         </Stack>
       </Stack>
     </Container>

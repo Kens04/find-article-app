@@ -1,4 +1,8 @@
-import { CreateTodoInput, TodoStatus } from "@/components/todo/type";
+import {
+  CreateTodoInput,
+  EditTodoInput,
+  TodoStatus,
+} from "@/components/todo/type";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export const handleDelete = async (id: string) => {
@@ -16,6 +20,55 @@ export const handleDelete = async (id: string) => {
   }
   const { data } = await response.json();
   return data;
+};
+
+export const handleEdit = async (id: string, values?: EditTodoInput) => {
+  try {
+    // GETリクエストの場合
+    if (!values) {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch todo: ${response.statusText}`);
+      }
+
+      const { data } = await response.json();
+      return data;
+    }
+
+    // PATCHリクエストの場合
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: values.title,
+          url: values.url,
+          category: values.category,
+          dueDate: values.dueDate,
+          text: values.text,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update todo: ${response.statusText}`);
+    }
+
+    const { data } = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error in handleEdit:", error);
+    throw error;
+  }
 };
 
 export const createTodo = async (todo: CreateTodoInput) => {

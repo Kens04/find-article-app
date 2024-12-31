@@ -15,6 +15,7 @@ import CategorySearch from "@/components/todo/category-search";
 import Link from "next/link";
 import {
   IconDots,
+  IconEdit,
   IconEye,
   IconShare,
   IconStar,
@@ -150,10 +151,18 @@ const CompleteTodoListTabs = ({ uncompletedTodos }: TodoListContentProps) => {
 
                         <Menu.Item
                           component={Link}
-                          href={`/dashboard/todo-list/${todo.id}`}
+                          href={`/dashboard/complete/${todo.id}`}
                           leftSection={<IconEye size={16} />}
                         >
                           詳細を表示
+                        </Menu.Item>
+
+                        <Menu.Item
+                          component={Link}
+                          href={`/dashboard/complete/edit/${todo.id}`}
+                          leftSection={<IconEdit size={16} />}
+                        >
+                          編集する
                         </Menu.Item>
 
                         <Menu.Item

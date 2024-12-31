@@ -21,6 +21,7 @@ import { usePagination } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
   IconDots,
+  IconEdit,
   IconEye,
   IconShare,
   IconStar,
@@ -123,10 +124,18 @@ const FavariteTodoListTabs = ({
 
                         <Menu.Item
                           component={Link}
-                          href={`/dashboard/todo-list/${todo.id}`}
+                          href={`/dashboard/favorite/${todo.id}`}
                           leftSection={<IconEye size={16} />}
                         >
                           詳細を表示
+                        </Menu.Item>
+
+                        <Menu.Item
+                          component={Link}
+                          href={`/dashboard/favorite/edit/${todo.id}`}
+                          leftSection={<IconEdit size={16} />}
+                        >
+                          編集する
                         </Menu.Item>
 
                         <Menu.Item

@@ -31,6 +31,15 @@ export interface CreateTodoInput {
   isFavorite: boolean;
 }
 
+export interface EditTodoInput {
+  id?: string;
+  title: string;
+  url: string;
+  dueDate: Date;
+  category?: string;
+  text?: string;
+}
+
 export interface CategorySearchProps {
   todos: TodoList[];
   selectedCategories?: string[];

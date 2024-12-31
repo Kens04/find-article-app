@@ -14,6 +14,7 @@ import {
   IconDots,
   IconEye,
   IconShare,
+  IconEdit,
 } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import CategorySearch from "@/components/todo/category-search";
@@ -186,6 +187,14 @@ const TodoListTabs = ({ unreadTodos, readingTodos }: TodoListTabsProps) => {
                               </Menu.Item>
 
                               <Menu.Item
+                                component={Link}
+                                href={`/dashboard/todo-list/edit/${todo.id}`}
+                                leftSection={<IconEdit size={16} />}
+                              >
+                                編集する
+                              </Menu.Item>
+
+                              <Menu.Item
                                 onClick={() =>
                                   handleFavoriteClick(todo.id, todo.isFavorite)
                                 }
@@ -321,6 +330,14 @@ const TodoListTabs = ({ unreadTodos, readingTodos }: TodoListTabsProps) => {
                                 leftSection={<IconEye size={16} />}
                               >
                                 詳細を表示
+                              </Menu.Item>
+
+                              <Menu.Item
+                                component={Link}
+                                href={`/dashboard/todo-list/edit/${todo.id}`}
+                                leftSection={<IconEdit size={16} />}
+                              >
+                                編集する
                               </Menu.Item>
 
                               <Menu.Item
