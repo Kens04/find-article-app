@@ -1,22 +1,19 @@
-"use client";
-
-import { useState } from "react";
 import {
   IconBooks,
   IconChecklist,
   IconDashboard,
-  IconLogout,
   IconPlus,
   IconShare,
   IconStar,
 } from "@tabler/icons-react";
-import { Avatar, Button, Flex, Group, Menu, rem } from "@mantine/core";
+import { Flex } from "@mantine/core";
 
 import classes from "./dashboard.module.css";
 import { BookIcon } from "@/components/icon/book";
 import Link from "next/link";
 import { Session } from "@supabase/auth-helpers-nextjs";
-import { useAuth } from "@/components/hooks/useAuth";
+import { UserMenu } from "./user-menu";
+import { UserAvatar } from "@/components/layout/user-avatar";
 
 const data = [
   { link: "/dashboard", label: "ダッシュボード", icon: IconDashboard },
@@ -33,20 +30,10 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children, session }: DashboardLayoutProps) => {
-  const [active, setActive] = useState<number | string>(0);
   const user = session?.user;
-  const { handleLogout } = useAuth();
 
   const links = data.map((item) => (
-    <Link
-      className={classes.link}
-      data-active={item.label === active || undefined}
-      href={item.link}
-      key={item.label}
-      onClick={() => {
-        setActive(item.label);
-      }}
-    >
+    <Link className={classes.link} href={item.link} key={item.label}>
       <item.icon className={classes.linkIcon} stroke={1.5} />
       <span>{item.label}</span>
     </Link>
@@ -65,36 +52,12 @@ const DashboardLayout = ({ children, session }: DashboardLayoutProps) => {
           {links}
         </div>
         <div className={classes.footer}>
-          <Menu shadow="md" width={200}>
-            <Menu.Target>
-              <Group className={classes.avatarIcon}>
-              <Avatar
-                src={user ? user?.user_metadata.avatar_url : "/default.png"}
-                alt={user?.user_metadata.name}
-              />
-              <span>{user?.user_metadata.name}</span>
-              </Group>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                leftSection={
-                  <IconDashboard style={{ width: rem(14), height: rem(14) }} />
-                }
-              >
-                <Link href="/dashboard">設定</Link>
-              </Menu.Item>
-              <Menu.Item>
-                <Button
-                  leftSection={<IconLogout size={14} />}
-                  onClick={handleLogout}
-                  fullWidth
-                  variant="filled"
-                >
-                  ログアウト
-                </Button>
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+          <UserMenu>
+            <UserAvatar
+              avatarUrl={user ? user?.user_metadata.avatar_url : "/default.png"}
+              userName={user?.user_metadata.name || ""}
+            />
+          </UserMenu>
         </div>
       </nav>
       {children}

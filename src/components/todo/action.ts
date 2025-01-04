@@ -291,3 +291,44 @@ export const handleShareClick = async (
     throw error;
   }
 };
+
+export const handleProfileUpdate = async ({
+  id,
+  name,
+  avatar_url,
+}: {
+  id: string;
+  name: string;
+  avatar_url?: string | null;
+}) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/profile`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: id,
+          name,
+          avatarUrl: avatar_url,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `Failed to update profile: ${errorData.error || response.statusText}`
+      );
+    }
+
+    const { data } = await response.json();
+    console.log("Profile update response:", data);
+    return { data };
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
+  }
+};

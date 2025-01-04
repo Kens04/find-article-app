@@ -3,6 +3,6 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 
 export const supabaseRouteHandlerClient = cache(async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   return createRouteHandlerClient({ cookies: () => cookieStore });
 });
