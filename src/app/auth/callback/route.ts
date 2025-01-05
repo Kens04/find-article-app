@@ -12,10 +12,10 @@ export async function GET(req: NextRequest) {
     } catch (error) {
       console.error("Error in auth callback:", error);
       return NextResponse.redirect(
-        `${requestUrl.origin}?error=Authentication failed`
+        `${process.env.NEXT_PUBLIC_APP_URL}?error=Authentication failed`
       );
     }
   }
 
-  return NextResponse.redirect(`${requestUrl.origin}/dashboard`);
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`);
 }
