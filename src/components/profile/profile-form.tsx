@@ -92,7 +92,7 @@ const ProfileForm = ({ session, user }: ProfileFormProps) => {
     }
   };
 
-  const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/jpg": [".jpeg", ".jpg"],
       "image/png": [".png"],
