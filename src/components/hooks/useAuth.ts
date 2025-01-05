@@ -9,8 +9,8 @@ export const useAuth = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.push("/");
-    router.refresh();
+    router.push("/login");
+    window.location.reload();
   };
 
   return { handleLogout };

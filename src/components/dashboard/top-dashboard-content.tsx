@@ -6,6 +6,7 @@ import { PieChart, DonutChart } from "@mantine/charts";
 import calculateCategoryData from "@/components/todo/components/calculate-category-data";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import AuthGuard from "@/components/todo/components/auth-auard";
+import { redirect } from "next/navigation";
 
 const TopDashboardContent = ({
   todos,
@@ -23,6 +24,10 @@ const TopDashboardContent = ({
     completed: userTodos.filter((todo) => todo.status === TodoStatus.COMPLETED)
       .length,
   };
+
+  if (!user) {
+    return redirect("/login");
+  }
 
   // ステータスチャートのデータ
   const statusData = [
