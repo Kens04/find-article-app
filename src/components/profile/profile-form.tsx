@@ -4,7 +4,6 @@ import "@mantine/dropzone/styles.css";
 import { Button, Container, Flex, TextInput, Title } from "@mantine/core";
 import { Text } from "@mantine/core";
 import { handleProfileUpdate } from "@/components/todo/action";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { supabaseClient } from "@/utils/supabase-client";
 import { Session } from "@supabase/auth-helpers-nextjs";
@@ -12,6 +11,7 @@ import { User as PrismaUser } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
+import { useAuth } from "@/components/hooks/useAuth";
 
 interface ProfileFormProps {
   session: Session | null;
@@ -19,13 +19,11 @@ interface ProfileFormProps {
 }
 
 const ProfileForm = ({ session, user }: ProfileFormProps) => {
-  const router = useRouter();
+  const { handleLogout } = useAuth();
   const [name, setName] = useState(user?.name || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string>(
-    user?.avatarUrl || ""
-  );
+  const [avatarUrl, setAvatarUrl] = useState<string>(user?.avatarUrl || "");
   const [previewImage, setPreviewImage] = useState<string | null>(
     user?.avatarUrl || null
   );
@@ -143,8 +141,7 @@ const ProfileForm = ({ session, user }: ProfileFormProps) => {
           console.log("Supabase metadata updated successfully");
         }
 
-        router.refresh();
-        router.push("/dashboard");
+        handleLogout();
       }
     } catch (error) {
       console.error("Error:", error);
