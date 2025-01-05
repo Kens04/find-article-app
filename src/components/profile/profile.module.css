@@ -1,0 +1,24 @@
+.imagePreviewStyle {
+  width: rem(100);
+  height: rem(100);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e9ecef;
+  display: block;
+  margin: 0 auto;
+}
+
+.dropzoneStyle {
+  border: 1px dashed #e9ecef;
+  padding: rem(20);
+  border-radius: rem(8);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.dropzoneText {
+  text-align: center;
+}

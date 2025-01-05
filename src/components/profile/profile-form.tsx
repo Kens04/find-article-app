@@ -1,7 +1,15 @@
 "use client";
 
 import "@mantine/dropzone/styles.css";
-import { Button, Container, Flex, TextInput, Title } from "@mantine/core";
+import {
+  Button,
+  Container,
+  Flex,
+  Group,
+  rem,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { Text } from "@mantine/core";
 import { handleProfileUpdate } from "@/components/todo/action";
 import { useState } from "react";
@@ -12,6 +20,8 @@ import { v4 as uuidv4 } from "uuid";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { useAuth } from "@/components/hooks/useAuth";
+import { IconUpload } from "@tabler/icons-react";
+import classes from "./profile.module.css";
 
 interface ProfileFormProps {
   session: Session | null;
@@ -156,26 +166,43 @@ const ProfileForm = ({ session, user }: ProfileFormProps) => {
       </Title>
       <Container size="xl" w="100%" mt="lg" p={0}>
         <form onSubmit={handleSubmit}>
-          <div {...getRootProps()}>
-            {previewImage && (
-              <Image
-                src={previewImage!}
-                alt="プレビュー画像"
-                width={100}
-                height={100}
-              />
-            )}
-            <input
-              type="file"
-              onChange={(e) => setAvatarUrl(e.target.value[0])}
-              {...getInputProps()}
-            />
-            {!previewImage && (
-              <Text>
-                ここにアップロードしたい画像をドラッグ&ドロップしてください。
-              </Text>
-            )}
-          </div>
+          <Group
+            {...getRootProps()}
+            className={classes.dropzoneStyle}
+            justify="center"
+            align="center"
+          >
+            <Group
+              justify="center"
+              gap="xl"
+              style={{ minHeight: rem(100), pointerEvents: "none" }}
+            >
+              {previewImage ? (
+                <Image
+                  src={previewImage}
+                  alt="プレビュー画像"
+                  width={100}
+                  height={100}
+                  className={classes.imagePreviewStyle}
+                />
+              ) : (
+                <Group justify="center" gap="xl" style={{ minHeight: rem(80) }}>
+                  <div className={classes.dropzoneText}>
+                    <Group justify="center">
+                      <IconUpload size={40} />
+                    </Group>
+                    <Text size="sm" c="dimmed" inline mt="sm">
+                      ここにアップロードしたい画像をドラッグ&ドロップしてください
+                    </Text>
+                    <Text size="xs" c="dimmed" inline mt={7}>
+                      PNG, JPG, WEBP形式（最大2MB）
+                    </Text>
+                  </div>
+                </Group>
+              )}
+            </Group>
+            <input {...getInputProps()} />
+          </Group>
           <TextInput
             name="name"
             label="お名前"
