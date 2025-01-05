@@ -9,13 +9,19 @@ export async function GET(req: NextRequest) {
     const supabase = await supabaseRouteHandlerClient();
     try {
       await supabase.auth.exchangeCodeForSession(code);
+      return NextResponse.redirect(
+        new URL("/dashboard", process.env.NEXT_PUBLIC_APP_URL)
+      );
     } catch (error) {
       console.error("Error in auth callback:", error);
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}?error=Authentication failed`
+        new URL(
+          "/?error=Authentication failed",
+          process.env.NEXT_PUBLIC_APP_URL
+        )
       );
     }
   }
 
-  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`);
+  return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_APP_URL));
 }
