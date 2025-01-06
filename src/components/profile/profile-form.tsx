@@ -52,6 +52,13 @@ const ProfileForm = ({ session, user }: ProfileFormProps) => {
         throw uploadError;
       }
 
+      if (avatarUrl) {
+        const fileName = avatarUrl.split("/avatars/").slice(-1)[0];
+
+        // 古い画像を削除
+        await supabaseClient.storage.from("avatars").remove([`${fileName}`]);
+      }
+
       const {
         data: { publicUrl },
       } = supabaseClient.storage.from("avatars").getPublicUrl(filePath);
@@ -107,19 +114,19 @@ const ProfileForm = ({ session, user }: ProfileFormProps) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!name.trim()) {
-      alert("名前を入力してください");
-      return;
-    }
-
-    if (password && password !== confirmPassword) {
-      alert("パスワードが一致しません");
+    if (!session?.user?.id) {
+      alert("ログインが必要です");
       return;
     }
 
     try {
-      // パスワードが入力されている場合のみ、パスワード更新
+      // パスワード更新（必要な場合のみ）
       if (password) {
+        if (password !== confirmPassword) {
+          alert("パスワードが一致しません");
+          return;
+        }
+
         const { error: updateError } = await supabaseClient.auth.updateUser({
           password: password,
         });
@@ -131,26 +138,20 @@ const ProfileForm = ({ session, user }: ProfileFormProps) => {
 
       // プロフィール情報の更新
       const result = await handleProfileUpdate({
-        id: session?.user.id || "",
+        id: session.user.id,
         name: name.trim(),
         avatar_url: avatarUrl,
       });
 
       if (result.data) {
-        // Supabaseのユーザーメタデータを直接更新
-        const { error: metadataError } = await supabaseClient.auth.updateUser({
+        await supabaseClient.auth.updateUser({
           data: {
             name: name.trim(),
             avatar_url: avatarUrl,
           },
         });
 
-        if (metadataError) {
-          console.error("Error updating Supabase metadata:", metadataError);
-        } else {
-          console.log("Supabase metadata updated successfully");
-        }
-
+        alert("プロフィールを更新しました");
         handleLogout();
       }
     } catch (error) {

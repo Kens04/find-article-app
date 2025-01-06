@@ -324,9 +324,8 @@ export const handleProfileUpdate = async ({
       );
     }
 
-    const { data } = await response.json();
-    console.log("Profile update response:", data);
-    return { data };
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error updating profile:", error);
     throw error;
