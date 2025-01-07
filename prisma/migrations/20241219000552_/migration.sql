@@ -30,6 +30,7 @@ CREATE TABLE "todos" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "completedAt" TIMESTAMP(3),
     "sharedAt" TIMESTAMP(3),
+    "isToday" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "todos_pkey" PRIMARY KEY ("id")
 );
