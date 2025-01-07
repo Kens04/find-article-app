@@ -261,6 +261,38 @@ export const handleFavorite = async ({
   }
 };
 
+export const handleToday = async ({
+  id,
+  isToday,
+}: {
+  id: string;
+  isToday: boolean;
+}) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+        body: JSON.stringify({ isToday: isToday }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update today`);
+    }
+
+    const { data } = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating today:", error);
+    throw error;
+  }
+};
+
 export const handleDeleteClick = async (
   router: AppRouterInstance,
   id: string

@@ -19,6 +19,7 @@ export interface TodoList {
   updatedAt: Date;
   completedAt: Date;
   sharedAt: Date;
+  isToday: boolean;
 }
 
 export interface CreateTodoInput {

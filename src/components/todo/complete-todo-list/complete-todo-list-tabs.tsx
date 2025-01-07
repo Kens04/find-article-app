@@ -14,6 +14,8 @@ import {
 import CategorySearch from "@/components/todo/category-search";
 import Link from "next/link";
 import {
+  IconCalendar,
+  IconCalendarFilled,
   IconDots,
   IconEdit,
   IconEye,
@@ -26,6 +28,7 @@ import {
   handleDeleteClick,
   handleFavorite,
   handleShareClick,
+  handleToday,
 } from "@/components/todo/action";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
@@ -86,6 +89,25 @@ const CompleteTodoListTabs = ({ uncompletedTodos }: TodoListContentProps) => {
       router.refresh();
     } catch (error) {
       console.error("favorite update failed:", error);
+    }
+  };
+
+  const handleTodayClick = async (id: string, isToday: boolean) => {
+    try {
+      await handleToday({
+        id: id,
+        isToday: !isToday,
+      });
+      notifications.show({
+        title: !isToday ? "本日のTODOに追加" : "本日のTODOから削除",
+        message: !isToday
+          ? "本日のTODOに追加しました"
+          : "本日のTODOから削除しました",
+        color: !isToday ? "yellow" : "gray",
+      });
+      router.refresh();
+    } catch (error) {
+      console.error("today update failed:", error);
     }
   };
 
@@ -163,6 +185,23 @@ const CompleteTodoListTabs = ({ uncompletedTodos }: TodoListContentProps) => {
                           leftSection={<IconEdit size={16} />}
                         >
                           編集する
+                        </Menu.Item>
+
+                        <Menu.Item
+                          onClick={() =>
+                            handleTodayClick(todo.id, todo.isToday)
+                          }
+                          leftSection={
+                            todo.isToday ? (
+                              <IconCalendarFilled size={16} />
+                            ) : (
+                              <IconCalendar size={16} />
+                            )
+                          }
+                        >
+                          {todo.isToday
+                            ? "本日のTODOから削除"
+                            : "本日のTODOに追加"}
                         </Menu.Item>
 
                         <Menu.Item
