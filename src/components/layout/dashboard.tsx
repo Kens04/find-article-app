@@ -1,5 +1,6 @@
 import {
   IconBooks,
+  IconCalendar,
   IconChecklist,
   IconDashboard,
   IconPlus,
@@ -18,6 +19,7 @@ import { UserAvatar } from "@/components/layout/user-avatar";
 const data = [
   { link: "/dashboard", label: "ダッシュボード", icon: IconDashboard },
   { link: "/dashboard/create-todo", label: "TODO作成", icon: IconPlus },
+  { link: "/dashboard/todo", label: "本日のTODO", icon: IconCalendar },
   { link: "/dashboard/todo-list", label: "TODOリスト", icon: IconChecklist },
   { link: "/dashboard/complete", label: "完了リスト", icon: IconBooks },
   { link: "/dashboard/favarite", label: "お気に入り", icon: IconStar },
