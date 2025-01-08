@@ -1,5 +1,6 @@
 "use client";
 
+import { Alert } from "@mantine/core";
 import { TodoStatus, TodoList } from "@/components/todo/type";
 import { Container, Grid, Paper, Text, Title } from "@mantine/core";
 import { PieChart, DonutChart } from "@mantine/charts";
@@ -7,6 +8,7 @@ import calculateCategoryData from "@/components/todo/components/calculate-catego
 import { Session } from "@supabase/auth-helpers-nextjs";
 import AuthGuard from "@/components/todo/components/auth-auard";
 import { redirect } from "next/navigation";
+import { IconCalendar } from "@tabler/icons-react";
 
 const TopDashboardContent = ({
   todos,
@@ -16,11 +18,13 @@ const TopDashboardContent = ({
   session: Session | null;
 }) => {
   const user = session?.user;
-  const userTodos = todos.filter(todo => todo.userId === user?.id);
+  const userTodos = todos.filter((todo) => todo.userId === user?.id);
   // ステータスごとのTODO数を集計
   const statusCounts = {
-    unread: userTodos.filter((todo) => todo.status === TodoStatus.UNREAD).length,
-    reading: userTodos.filter((todo) => todo.status === TodoStatus.READING).length,
+    unread: userTodos.filter((todo) => todo.status === TodoStatus.UNREAD)
+      .length,
+    reading: userTodos.filter((todo) => todo.status === TodoStatus.READING)
+      .length,
     completed: userTodos.filter((todo) => todo.status === TodoStatus.COMPLETED)
       .length,
   };
@@ -36,13 +40,40 @@ const TopDashboardContent = ({
     { name: "完了", value: statusCounts.completed, color: "green" },
   ];
 
+
+  const todayDate = new Date().toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const todayTodos = userTodos.filter((todo) => {
+    const todoDueDate = todo.dueDate.toLocaleDateString("ja-JP", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    return todoDueDate === todayDate;
+  });
+
   return (
     <Container size="lg" w="100%" mt="xl">
-      <Title order={2} mb="xl">
+      <Title order={2} mb="md">
         ダッシュボード
       </Title>
+      <Alert
+        variant="light"
+        color="blue"
+        title={`本日期日のTODO：${todayTodos.length}件`}
+        icon={<IconCalendar />}
+      >
+        {todayTodos.length > 0 ? (
+          todayTodos.map((todo) => <div key={todo.id}>・{todo.title}</div>)
+        ) : (
+          <Text>本日期日のTODOはありません。</Text>
+        )}
+      </Alert>
       <AuthGuard todos={todos} session={session}>
-        <Grid>
+        <Grid mt="xl">
           {/* ステータス分布 */}
           <Grid.Col span={{ base: 12, md: 6 }}>
             <Paper shadow="xs" p="md">
