@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert } from "@mantine/core";
+import { Alert, Flex, Progress } from "@mantine/core";
 import { TodoStatus, TodoList } from "@/components/todo/type";
 import { Container, Grid, Paper, Text, Title } from "@mantine/core";
 import { PieChart, DonutChart } from "@mantine/charts";
@@ -40,7 +40,6 @@ const TopDashboardContent = ({
     { name: "完了", value: statusCounts.completed, color: "green" },
   ];
 
-
   const todayDate = new Date().toLocaleDateString("ja-JP", {
     year: "numeric",
     month: "2-digit",
@@ -55,6 +54,19 @@ const TopDashboardContent = ({
     return todoDueDate === todayDate;
   });
 
+  const unreadCount = todayTodos.filter(
+    (todo) => todo.status === TodoStatus.UNREAD
+  ).length;
+  const readingCount = todayTodos.filter(
+    (todo) => todo.status === TodoStatus.READING
+  ).length;
+  const completedCount = todayTodos.filter(
+    (todo) => todo.status === TodoStatus.COMPLETED
+  ).length;
+  const unreadProgress = (unreadCount / todayTodos.length) * 100;
+  const readingProgress = (readingCount / todayTodos.length) * 100;
+  const completedProgress = (completedCount / todayTodos.length) * 100;
+
   return (
     <Container size="lg" w="100%" mt="xl">
       <Title order={2} mb="md">
@@ -67,7 +79,37 @@ const TopDashboardContent = ({
         icon={<IconCalendar />}
       >
         {todayTodos.length > 0 ? (
-          todayTodos.map((todo) => <div key={todo.id}>・{todo.title}</div>)
+          <>
+            {todayTodos.map((todo) => (
+              <div key={todo.id}>・{todo.title}</div>
+            ))}
+            <Flex direction="column" gap="xs" mt="md">
+              <Text fw={700} fz="lg">
+                本日期日の進捗
+              </Text>
+              <div>
+                <Text>
+                  未読：
+                  {unreadCount}件
+                </Text>
+                <Progress value={unreadProgress} />
+              </div>
+              <div>
+                <Text>
+                  読書中：
+                  {readingCount}件
+                </Text>
+                <Progress value={readingProgress} />
+              </div>
+              <div>
+                <Text>
+                  完了：
+                  {completedCount}件
+                </Text>
+                <Progress value={completedProgress} />
+              </div>
+            </Flex>
+          </>
         ) : (
           <Text>本日期日のTODOはありません。</Text>
         )}
