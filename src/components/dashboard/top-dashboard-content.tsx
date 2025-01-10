@@ -67,8 +67,27 @@ const TopDashboardContent = ({
   const readingProgress = (readingCount / todayTodos.length) * 100;
   const completedProgress = (completedCount / todayTodos.length) * 100;
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const oneWeekFromNow = new Date();
+  oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
+  oneWeekFromNow.setHours(23, 59, 59, 999);
+  const nonCompletedTodos = userTodos.filter(
+    (todo) => todo.status !== TodoStatus.COMPLETED
+  );
+  const upcomingTodos = nonCompletedTodos.filter((todo) => {
+    const dueDate = new Date(todo.dueDate);
+    return dueDate <= oneWeekFromNow && dueDate >= today;
+  });
+
   return (
     <Container size="lg" w="100%" mt="xl">
+      {upcomingTodos.length > 0 && (
+        <Alert color="yellow" mb="md">
+          残り1週間のTODOが{upcomingTodos.length}件あります
+        </Alert>
+      )}
       <Title order={2} mb="md">
         ダッシュボード
       </Title>
