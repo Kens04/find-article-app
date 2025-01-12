@@ -11,7 +11,7 @@ interface TodoListContentProps {
 
 const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
   // 完了したTODOのみをフィルタリング
-  const uncompletedTodos = todos.filter(
+  const completedTodos = todos.filter(
     (todo) =>
       todo.status == TodoStatus.COMPLETED && todo.userId === session?.user?.id
   );
@@ -22,7 +22,7 @@ const CompleteTodoListContent = ({ todos, session }: TodoListContentProps) => {
         完了リスト
       </Title>
       <AuthGuard todos={todos} session={session}>
-        <CompleteTodoListTabs uncompletedTodos={uncompletedTodos} />
+        <CompleteTodoListTabs completedTodos={completedTodos} />
       </AuthGuard>
     </Container>
   );
