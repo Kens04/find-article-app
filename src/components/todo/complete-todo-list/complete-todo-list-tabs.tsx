@@ -37,15 +37,15 @@ import { usePagination } from "@mantine/hooks";
 import { PAGINATION } from "@/components/todo/pagination";
 
 interface TodoListContentProps {
-  uncompletedTodos: TodoList[];
+  completedTodos: TodoList[];
 }
 
-const CompleteTodoListTabs = ({ uncompletedTodos }: TodoListContentProps) => {
+const CompleteTodoListTabs = ({ completedTodos }: TodoListContentProps) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
   const pagination = usePagination({
-    total: Math.ceil(uncompletedTodos.length / PAGINATION.ITEMS_PER_PAGE),
+    total: Math.ceil(completedTodos.length / PAGINATION.ITEMS_PER_PAGE),
     initialPage: 1,
   });
 
@@ -63,8 +63,8 @@ const CompleteTodoListTabs = ({ uncompletedTodos }: TodoListContentProps) => {
   // 表示するTODOをフィルタリング
   const filteredTodos = getSortedTodos(
     selectedCategories.length === 0
-      ? uncompletedTodos // カテゴリ未選択時は全て表示
-      : uncompletedTodos.filter((todo) =>
+      ? completedTodos // カテゴリ未選択時は全て表示
+      : completedTodos.filter((todo) =>
           selectedCategories.includes(todo.category || "")
         )
   );
@@ -114,7 +114,7 @@ const CompleteTodoListTabs = ({ uncompletedTodos }: TodoListContentProps) => {
   return (
     <>
       <CategorySearch
-        todos={uncompletedTodos}
+        todos={completedTodos}
         selectedCategories={selectedCategories}
         onCategoryChange={setSelectedCategories}
         onSortChange={setSort}
