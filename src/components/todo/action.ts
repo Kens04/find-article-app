@@ -55,6 +55,7 @@ export const handleEdit = async (id: string, values?: EditTodoInput) => {
           category: values.category,
           dueDate: values.dueDate,
           text: values.text,
+          isToday: values.isToday,
         }),
       }
     );

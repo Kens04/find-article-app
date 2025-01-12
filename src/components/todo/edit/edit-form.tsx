@@ -45,6 +45,7 @@ const EditForm = ({ todo }: { todo: TodoList }) => {
         category: values.category,
         dueDate: values.dueDate,
         text: values.text,
+        isToday: values.dueDate.getDate() === new Date().getDate() ? true : false,
       });
 
       notifications.show({

@@ -82,6 +82,7 @@ export async function PATCH(
           url,
           category,
           dueDate: new Date(dueDate),
+          isToday: isToday,
         },
       });
       return NextResponse.json({ success: true, data: todo });

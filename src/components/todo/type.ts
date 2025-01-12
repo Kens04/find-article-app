@@ -40,6 +40,7 @@ export interface EditTodoInput {
   dueDate: Date;
   category?: string;
   text?: string;
+  isToday: boolean;
 }
 
 export interface CategorySearchProps {
