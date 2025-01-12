@@ -22,13 +22,10 @@ const StatusButton = ({ todo }: StatusButtonProps) => {
 
     try {
       const newStatus = selectedStatus as TodoStatus;
-      const completedAt =
-        newStatus === TodoStatus.COMPLETED ? new Date().toISOString() : null;
-
       await handleUpdateStatus({
         id: todo.id,
-        status: selectedStatus as TodoStatus,
-        completedAt,
+        status: newStatus,
+        isToday: newStatus === TodoStatus.COMPLETED ? false : todo.isToday,
       });
       router.refresh();
     } catch (error) {

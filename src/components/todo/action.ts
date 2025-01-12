@@ -129,11 +129,11 @@ export const TodoDetail = async ({
 export const handleUpdateStatus = async ({
   id,
   status,
-  completedAt,
+  isToday,
 }: {
   id: string;
   status: TodoStatus;
-  completedAt: string | null;
+  isToday: boolean | null;
 }) => {
   try {
     const response = await fetch(
@@ -146,7 +146,7 @@ export const handleUpdateStatus = async ({
         cache: "no-store",
         body: JSON.stringify({
           status,
-          completedAt: completedAt ? new Date(completedAt) : null,
+          isToday,
         }),
       }
     );

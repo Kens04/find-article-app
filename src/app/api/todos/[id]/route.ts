@@ -88,7 +88,7 @@ export async function PATCH(
     }
 
     // テキストのみの更新の場合
-    if (text) {
+    if (text !== undefined) {
       const todo = await prisma.todo.update({
         where: {
           id: id,
@@ -127,8 +127,32 @@ export async function PATCH(
       return NextResponse.json({ success: true, data: todo }, { status: 200 });
     }
 
+    // ステータスの更新の場合
+    if (status !== undefined) {
+      // statusが有効なTodoStatusの値であることを確認
+      if (!Object.values(TodoStatus).includes(status as TodoStatus)) {
+        return NextResponse.json(
+          { error: "Invalid status value" },
+          { status: 400 }
+        );
+      }
+
+      const todo = await prisma.todo.update({
+        where: {
+          id: id,
+        },
+        data: {
+          status: status as TodoStatus,
+          completedAt: status === TodoStatus.COMPLETED ? new Date() : null,
+          isToday: status === TodoStatus.COMPLETED ? false : isToday,
+        },
+      });
+
+      return NextResponse.json({ success: true, data: todo }, { status: 200 });
+    }
+
     // 本日のみの更新の場合
-    if (isToday !== undefined) {
+    if (isToday !== undefined && status === undefined) {
       const todo = await prisma.todo.update({
         where: {
           id: id,
@@ -140,25 +164,13 @@ export async function PATCH(
       return NextResponse.json({ success: true, data: todo }, { status: 200 });
     }
 
-    // statusが有効なTodoStatusの値であることを確認
-    if (!Object.values(TodoStatus).includes(status as TodoStatus)) {
-      return NextResponse.json(
-        { error: "Invalid status value" },
-        { status: 400 }
-      );
-    }
-
-    const todo = await prisma.todo.update({
-      where: {
-        id: id,
+    return NextResponse.json(
+      {
+        success: false,
+        error: "No valid update fields provided",
       },
-      data: {
-        status: status as TodoStatus,
-        completedAt: status === TodoStatus.COMPLETED ? new Date() : null,
-      },
-    });
-
-    return NextResponse.json({ success: true, data: todo }, { status: 200 });
+      { status: 400 }
+    );
   } catch (err) {
     console.error("Error in PATCH handler:", err);
     return NextResponse.json(
