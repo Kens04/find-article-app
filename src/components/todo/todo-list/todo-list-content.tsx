@@ -13,13 +13,17 @@ const TodoListContent = ({
 }) => {
   const unreadTodos = todos.filter((todo) => {
     return (
-      todo.status === TodoStatus.UNREAD && todo.userId === session?.user?.id
+      todo.status === TodoStatus.UNREAD &&
+      todo.isToday === false &&
+      todo.userId === session?.user?.id
     );
   });
 
   const readingTodos = todos.filter(
     (todo) =>
-      todo.status === TodoStatus.READING && todo.userId === session?.user?.id
+      todo.status === TodoStatus.READING &&
+      todo.isToday === false &&
+      todo.userId === session?.user?.id
   );
 
   return (
