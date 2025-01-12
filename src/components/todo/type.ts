@@ -30,6 +30,7 @@ export interface CreateTodoInput {
   category?: string;
   isPublic: boolean;
   isFavorite: boolean;
+  isToday: boolean;
 }
 
 export interface EditTodoInput {

@@ -43,6 +43,7 @@ const CreateTodoForm = () => {
         category: category || "未分類",
         isPublic,
         isFavorite,
+        isToday: dueDate.getDate() === new Date().getDate() ? true : false,
       };
       await createTodo(todoInput);
 

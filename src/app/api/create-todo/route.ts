@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const { title, url, status, dueDate, category, isPublic, isFavorite } =
+    const { title, url, status, dueDate, category, isPublic, isFavorite, isToday } =
       body;
 
     const todo = await prisma.todo.create({
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
         category: category || "未分類",
         isPublic,
         isFavorite,
+        isToday,
         userId: session.user.id,
       },
     });
