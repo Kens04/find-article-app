@@ -16,15 +16,27 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const { title, url, status, dueDate, category, isPublic, isFavorite, isToday } =
-      body;
+    const {
+      title,
+      url,
+      status,
+      dueDate,
+      category,
+      isPublic,
+      isFavorite,
+      isToday,
+    } = body;
+
+    // タイムゾーンを考慮した日付を作成
+    const adjustedDueDate = new Date(dueDate);
+    adjustedDueDate.setHours(23, 59, 59, 999);
 
     const todo = await prisma.todo.create({
       data: {
         title,
         url,
         status,
-        dueDate: new Date(dueDate),
+        dueDate: adjustedDueDate,
         category: category || "未分類",
         isPublic,
         isFavorite,

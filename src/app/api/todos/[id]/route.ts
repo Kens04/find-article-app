@@ -73,6 +73,10 @@ export async function PATCH(
       dueDate,
     } = body;
 
+    // タイムゾーンを考慮した日付を作成
+    const adjustedDueDate = new Date(dueDate);
+    adjustedDueDate.setHours(23, 59, 59, 999);
+
     // 編集フォームからの更新の場合
     if (title !== undefined) {
       const todo = await prisma.todo.update({
@@ -81,7 +85,7 @@ export async function PATCH(
           title,
           url,
           category,
-          dueDate: new Date(dueDate),
+          dueDate: adjustedDueDate,
           isToday: isToday,
         },
       });
