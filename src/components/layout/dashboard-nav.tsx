@@ -9,7 +9,7 @@ import {
   IconShare,
   IconStar,
 } from "@tabler/icons-react";
-import { Burger, Drawer, useMantineTheme } from "@mantine/core";
+import { Burger, Drawer } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import dashboardClasses from "./dashboard.module.css";
@@ -38,7 +38,6 @@ interface DashboardNavProps {
 const DashboardNav = ({ avatarUrl, userName }: DashboardNavProps) => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
-  const theme = useMantineTheme();
 
   const links = data.map((item) => (
     <Link
