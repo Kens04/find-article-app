@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import { UserMenu } from "./user-menu";
 import { UserAvatar } from "@/components/layout/user-avatar";
+import DashboardNav from "@/components/layout/dashboard-nav";
 
 const data = [
   { link: "/dashboard", label: "ダッシュボード", icon: IconDashboard },
@@ -42,7 +43,7 @@ const DashboardLayout = ({ children, session }: DashboardLayoutProps) => {
   ));
 
   return (
-    <Flex>
+    <Flex className={classes.dashboard}>
       <nav className={classes.navbar}>
         <div className={classes.navbarMain}>
           <Link href="/dashboard">
@@ -61,6 +62,10 @@ const DashboardLayout = ({ children, session }: DashboardLayoutProps) => {
             />
           </UserMenu>
         </div>
+        <DashboardNav
+          avatarUrl={user ? user?.user_metadata.avatar_url : "/default.png"}
+          userName={user?.user_metadata.name || ""}
+        />
       </nav>
       {children}
     </Flex>

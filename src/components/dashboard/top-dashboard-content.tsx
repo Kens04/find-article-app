@@ -82,7 +82,7 @@ const TopDashboardContent = ({
   });
 
   return (
-    <Container size="lg" w="100%" mt="xl">
+    <Container size="lg" w="100%" mt="xl" mb="xl">
       {upcomingTodos.length > 0 && (
         <Alert color="yellow" mb="md">
           残り1週間のTODOが{upcomingTodos.length}件あります

@@ -12,6 +12,7 @@ import {
 } from "@mantine/core";
 import { IconBook, IconDashboard, IconFolder } from "@tabler/icons-react";
 import Link from "next/link";
+import classes from "./top-header.module.css";
 
 const MainSection = () => {
   return (
@@ -25,24 +26,24 @@ const MainSection = () => {
           wrap="wrap"
           gap="xl"
         >
-          <Title size="h1">記事管理をもっとシンプルに</Title>
+          <Title size="h1" ta="center">記事管理をもっとシンプルに</Title>
           <Text>
             気になる記事やサイトを簡単に管理。学習の進捗を可視化し、
             効率的な情報管理を実現します。
           </Text>
           <Group justify="center">
-            <Button component={Link} href="/login" >新規登録</Button>
-            <Button component={Link} href="/register" variant="outline">ログイン</Button>
+            <Button component={Link} href="/register" >新規登録</Button>
+            <Button component={Link} href="/login" variant="outline">ログイン</Button>
           </Group>
         </Flex>
       </Container>
 
       {/* Features Section */}
-      <Container mt={80}>
+      <Container mt={80} mb={80}>
         <Title size="h2" ta="center">
           主な機能
         </Title>
-        <Grid mt="lg">
+        <Grid mt="lg" className={classes.contents}>
           <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
             <Card shadow="sm" padding="lg" radius="md" withBorder>
               <IconBook size={30} />

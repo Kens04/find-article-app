@@ -14,3 +14,7 @@
 .avatarIcon {
   cursor: pointer;
 }
+
+.contents {
+  overflow: hidden;
+}
