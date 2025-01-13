@@ -27,7 +27,7 @@ import { Text, Group, Anchor } from "@mantine/core";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePagination } from "@mantine/hooks";
 import { PAGINATION } from "@/components/todo/pagination";
 
@@ -40,15 +40,40 @@ const TodoListTabs = ({ unreadTodos, readingTodos }: TodoListTabsProps) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
-  const unreadPagination = usePagination({
-    total: Math.ceil(unreadTodos.length / PAGINATION.ITEMS_PER_PAGE),
-    initialPage: 1,
-  });
 
-  const readingPagination = usePagination({
-    total: Math.ceil(readingTodos.length / PAGINATION.ITEMS_PER_PAGE),
-    initialPage: 1,
-  });
+  useEffect(() => {
+    const addTodaysTodos = async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // 未読と読書中のTODOを一緒に処理
+      const allTodos = [...unreadTodos, ...readingTodos];
+      const todaysTodos = allTodos.filter((todo) => {
+        // 既にisToday=trueのものは除外
+        if (todo.isToday) return false;
+
+        const dueDate = new Date(todo.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+        return dueDate.getTime() === today.getTime();
+      });
+
+      if (todaysTodos.length === 0) return;
+
+      // Promise.allを使用して並列で処理
+      await Promise.all(
+        todaysTodos.map((todo) =>
+          handleToday({
+            id: todo.id,
+            isToday: true,
+          })
+        )
+      );
+
+      router.refresh();
+    };
+
+    addTodaysTodos();
+  }, []);
 
   // ソート関数を適用したTODOリストを取得
   const getSortedTodos = (todos: TodoList[]) => {
@@ -61,21 +86,34 @@ const TodoListTabs = ({ unreadTodos, readingTodos }: TodoListTabsProps) => {
     });
   };
 
+  // 本日のTODOを除外したリストを作成
   const filteredUnreadTodos = getSortedTodos(
     selectedCategories.length === 0
-      ? unreadTodos
-      : unreadTodos.filter((todo) =>
-          selectedCategories.includes(todo.category || "")
+      ? unreadTodos.filter((todo) => !todo.isToday)
+      : unreadTodos.filter(
+          (todo) =>
+            !todo.isToday && selectedCategories.includes(todo.category || "")
         )
   );
 
   const filteredReadingTodos = getSortedTodos(
     selectedCategories.length === 0
-      ? readingTodos
-      : readingTodos.filter((todo) =>
-          selectedCategories.includes(todo.category || "")
+      ? readingTodos.filter((todo) => !todo.isToday)
+      : readingTodos.filter(
+          (todo) =>
+            !todo.isToday && selectedCategories.includes(todo.category || "")
         )
   );
+
+  const unreadPagination = usePagination({
+    total: Math.ceil(filteredUnreadTodos.length / PAGINATION.ITEMS_PER_PAGE),
+    initialPage: 1,
+  });
+
+  const readingPagination = usePagination({
+    total: Math.ceil(filteredReadingTodos.length / PAGINATION.ITEMS_PER_PAGE),
+    initialPage: 1,
+  });
 
   // ページネーション処理
   const unreadStart = (unreadPagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
@@ -144,7 +182,7 @@ const TodoListTabs = ({ unreadTodos, readingTodos }: TodoListTabsProps) => {
       <Tabs.Panel value="todolist">
         <Group mt="md">
           <CategorySearch
-            todos={unreadTodos}
+            todos={filteredUnreadTodos}
             selectedCategories={selectedCategories}
             onCategoryChange={setSelectedCategories}
             onSortChange={setSort}
@@ -303,7 +341,7 @@ const TodoListTabs = ({ unreadTodos, readingTodos }: TodoListTabsProps) => {
       <Tabs.Panel value="reading">
         <Group mt="md">
           <CategorySearch
-            todos={readingTodos}
+            todos={filteredReadingTodos}
             selectedCategories={selectedCategories}
             onCategoryChange={setSelectedCategories}
             onSortChange={setSort}
