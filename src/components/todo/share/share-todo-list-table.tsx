@@ -4,10 +4,20 @@ import CategorySearch from "@/components/todo/category-search";
 import { PAGINATION } from "@/components/todo/pagination";
 import IsPublicButton from "@/components/todo/share/ispublic-button";
 import { type TodoList } from "@/components/todo/type";
-import { Text, Anchor, Table, Group, Pagination } from "@mantine/core";
+import {
+  Text,
+  Anchor,
+  Table,
+  Group,
+  Pagination,
+  Input,
+  Flex,
+  Button,
+} from "@mantine/core";
 import { usePagination } from "@mantine/hooks";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
+import { useQueryState } from "nuqs";
 
 const ShareTodoListTable = ({
   todos,
@@ -18,6 +28,7 @@ const ShareTodoListTable = ({
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
+  const [search, setSearch] = useQueryState("search");
   const pagination = usePagination({
     total: Math.ceil(todos.length / PAGINATION.ITEMS_PER_PAGE),
     initialPage: 1,
@@ -45,18 +56,43 @@ const ShareTodoListTable = ({
   const end = start + PAGINATION.ITEMS_PER_PAGE;
   const paginatedTodos = filteredTodos.slice(start, end);
 
+  const shareFiltered = todos.filter((todo) =>
+    todo.title.toLowerCase().includes(search?.toLowerCase() || "")
+  );
+
+  const displayShareTodos = search ? shareFiltered : paginatedTodos;
+  const paginatedShare = search ? shareFiltered : filteredTodos;
+
   return (
     <>
-      <CategorySearch
-        todos={filteredTodos}
-        selectedCategories={selectedCategories}
-        onCategoryChange={setSelectedCategories}
-        onSortChange={setSort}
-        sort={sort}
-        label="公開日"
-      />
+      <Group mt="md">
+        <CategorySearch
+          todos={filteredTodos}
+          selectedCategories={selectedCategories}
+          onCategoryChange={setSelectedCategories}
+          onSortChange={setSort}
+          sort={sort}
+          label="公開日"
+        />
+        <Input.Wrapper label="TODOを検索">
+          <Flex gap="xs">
+            <Input
+              placeholder="検索"
+              value={search || ""}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button onClick={() => setSearch(null)}>クリア</Button>
+          </Flex>
+        </Input.Wrapper>
+      </Group>
       <Table.ScrollContainer minWidth={1000} w="100%" maw="100%" type="native">
-        <Table highlightOnHover mt="md">
+        <Table
+          mt="md"
+          variant="vertical"
+          layout="fixed"
+          withTableBorder
+          highlightOnHover
+        >
           <Table.Thead>
             <Table.Tr>
               <Table.Th>タイトル</Table.Th>
@@ -67,10 +103,14 @@ const ShareTodoListTable = ({
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {paginatedTodos.map((todo) => (
+            {displayShareTodos.map((todo) => (
               <Table.Tr key={todo.id}>
                 <Table.Td>
-                  <Text>{todo.title.slice(0, 10)}...</Text>
+                  <Text>
+                    {todo.title.length > 10
+                      ? todo.title.slice(0, 10) + "..."
+                      : todo.title}
+                  </Text>
                 </Table.Td>
                 <Table.Td>
                   <Anchor
@@ -79,7 +119,9 @@ const ShareTodoListTable = ({
                     rel="noopener noreferrer"
                   >
                     <Text lineClamp={1} size="sm">
-                      {todo.url.slice(0, 30)}...
+                      {todo.url.length > 30
+                        ? todo.url.slice(0, 30) + "..."
+                        : todo.url}
                     </Text>
                   </Anchor>
                 </Table.Td>
@@ -99,12 +141,12 @@ const ShareTodoListTable = ({
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
-      {filteredTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+      {paginatedShare.length > PAGINATION.ITEMS_PER_PAGE && (
         <Group justify="center" mt="md">
           <Pagination
             value={pagination.active}
             onChange={pagination.setPage}
-            total={Math.ceil(filteredTodos.length / PAGINATION.ITEMS_PER_PAGE)}
+            total={Math.ceil(paginatedShare.length / PAGINATION.ITEMS_PER_PAGE)}
             siblings={PAGINATION.SIBLINGS}
           />
         </Group>

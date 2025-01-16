@@ -1,5 +1,6 @@
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "@mantine/notifications/styles.css";
 
 export default function TodoListLayout({
@@ -9,8 +10,10 @@ export default function TodoListLayout({
 }) {
   return (
     <MantineProvider>
-      <Notifications position="bottom-right" />
-      {children}
+      <NuqsAdapter>
+        <Notifications position="bottom-right" />
+        {children}
+      </NuqsAdapter>
     </MantineProvider>
   );
 }

@@ -10,6 +10,9 @@ import {
   Menu,
   ActionIcon,
   Pagination,
+  Input,
+  Flex,
+  Button,
 } from "@mantine/core";
 import CategorySearch from "@/components/todo/category-search";
 import Link from "next/link";
@@ -35,6 +38,7 @@ import { useRouter } from "next/navigation";
 import StatusButton from "@/components/todo/status-button";
 import { usePagination } from "@mantine/hooks";
 import { PAGINATION } from "@/components/todo/pagination";
+import { useQueryState } from "nuqs";
 
 interface TodoListContentProps {
   completedTodos: TodoList[];
@@ -44,6 +48,7 @@ const CompleteTodoListTabs = ({ completedTodos }: TodoListContentProps) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
+  const [search, setSearch] = useQueryState("search");
   const pagination = usePagination({
     total: Math.ceil(completedTodos.length / PAGINATION.ITEMS_PER_PAGE),
     initialPage: 1,
@@ -111,18 +116,43 @@ const CompleteTodoListTabs = ({ completedTodos }: TodoListContentProps) => {
     }
   };
 
+  const completedFiltered = completedTodos.filter((todo) =>
+    todo.title.toLowerCase().includes(search?.toLowerCase() || "")
+  );
+
+  const displayCompletedTodos = search ? completedFiltered : paginatedTodos;
+  const paginatedCompleted = search ? completedFiltered : filteredTodos;
+
   return (
     <>
-      <CategorySearch
-        todos={completedTodos}
-        selectedCategories={selectedCategories}
-        onCategoryChange={setSelectedCategories}
-        onSortChange={setSort}
-        sort={sort}
-        label="完了日"
-      />
+      <Group mt="md">
+        <CategorySearch
+          todos={completedTodos}
+          selectedCategories={selectedCategories}
+          onCategoryChange={setSelectedCategories}
+          onSortChange={setSort}
+          sort={sort}
+          label="完了日"
+        />
+        <Input.Wrapper label="TODOを検索">
+          <Flex gap="xs">
+            <Input
+              placeholder="検索"
+              value={search || ""}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button onClick={() => setSearch(null)}>クリア</Button>
+          </Flex>
+        </Input.Wrapper>
+      </Group>
       <Table.ScrollContainer minWidth={1000} w="100%" maw="100%" type="native">
-        <Table highlightOnHover mt="md">
+        <Table
+          mt="md"
+          variant="vertical"
+          layout="fixed"
+          withTableBorder
+          highlightOnHover
+        >
           <Table.Thead>
             <Table.Tr>
               <Table.Th>タイトル</Table.Th>
@@ -134,10 +164,14 @@ const CompleteTodoListTabs = ({ completedTodos }: TodoListContentProps) => {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {paginatedTodos.map((todo) => (
+            {displayCompletedTodos.map((todo) => (
               <Table.Tr key={todo.id}>
                 <Table.Td>
-                  <Text>{todo.title.slice(0, 10)}...</Text>
+                  <Text>
+                    {todo.title.length > 10
+                      ? todo.title.slice(0, 10) + "..."
+                      : todo.title}
+                  </Text>
                 </Table.Td>
                 <Table.Td>
                   <Anchor
@@ -146,7 +180,9 @@ const CompleteTodoListTabs = ({ completedTodos }: TodoListContentProps) => {
                     rel="noopener noreferrer"
                   >
                     <Text lineClamp={1} size="sm">
-                      {todo.url.slice(0, 30)}...
+                      {todo.url.length > 30
+                        ? todo.url.slice(0, 30) + "..."
+                        : todo.url}
                     </Text>
                   </Anchor>
                 </Table.Td>
@@ -253,12 +289,14 @@ const CompleteTodoListTabs = ({ completedTodos }: TodoListContentProps) => {
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
-      {filteredTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+      {paginatedCompleted.length > PAGINATION.ITEMS_PER_PAGE && (
         <Group justify="center" mt="md">
           <Pagination
             value={pagination.active}
             onChange={pagination.setPage}
-            total={Math.ceil(filteredTodos.length / PAGINATION.ITEMS_PER_PAGE)}
+            total={Math.ceil(
+              paginatedCompleted.length / PAGINATION.ITEMS_PER_PAGE
+            )}
             siblings={PAGINATION.SIBLINGS}
           />
         </Group>

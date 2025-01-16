@@ -7,7 +7,16 @@ import {
   handleShareClick,
   handleToday,
 } from "@/components/todo/action";
-import { ActionIcon, Menu, Pagination, Table, Tabs } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Flex,
+  Input,
+  Menu,
+  Pagination,
+  Table,
+  Tabs,
+} from "@mantine/core";
 import {
   IconBookOff,
   IconBook,
@@ -30,6 +39,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { usePagination } from "@mantine/hooks";
 import { PAGINATION } from "@/components/todo/pagination";
+import { useQueryState } from "nuqs";
 
 interface TodoTabsProps {
   unreadTodos: TodoList[];
@@ -41,6 +51,7 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
+  const [search, setSearch] = useQueryState("search");
 
   // 本日のTODOのフィルタリング
   const unreadTodayTodos = unreadTodos.filter((todo) => todo.isToday);
@@ -139,6 +150,18 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
     }
   };
 
+  const unreadFiltered = unreadTodayTodos.filter((todo) =>
+    todo.title.toLowerCase().includes(search?.toLowerCase() || "")
+  );
+  const readingFiltered = readingTodayTodos.filter((todo) =>
+    todo.title.toLowerCase().includes(search?.toLowerCase() || "")
+  );
+
+  const displayUnreadTodos = search ? unreadFiltered : paginatedUnreadTodos;
+  const displayReadingTodos = search ? readingFiltered : paginatedReadingTodos;
+  const paginatedUnread = search ? unreadFiltered : filteredUnreadTodos;
+  const paginatedReading = search ? readingFiltered : filteredReadingTodos;
+
   return (
     <Tabs defaultValue="todolist" mt="md">
       <Tabs.List>
@@ -159,6 +182,16 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
             sort={sort}
             label="締切日"
           />
+          <Input.Wrapper label="TODOを検索">
+            <Flex gap="xs">
+              <Input
+                placeholder="検索"
+                value={search || ""}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Button onClick={() => setSearch(null)}>クリア</Button>
+            </Flex>
+          </Input.Wrapper>
         </Group>
         <Table.ScrollContainer
           minWidth={1000}
@@ -166,7 +199,13 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
           maw="100%"
           type="native"
         >
-          <Table highlightOnHover mt="md">
+          <Table
+            mt="md"
+            variant="vertical"
+            layout="fixed"
+            withTableBorder
+            highlightOnHover
+          >
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>タイトル</Table.Th>
@@ -178,10 +217,14 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {paginatedUnreadTodos.map((todo) => (
+              {displayUnreadTodos.map((todo) => (
                 <Table.Tr key={todo.id}>
                   <Table.Td>
-                    <Text>{todo.title.slice(0, 10)}...</Text>
+                    <Text>
+                      {todo.title.length > 10
+                        ? todo.title.slice(0, 10) + "..."
+                        : todo.title}
+                    </Text>
                   </Table.Td>
                   <Table.Td>
                     <Anchor
@@ -190,7 +233,9 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
                       rel="noopener noreferrer"
                     >
                       <Text lineClamp={1} size="sm">
-                        {todo.url.slice(0, 30)}...
+                        {todo.url.length > 30
+                          ? todo.url.slice(0, 30) + "..."
+                          : todo.url}
                       </Text>
                     </Anchor>
                   </Table.Td>
@@ -295,13 +340,13 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
             </Table.Tbody>
           </Table>
         </Table.ScrollContainer>
-        {filteredUnreadTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+        {paginatedUnread.length > PAGINATION.ITEMS_PER_PAGE && (
           <Group justify="center" mt="md">
             <Pagination
               value={unreadPagination.active}
               onChange={unreadPagination.setPage}
               total={Math.ceil(
-                filteredUnreadTodos.length / PAGINATION.ITEMS_PER_PAGE
+                paginatedUnread.length / PAGINATION.ITEMS_PER_PAGE
               )}
               siblings={PAGINATION.SIBLINGS}
             />
@@ -318,6 +363,16 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
             sort={sort}
             label="締切日"
           />
+          <Input.Wrapper label="TODOを検索">
+            <Flex gap="xs">
+              <Input
+                placeholder="検索"
+                value={search || ""}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Button onClick={() => setSearch(null)}>クリア</Button>
+            </Flex>
+          </Input.Wrapper>
         </Group>
         <Table.ScrollContainer
           minWidth={1000}
@@ -325,7 +380,13 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
           maw="100%"
           type="native"
         >
-          <Table highlightOnHover mt="md">
+          <Table
+            mt="md"
+            variant="vertical"
+            layout="fixed"
+            withTableBorder
+            highlightOnHover
+          >
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>タイトル</Table.Th>
@@ -337,10 +398,14 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {paginatedReadingTodos.map((todo) => (
+              {displayReadingTodos.map((todo) => (
                 <Table.Tr key={todo.id}>
                   <Table.Td>
-                    <Text>{todo.title.slice(0, 10)}...</Text>
+                    <Text>
+                      {todo.title.length > 10
+                        ? todo.title.slice(0, 10) + "..."
+                        : todo.title}
+                    </Text>
                   </Table.Td>
                   <Table.Td>
                     <Anchor
@@ -349,7 +414,9 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
                       rel="noopener noreferrer"
                     >
                       <Text lineClamp={1} size="sm">
-                        {todo.url.slice(0, 30)}...
+                        {todo.url.length > 30
+                          ? todo.url.slice(0, 30) + "..."
+                          : todo.url}
                       </Text>
                     </Anchor>
                   </Table.Td>
@@ -454,13 +521,13 @@ const TodoTabs = ({ unreadTodos, readingTodos, TodayTodos }: TodoTabsProps) => {
             </Table.Tbody>
           </Table>
         </Table.ScrollContainer>
-        {filteredReadingTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+        {paginatedReading.length > PAGINATION.ITEMS_PER_PAGE && (
           <Group justify="center" mt="md">
             <Pagination
               value={readingPagination.active}
               onChange={readingPagination.setPage}
               total={Math.ceil(
-                filteredReadingTodos.length / PAGINATION.ITEMS_PER_PAGE
+                paginatedReading.length / PAGINATION.ITEMS_PER_PAGE
               )}
               siblings={PAGINATION.SIBLINGS}
             />

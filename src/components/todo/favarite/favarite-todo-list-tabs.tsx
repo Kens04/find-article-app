@@ -17,6 +17,9 @@ import {
   Menu,
   ActionIcon,
   Pagination,
+  Input,
+  Flex,
+  Button,
 } from "@mantine/core";
 import { usePagination } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -34,6 +37,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useQueryState } from "nuqs";
 
 const FavariteTodoListTabs = ({
   favariteTodos,
@@ -42,6 +46,7 @@ const FavariteTodoListTabs = ({
 }) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [search, setSearch] = useQueryState("search");
   const pagination = usePagination({
     total: Math.ceil(favariteTodos.length / PAGINATION.ITEMS_PER_PAGE),
     initialPage: 1,
@@ -96,16 +101,41 @@ const FavariteTodoListTabs = ({
     }
   };
 
+  const favariteFiltered = favariteTodos.filter((todo) =>
+    todo.title.toLowerCase().includes(search?.toLowerCase() || "")
+  );
+
+  const displayFavariteTodos = search ? favariteFiltered : paginatedTodos;
+  const paginatedFavarite = search ? favariteFiltered : filteredTodos;
+
   return (
     <>
-      <CategorySearch
-        todos={filteredTodos}
-        selectedCategories={selectedCategories}
-        onCategoryChange={setSelectedCategories}
-        label="お気に入り"
-      />
+      <Group mt="md">
+        <CategorySearch
+          todos={filteredTodos}
+          selectedCategories={selectedCategories}
+          onCategoryChange={setSelectedCategories}
+          label="お気に入り"
+        />
+        <Input.Wrapper label="TODOを検索">
+          <Flex gap="xs">
+            <Input
+              placeholder="検索"
+              value={search || ""}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button onClick={() => setSearch(null)}>クリア</Button>
+          </Flex>
+        </Input.Wrapper>
+      </Group>
       <Table.ScrollContainer minWidth={1000} w="100%" maw="100%" type="native">
-        <Table highlightOnHover mt="md">
+        <Table
+          mt="md"
+          variant="vertical"
+          layout="fixed"
+          withTableBorder
+          highlightOnHover
+        >
           <Table.Thead>
             <Table.Tr>
               <Table.Th>タイトル</Table.Th>
@@ -115,10 +145,14 @@ const FavariteTodoListTabs = ({
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {paginatedTodos.map((todo) => (
+            {displayFavariteTodos.map((todo) => (
               <Table.Tr key={todo.id}>
                 <Table.Td>
-                  <Text>{todo.title.slice(0, 10)}...</Text>
+                  <Text>
+                    {todo.title.length > 10
+                      ? todo.title.slice(0, 10) + "..."
+                      : todo.title}
+                  </Text>
                 </Table.Td>
                 <Table.Td>
                   <Anchor
@@ -127,7 +161,9 @@ const FavariteTodoListTabs = ({
                     rel="noopener noreferrer"
                   >
                     <Text lineClamp={1} size="sm">
-                      {todo.url.slice(0, 30)}...
+                      {todo.url.length > 30
+                        ? todo.url.slice(0, 30) + "..."
+                        : todo.url}
                     </Text>
                   </Anchor>
                 </Table.Td>
@@ -226,12 +262,14 @@ const FavariteTodoListTabs = ({
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
-      {filteredTodos.length > PAGINATION.ITEMS_PER_PAGE && (
+      {paginatedFavarite.length > PAGINATION.ITEMS_PER_PAGE && (
         <Group justify="center" mt="md">
           <Pagination
             value={pagination.active}
             onChange={pagination.setPage}
-            total={Math.ceil(filteredTodos.length / PAGINATION.ITEMS_PER_PAGE)}
+            total={Math.ceil(
+              paginatedFavarite.length / PAGINATION.ITEMS_PER_PAGE
+            )}
             siblings={PAGINATION.SIBLINGS}
           />
         </Group>
