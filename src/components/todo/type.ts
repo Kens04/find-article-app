@@ -20,6 +20,7 @@ export interface TodoList {
   completedAt: Date;
   sharedAt: Date;
   isToday: boolean;
+  likes: number;
 }
 
 export interface CreateTodoInput {

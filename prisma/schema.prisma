@@ -36,6 +36,7 @@ model Todo {
   sharedAt    DateTime?
   completedAt DateTime?
   isToday     Boolean    @default(false)
+  likes       Int        @default(0)
   user        User       @relation(fields: [userId], references: [id])
 
   @@map("todos")

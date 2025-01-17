@@ -31,7 +31,7 @@ CREATE TABLE "todos" (
     "completedAt" TIMESTAMP(3),
     "sharedAt" TIMESTAMP(3),
     "isToday" BOOLEAN NOT NULL DEFAULT false,
-
+    "likes" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "todos_pkey" PRIMARY KEY ("id")
 );
 

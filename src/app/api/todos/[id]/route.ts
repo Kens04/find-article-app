@@ -71,6 +71,7 @@ export async function PATCH(
       url,
       category,
       dueDate,
+      likes,
     } = body;
 
     // タイムゾーンを考慮した日付を作成
@@ -127,6 +128,19 @@ export async function PATCH(
         },
         data: {
           isFavorite,
+        },
+      });
+      return NextResponse.json({ success: true, data: todo }, { status: 200 });
+    }
+
+    // いいねの更新の場合
+    if (likes !== undefined) {
+      const todo = await prisma.todo.update({
+        where: {
+          id: id,
+        },
+        data: {
+          likes: likes,
         },
       });
       return NextResponse.json({ success: true, data: todo }, { status: 200 });

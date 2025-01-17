@@ -13,11 +13,13 @@ import {
   Input,
   Flex,
   Button,
+  Avatar,
 } from "@mantine/core";
 import { usePagination } from "@mantine/hooks";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 import { useQueryState } from "nuqs";
+import Likes from "@/components/todo/share/likes";
 
 const ShareTodoListTable = ({
   todos,
@@ -26,6 +28,7 @@ const ShareTodoListTable = ({
   todos: TodoList[];
   session: Session | null;
 }) => {
+  const user = session?.user;
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
   const [search, setSearch] = useQueryState("search");
@@ -95,16 +98,34 @@ const ShareTodoListTable = ({
         >
           <Table.Thead>
             <Table.Tr>
+              <Table.Th>ユーザー</Table.Th>
               <Table.Th>タイトル</Table.Th>
               <Table.Th>URL</Table.Th>
               <Table.Th>カテゴリ</Table.Th>
               <Table.Th>公開日</Table.Th>
+              <Table.Th>いいね</Table.Th>
               <Table.Th style={{ textAlign: "center" }}>アクション</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
             {displayShareTodos.map((todo) => (
               <Table.Tr key={todo.id}>
+                <Table.Td>
+                  <Avatar
+                    src={
+                      todo.userId === session?.user.id &&
+                      user?.user_metadata.avatar_url
+                    }
+                    alt={
+                      todo.userId === session?.user.id &&
+                      user?.user_metadata.name
+                    }
+                  />
+                  <span>
+                    {todo.userId === session?.user.id &&
+                      user?.user_metadata.name}
+                  </span>
+                </Table.Td>
                 <Table.Td>
                   <Text>
                     {todo.title.length > 10
@@ -130,6 +151,14 @@ const ShareTodoListTable = ({
                   {todo.sharedAt
                     ? new Date(todo.sharedAt).toLocaleDateString()
                     : "未設定"}
+                </Table.Td>
+                <Table.Td>
+                  <Likes
+                    id={todo.id}
+                    likes={todo.likes}
+                    todo={todo}
+                    session={session}
+                  />
                 </Table.Td>
                 <Table.Td style={{ textAlign: "center" }}>
                   {todo.userId === session?.user.id ? (
