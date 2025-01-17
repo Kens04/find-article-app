@@ -112,19 +112,10 @@ const ShareTodoListTable = ({
               <Table.Tr key={todo.id}>
                 <Table.Td>
                   <Avatar
-                    src={
-                      todo.userId === session?.user.id &&
-                      user?.user_metadata.avatar_url
-                    }
-                    alt={
-                      todo.userId === session?.user.id &&
-                      user?.user_metadata.name
-                    }
+                    src={user?.user_metadata.avatar_url}
+                    alt={user?.user_metadata.name}
                   />
-                  <span>
-                    {todo.userId === session?.user.id &&
-                      user?.user_metadata.name}
-                  </span>
+                  <span>{user?.user_metadata.name}</span>
                 </Table.Td>
                 <Table.Td>
                   <Text>
@@ -153,12 +144,7 @@ const ShareTodoListTable = ({
                     : "未設定"}
                 </Table.Td>
                 <Table.Td>
-                  <Likes
-                    id={todo.id}
-                    likes={todo.likes}
-                    todo={todo}
-                    session={session}
-                  />
+                  <Likes id={todo.id} likes={todo.likes} todo={todo} />
                 </Table.Td>
                 <Table.Td style={{ textAlign: "center" }}>
                   {todo.userId === session?.user.id ? (

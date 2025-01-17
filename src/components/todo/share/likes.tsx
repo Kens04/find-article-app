@@ -2,7 +2,6 @@
 
 import { TodoList } from "@/components/todo/type";
 import { Button } from "@mantine/core";
-import { Session } from "@supabase/auth-helpers-nextjs";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,12 +10,10 @@ const Likes = ({
   id,
   likes,
   todo,
-  session,
 }: {
   id: string;
   likes: number;
   todo: TodoList;
-  session: Session | null;
 }) => {
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
@@ -51,26 +48,19 @@ const Likes = ({
 
   return (
     <>
-      {todo.userId === session?.user.id ? (
-        <Button
-          onClick={() => handleLike()}
-          variant="outline"
-          size="xs"
-          color="pink"
-          style={{
-            border: "none",
-            background: "none",
-          }}
-        >
-          {isLiked ? <IconHeartFilled /> : <IconHeart />}
-          {todo.likes}
-        </Button>
-      ) : (
-        <>
-          <IconHeart />
-          {todo.likes}
-        </>
-      )}
+      <Button
+        onClick={() => handleLike()}
+        variant="outline"
+        size="xs"
+        color="pink"
+        style={{
+          border: "none",
+          background: "none",
+        }}
+      >
+        {isLiked ? <IconHeartFilled /> : <IconHeart />}
+        {todo.likes}
+      </Button>
     </>
   );
 };
