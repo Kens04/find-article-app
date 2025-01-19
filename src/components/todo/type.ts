@@ -4,6 +4,15 @@ export enum TodoStatus {
   COMPLETED = "COMPLETED",
 }
 
+export interface User {
+  id: string;
+  name: string | null;
+  email: string;
+  avatarUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface TodoList {
   id: string;
   title: string;
@@ -20,7 +29,13 @@ export interface TodoList {
   completedAt: Date;
   sharedAt: Date;
   isToday: boolean;
-  likes: number;
+  likes: Like[];
+}
+
+export interface Like {
+  id: string;
+  userId: string;
+  todoId: string;
 }
 
 export interface CreateTodoInput {

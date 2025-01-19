@@ -133,19 +133,6 @@ export async function PATCH(
       return NextResponse.json({ success: true, data: todo }, { status: 200 });
     }
 
-    // いいねの更新の場合
-    if (likes !== undefined) {
-      const todo = await prisma.todo.update({
-        where: {
-          id: id,
-        },
-        data: {
-          likes: likes,
-        },
-      });
-      return NextResponse.json({ success: true, data: todo }, { status: 200 });
-    }
-
     // ステータスの更新の場合
     if (status !== undefined) {
       // statusが有効なTodoStatusの値であることを確認

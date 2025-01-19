@@ -1,7 +1,8 @@
 "use client";
 
-import { TodoList } from "@/components/todo/type";
+import { Like } from "@/components/todo/type";
 import { Button } from "@mantine/core";
+import { Session } from "@supabase/auth-helpers-nextjs";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,27 +10,30 @@ import { useState } from "react";
 const Likes = ({
   id,
   likes,
-  todo,
+  session,
 }: {
   id: string;
-  likes: number;
-  todo: TodoList;
+  likes: Like[];
+  session: Session | null;
 }) => {
   const router = useRouter();
-  const [isLiked, setIsLiked] = useState(false);
+  const loginUserId = session?.user.id;
+  const todoLikes = likes.filter((like) => like.todoId === id);
+  const hasLiked = todoLikes.some((like) => like.userId === loginUserId);
+  const [isLiked, setIsLiked] = useState(hasLiked);
 
   const handleLike = async () => {
+    if (!loginUserId) return;
+
     try {
-      setIsLiked(!isLiked);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/todos/${id}`,
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/likes`,
         {
-          method: "PATCH",
+          method: isLiked ? "DELETE" : "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          cache: "no-store",
-          body: JSON.stringify({ likes: !likes ? likes + 1 : likes - 1 }),
+          body: JSON.stringify({ todoId: id, userId: loginUserId }),
         }
       );
 
@@ -37,31 +41,28 @@ const Likes = ({
         throw new Error(`Failed to update like`);
       }
 
-      const { data } = await response.json();
+      setIsLiked(!isLiked);
       router.refresh();
-      return data;
     } catch (error) {
       console.error("Error updating like:", error);
-      throw error;
     }
   };
 
   return (
-    <>
-      <Button
-        onClick={() => handleLike()}
-        variant="outline"
-        size="xs"
-        color="pink"
-        style={{
-          border: "none",
-          background: "none",
-        }}
-      >
-        {isLiked ? <IconHeartFilled /> : <IconHeart />}
-        {todo.likes}
-      </Button>
-    </>
+    <Button
+      onClick={handleLike}
+      variant="outline"
+      size="xs"
+      color="pink"
+      style={{
+        border: "none",
+        background: "none",
+      }}
+      disabled={!loginUserId}
+    >
+      {isLiked ? <IconHeartFilled /> : <IconHeart />}
+      {todoLikes.length}
+    </Button>
   );
 };
 

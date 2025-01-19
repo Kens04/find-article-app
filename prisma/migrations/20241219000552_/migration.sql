@@ -31,8 +31,15 @@ CREATE TABLE "todos" (
     "completedAt" TIMESTAMP(3),
     "sharedAt" TIMESTAMP(3),
     "isToday" BOOLEAN NOT NULL DEFAULT false,
-    "likes" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "todos_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "likes" (
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "todoId" UUID NOT NULL,
+    CONSTRAINT "likes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -40,3 +47,7 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
 ALTER TABLE "todos" ADD CONSTRAINT "todos_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "likes" ADD CONSTRAINT "likes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "likes" ADD CONSTRAINT "likes_todoId_fkey" FOREIGN KEY ("todoId") REFERENCES "todos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

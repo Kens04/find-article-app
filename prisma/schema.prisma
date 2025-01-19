@@ -16,6 +16,7 @@ model User {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   todos          Todo[]
+  likes          Likes[]
 
   @@map("users")
 }
@@ -36,10 +37,20 @@ model Todo {
   sharedAt    DateTime?
   completedAt DateTime?
   isToday     Boolean    @default(false)
-  likes       Int        @default(0)
+  likes        Likes[]
   user        User       @relation(fields: [userId], references: [id])
 
   @@map("todos")
+}
+
+model Likes {
+  id        String @id @default(uuid()) @db.Uuid
+  userId    String @db.Uuid
+  todoId    String @db.Uuid
+  user      User   @relation(fields: [userId], references: [id])
+  todo      Todo   @relation(fields: [todoId], references: [id])
+
+  @@map("likes")
 }
 
 enum TodoStatus {

@@ -9,10 +9,17 @@ export default async function Share() {
   const todos = await prisma.todo.findMany();
   const allTodos = todos || [];
   const activeTodos = allTodos.filter((todo) => todo.isPublic) as TodoList[];
+  const user = await prisma.user.findMany();
+  const likes = await prisma.likes.findMany();
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ShareTodoListContent todos={activeTodos} session={session} />
+      <ShareTodoListContent
+        todos={activeTodos}
+        session={session}
+        user={user}
+        likes={likes}
+      />
     </Suspense>
   );
 }

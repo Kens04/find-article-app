@@ -3,7 +3,7 @@
 import CategorySearch from "@/components/todo/category-search";
 import { PAGINATION } from "@/components/todo/pagination";
 import IsPublicButton from "@/components/todo/share/ispublic-button";
-import { type TodoList } from "@/components/todo/type";
+import { Like, User, type TodoList } from "@/components/todo/type";
 import {
   Text,
   Anchor,
@@ -24,11 +24,15 @@ import Likes from "@/components/todo/share/likes";
 const ShareTodoListTable = ({
   todos,
   session,
+  user,
+  likes,
 }: {
   todos: TodoList[];
   session: Session | null;
+  user: User[];
+  likes: Like[];
 }) => {
-  const user = session?.user;
+  // const user = session?.user;
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
   const [search, setSearch] = useQueryState("search");
@@ -111,11 +115,14 @@ const ShareTodoListTable = ({
             {displayShareTodos.map((todo) => (
               <Table.Tr key={todo.id}>
                 <Table.Td>
-                  <Avatar
-                    src={user?.user_metadata.avatar_url}
-                    alt={user?.user_metadata.name}
-                  />
-                  <span>{user?.user_metadata.name}</span>
+                  {user.map((u) =>
+                    u.id === todo.userId ? (
+                      <div key={u.id}>
+                        <Avatar src={u.avatarUrl} alt={u.name || ""} />
+                        <span>{u.name}</span>
+                      </div>
+                    ) : null
+                  )}
                 </Table.Td>
                 <Table.Td>
                   <Text>
@@ -144,7 +151,7 @@ const ShareTodoListTable = ({
                     : "未設定"}
                 </Table.Td>
                 <Table.Td>
-                  <Likes id={todo.id} likes={todo.likes} todo={todo} />
+                  <Likes id={todo.id} session={session} likes={likes} />
                 </Table.Td>
                 <Table.Td style={{ textAlign: "center" }}>
                   {todo.userId === session?.user.id ? (
