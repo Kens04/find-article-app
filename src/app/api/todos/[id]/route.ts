@@ -71,7 +71,6 @@ export async function PATCH(
       url,
       category,
       dueDate,
-      likes,
     } = body;
 
     // タイムゾーンを考慮した日付を作成
