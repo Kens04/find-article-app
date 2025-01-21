@@ -1,14 +1,13 @@
-"use client";
-
 import { Alert, Flex, Progress } from "@mantine/core";
 import { TodoStatus, TodoList } from "@/components/todo/type";
-import { Container, Grid, Paper, Text, Title } from "@mantine/core";
+import { Container, Paper, Text, Title } from "@mantine/core";
 import { PieChart, DonutChart } from "@mantine/charts";
 import calculateCategoryData from "@/components/todo/components/calculate-category-data";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import AuthGuard from "@/components/todo/components/auth-auard";
 import { redirect } from "next/navigation";
 import { IconCalendar } from "@tabler/icons-react";
+import styles from "@/components/layout/dashboard.module.css";
 
 const TopDashboardContent = ({
   todos,
@@ -134,11 +133,11 @@ const TopDashboardContent = ({
         )}
       </Alert>
       <AuthGuard todos={todos} session={session}>
-        <Grid mt="xl">
+        <Flex mt="xl" className={styles.chartWrapper}>
           {/* ステータス分布 */}
-          <Grid.Col span={{ base: 12, md: 6 }}>
+          <div className={styles.chartContent}>
             <Paper shadow="xs" p="md">
-              <Title order={3} size="h4" mb="md">
+              <Title order={3} size="h4" mb="md" ta="center">
                 ステータス分布
               </Title>
               <DonutChart
@@ -147,14 +146,15 @@ const TopDashboardContent = ({
                 thickness={30}
                 withLabels
                 withTooltip
+                className={styles.chart}
               />
             </Paper>
-          </Grid.Col>
+          </div>
 
           {/* カテゴリ分布 */}
-          <Grid.Col span={{ base: 12, md: 6 }}>
+          <div className={styles.chartContent}>
             <Paper shadow="xs" p="md">
-              <Title order={3} size="h4" mb="md">
+              <Title order={3} size="h4" mb="md" ta="center">
                 カテゴリ分布
               </Title>
               <PieChart
@@ -162,36 +162,37 @@ const TopDashboardContent = ({
                 size={250}
                 withLabels
                 withTooltip
+                className={styles.chart}
               />
             </Paper>
-          </Grid.Col>
+          </div>
 
           {/* 統計情報 */}
-          <Grid.Col span={12}>
+          <div className={styles.statusInfoContent}>
             <Paper shadow="xs" p="md">
-              <Title order={3} size="h4" mb="md">
+              <Title order={3} size="h4" mb="md" ta="center">
                 統計情報
               </Title>
-              <Grid>
-                <Grid.Col span={4}>
+              <Flex justify="space-between" gap="md" align="center" wrap="wrap">
+                <div>
                   <Text fw={700} c="red">
                     未読: {statusCounts.unread}件
                   </Text>
-                </Grid.Col>
-                <Grid.Col span={4}>
+                </div>
+                <div>
                   <Text fw={700} c="yellow">
                     読書中: {statusCounts.reading}件
                   </Text>
-                </Grid.Col>
-                <Grid.Col span={4}>
+                </div>
+                <div>
                   <Text fw={700} c="green">
                     完了: {statusCounts.completed}件
                   </Text>
-                </Grid.Col>
-              </Grid>
+                </div>
+              </Flex>
             </Paper>
-          </Grid.Col>
-        </Grid>
+          </div>
+        </Flex>
       </AuthGuard>
     </Container>
   );
