@@ -1,37 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# サービス概要
+気になる記事やサイトをタスクとして管理し、進捗状況を可視化できるアプリです。  
+記事や学習リソースを登録し、未読・読書中・完了といったステータスで整理することで、後から見返す際も素早く目的の情報にアクセスできます。
 
-## Getting Started
+---
 
-First, run the development server:
+## 想定されたユーザー
+- 情報収集が多く、記事やサイトを効率的に管理したい人  
+- 読みたい記事や学習したい内容を TODO リスト化して進捗を追いたい人  
+- 学習履歴を振り返り、カテゴリごとの学習状況を把握したい人  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ユーザーが持つ課題
+- 気になる記事やサイトが多すぎて整理・管理できなくなる  
+- 「どこにあの記事やサイトがあったか」思い出せず、探すのに手間がかかる  
+- 読了済みの記事をもう一度確認したいが、すぐに見つからない  
+- 学習や情報収集の進捗状況を把握・振り返る仕組みがない  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 課題の解決方法（このサービスでどうやって解決するか）
+1. **未読・読書中・完了のステータス管理**  
+   気になる記事・サイトを TODO リスト形式で登録し、進行中のタスクや完了済みのタスクを分かりやすく可視化。  
 
-## Learn More
+2. **カテゴリ・タグ機能**  
+   関連する内容でグルーピングし、整理されたリストで管理。検索性も向上。  
 
-To learn more about Next.js, take a look at the following resources:
+3. **ダッシュボードで進捗確認**  
+   全体の完了状況やカテゴリ別の学習進捗を一目で把握可能。  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **学習履歴としての活用**  
+   完了した記事やサイトをカテゴリごとに保存し、いつでも振り返ることができる。  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## サービス情報
+- **利用シーン**  
+  - 気になる記事やサイトを登録してあとで読む  
+  - 学びたい内容をTODOリスト化し、進捗を管理  
+  - 学習の履歴として参照できる  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **利用の流れ**  
+  1. 読みたい記事・気になるサイトを登録（タイトル、URL、説明文、カテゴリ）  
+  2. TODOリストから「進行中」に変更して管理  
+  3. 読了後に「完了」に移動  
+  4. ダッシュボードで全体進捗やカテゴリ別進捗を確認  
+  5. 完了した記事やサイトをカテゴリごとに保存し、振り返り  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# find-article-app
+- **類似アプリとの比較**  
+  - Trello: タスク管理機能が中心  
+  - Pocket: 記事保存特化だが進捗管理は含まれていない  
+  - Notion: TODOリストや情報整理は可能だが汎用的  
+
+- **なぜこれを行うのか**  
+  - 後で見たい記事やサイトを管理したい  
+  - 学習履歴を一元管理し、必要に応じてすぐに見返したい  
+
+- **主な機能**  
+  - **TODOリスト管理**  
+    - アカウント登録・ログイン  
+    - 記事やサイトを「未読」「進行中」「完了」で分類  
+    - TODOリストの作成・編集・削除  
+    - タイトル、URL、カテゴリの登録  
+  - **カテゴリ分け**  
+    - タグやカテゴリで情報を整理（例: フロントエンド、バックエンド、Next.js）  
+  - **進捗表示**  
+    - ダッシュボードで進捗率や完了数を表示  
+  - **完了した記事、サイトの保存**  
+  - **お気に入り機能**  
+    - 重要な記事やサイトをブックマーク  
+  - **統計表示**  
+    - 読了数やカテゴリ別の統計を可視化  
+  - **共有機能**  
+    - 他の人と記事やサイトを共有  
+  - **検索機能**  
+    - タイトルやカテゴリでリソースを検索  
+  - **リソースの評価・メモ**  
+    - 学んだ内容のメモやコメントを追加  
+
+---
