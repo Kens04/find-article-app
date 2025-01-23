@@ -83,6 +83,7 @@ export async function PATCH(
         where: { id },
         data: {
           title,
+          text,
           url,
           category,
           dueDate: adjustedDueDate,

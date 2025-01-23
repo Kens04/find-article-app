@@ -15,7 +15,6 @@ import {
 import Link from "next/link";
 
 const TodoDetailContent = ({ todo }: { todo: TodoList }) => {
-  const text = todo.text;
   // ステータスを日本語に変換する関数
   const getStatusLabel = (status: TodoStatus) => {
     switch (status) {
@@ -45,7 +44,7 @@ const TodoDetailContent = ({ todo }: { todo: TodoList }) => {
   };
 
   return (
-    <Container maw="100%" w="100%" mt="lg">
+    <Container maw="100%" w="100%" mt="lg" mb="lg">
       <Stack>
         <Group>
           <Title order={2}>{todo.title}</Title>
@@ -66,10 +65,12 @@ const TodoDetailContent = ({ todo }: { todo: TodoList }) => {
               {todo.url}
             </Anchor>
           </Flex>
-          {/* <TodoDetailText todo={todo} /> */}
           <Card key={todo.id} shadow="sm" padding="md" radius="md" withBorder>
             <TypographyStylesProvider>
-              <div dangerouslySetInnerHTML={{ __html: text }} />
+              <div
+                dangerouslySetInnerHTML={{ __html: todo.text || "" }}
+                style={{ wordBreak: "break-word" }}
+              />
             </TypographyStylesProvider>
           </Card>
           <Group justify="center" mt="lg">

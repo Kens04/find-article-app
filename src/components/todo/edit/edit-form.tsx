@@ -20,6 +20,9 @@ import { useState } from "react";
 const EditForm = ({ todo }: { todo: TodoList }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const handleTextChange = (text: string) => {
+    form.setFieldValue('text', text);
+  };
 
   const form = useForm({
     initialValues: {
@@ -37,6 +40,7 @@ const EditForm = ({ todo }: { todo: TodoList }) => {
   });
 
   const handleSubmit = async (todoId: string, values: typeof form.values) => {
+    console.log(values);
     try {
       setIsLoading(true);
       await handleEdit(todoId, {
@@ -69,7 +73,7 @@ const EditForm = ({ todo }: { todo: TodoList }) => {
   };
 
   return (
-    <Container w="100%" mt="lg">
+    <Container w="100%" mt="lg" mb="lg">
       <Title order={2} mb="md" ta="center">
         TODO編集
       </Title>
@@ -110,7 +114,7 @@ const EditForm = ({ todo }: { todo: TodoList }) => {
                 form.setFieldValue("dueDate", date || new Date())
               }
             />
-            <EditText todo={todo} />
+            <EditText todo={todo}  onChange={handleTextChange} />
             <Group mt="sm" justify="center">
               <Button
                 type="submit"
