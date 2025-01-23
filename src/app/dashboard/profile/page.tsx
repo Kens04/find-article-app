@@ -7,7 +7,7 @@ export default async function Profile() {
   const session = await getSession();
 
   if (!session?.user?.id) {
-    redirect("/login");
+    return redirect("/login");
   }
 
   const user = await prisma.user.findUnique({
@@ -17,7 +17,7 @@ export default async function Profile() {
   });
 
   if (!user) {
-    redirect("/login");
+    return redirect("/login");
   }
 
   return <ProfileForm session={session} user={user} />;

@@ -2,28 +2,24 @@ import { getSession } from "@/components/hooks/useSession";
 import TodoListContent from "@/components/todo/todo-list/todo-list-content";
 import { TodoStatus, type TodoList } from "@/components/todo/type";
 import { prisma } from "@/lib/db";
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
 export default async function TodoList() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <TodoListInner />
-    </Suspense>
-  );
+  return <TodoListInner />;
 }
 
 async function TodoListInner() {
   const session = await getSession();
   const todos = await prisma.todo.findMany();
+  const user = session?.user;
+  if (!user) {
+    return redirect("/login");
+  }
 
   const allTodos = todos || [];
   const activeTodos = allTodos.filter(
     (todo) => todo.status !== TodoStatus.COMPLETED
   ) as TodoList[];
 
-  return (
-    <Suspense fallback={<div>Loading content...</div>}>
-      <TodoListContent todos={activeTodos} session={session} />
-    </Suspense>
-  );
+  return <TodoListContent todos={activeTodos} session={session} />;
 }
