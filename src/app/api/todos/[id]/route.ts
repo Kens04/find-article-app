@@ -93,19 +93,6 @@ export async function PATCH(
       return NextResponse.json({ success: true, data: todo });
     }
 
-    // テキストのみの更新の場合
-    if (text !== undefined) {
-      const todo = await prisma.todo.update({
-        where: {
-          id: id,
-        },
-        data: {
-          text,
-        },
-      });
-      return NextResponse.json({ success: true, data: todo }, { status: 200 });
-    }
-
     // 共有のみの更新の場合
     if (isPublic !== undefined) {
       const todo = await prisma.todo.update({
