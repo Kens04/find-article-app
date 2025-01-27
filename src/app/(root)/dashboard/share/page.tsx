@@ -1,4 +1,4 @@
-import { getSession } from "@/components/hooks/useSession";
+import { getSession } from "@/utils/getSession";
 import ShareTodoListContent from "@/components/todo/share/share-todo-list-content";
 import { type TodoList } from "@/components/todo/type";
 import { prisma } from "@/lib/db";
@@ -17,11 +17,11 @@ export default async function Share() {
   }
 
   return (
-      <ShareTodoListContent
-        todos={activeTodos}
-        session={session}
-        user={user}
-        likes={likes}
-      />
+    <ShareTodoListContent
+      todos={activeTodos}
+      session={session}
+      user={user}
+      likes={likes}
+    />
   );
 }

@@ -1,4 +1,4 @@
-import { getSession } from "@/components/hooks/useSession";
+import { getSession } from "@/utils/getSession";
 import ProfileForm from "@/components/profile/profile-form";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";

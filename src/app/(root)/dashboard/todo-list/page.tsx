@@ -1,4 +1,4 @@
-import { getSession } from "@/components/hooks/useSession";
+import { getSession } from "@/utils/getSession";
 import TodoListContent from "@/components/todo/todo-list/todo-list-content";
 import { TodoStatus, type TodoList } from "@/components/todo/type";
 import { prisma } from "@/lib/db";

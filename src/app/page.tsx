@@ -1,4 +1,4 @@
-import { getSession } from "@/components/hooks/useSession";
+import { getSession } from "@/utils/getSession";
 import TopHeader from "@/components/top/header";
 import MainSection from "@/components/top/main-section";
 import { MantineProvider } from "@mantine/core";

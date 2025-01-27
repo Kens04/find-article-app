@@ -1,4 +1,4 @@
-import { getSession } from "@/components/hooks/useSession";
+import { getSession } from "@/utils/getSession";
 import CompleteTodoListContent from "@/components/todo/complete-todo-list/complete-todo-list-content";
 import { TodoStatus, type TodoList } from "@/components/todo/type";
 import { prisma } from "@/lib/db";
@@ -16,7 +16,5 @@ export default async function CompletedTodoList() {
     return redirect("/login");
   }
 
-  return (
-      <CompleteTodoListContent todos={completedTodos} session={session} />
-  );
-};
+  return <CompleteTodoListContent todos={completedTodos} session={session} />;
+}

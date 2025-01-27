@@ -1,5 +1,5 @@
 import TopDashboardContent from "@/components/dashboard/top-dashboard-content";
-import { getSession } from "@/components/hooks/useSession";
+import { getSession } from "@/utils/getSession";
 import { type TodoList } from "@/components/todo/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";

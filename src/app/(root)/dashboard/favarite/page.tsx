@@ -1,4 +1,4 @@
-import { getSession } from "@/components/hooks/useSession";
+import { getSession } from "@/utils/getSession";
 import FavariteTodoListContent from "@/components/todo/favarite/favarite-todo-list-content";
 import { type TodoList } from "@/components/todo/type";
 import { prisma } from "@/lib/db";

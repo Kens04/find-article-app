@@ -1,7 +1,7 @@
 import "@mantine/charts/styles.css";
 import DashboardLayout from "@/components/layout/dashboard";
 import type { Metadata } from "next";
-import { getSession } from "@/components/hooks/useSession";
+import { getSession } from "@/utils/getSession";
 import { MantineProvider } from "@mantine/core";
 
 export const metadata: Metadata = {
