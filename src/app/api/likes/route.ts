@@ -2,13 +2,13 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const { userId, todoId } = await req.json();
+  const { userId, articleId } = await req.json();
 
   try {
     const existingLike = await prisma.likes.findFirst({
       where: {
         userId: userId,
-        todoId: todoId,
+        articleId: articleId,
       },
     });
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const like = await prisma.likes.create({
       data: {
         userId: userId,
-        todoId: todoId,
+        articleId: articleId,
       },
     });
 
@@ -33,13 +33,13 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const { userId, todoId } = await req.json();
+  const { userId, articleId } = await req.json();
 
   try {
     const like = await prisma.likes.deleteMany({
       where: {
         userId: userId,
-        todoId: todoId,
+        articleId: articleId,
       },
     });
 

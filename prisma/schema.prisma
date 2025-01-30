@@ -15,18 +15,18 @@ model User {
   avatarUrl      String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  todos          Todo[]
+  articles       Article[]
   likes          Likes[]
 
   @@map("users")
-}
+  }
 
-model Todo {
+model Article {
   id          String     @id @default(uuid()) @db.Uuid
   title       String
   url         String     @db.Text
   text        String?    @db.Text
-  status      TodoStatus @default(UNREAD)
+  status      ArticleStatus @default(UNREAD)
   category    String?    @default("未分類")
   dueDate     DateTime
   isPublic    Boolean    @default(false)
@@ -40,20 +40,20 @@ model Todo {
   likes        Likes[]
   user        User       @relation(fields: [userId], references: [id])
 
-  @@map("todos")
+  @@map("articles")
 }
 
 model Likes {
   id        String @id @default(uuid()) @db.Uuid
   userId    String @db.Uuid
-  todoId    String @db.Uuid
+  articleId    String @db.Uuid
   user      User   @relation(fields: [userId], references: [id])
-  todo      Todo   @relation(fields: [todoId], references: [id])
+  article      Article   @relation(fields: [articleId], references: [id])
 
   @@map("likes")
 }
 
-enum TodoStatus {
+enum ArticleStatus {
   UNREAD
   READING
   COMPLETED

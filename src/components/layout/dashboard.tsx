@@ -19,9 +19,9 @@ import DashboardNav from "@/components/layout/dashboard-nav";
 
 const data = [
   { link: "/dashboard", label: "ダッシュボード", icon: IconDashboard },
-  { link: "/dashboard/create-todo", label: "TODO作成", icon: IconPlus },
-  { link: "/dashboard/todo", label: "本日のTODO", icon: IconCalendar },
-  { link: "/dashboard/todo-list", label: "TODOリスト", icon: IconChecklist },
+  { link: "/dashboard/create-article", label: "記事作成", icon: IconPlus },
+  { link: "/dashboard/article", label: "本日の記事", icon: IconCalendar },
+  { link: "/dashboard/article-list", label: "記事リスト", icon: IconChecklist },
   { link: "/dashboard/complete", label: "完了リスト", icon: IconBooks },
   { link: "/dashboard/favarite", label: "お気に入り", icon: IconStar },
   { link: "/dashboard/share", label: "共有", icon: IconShare },

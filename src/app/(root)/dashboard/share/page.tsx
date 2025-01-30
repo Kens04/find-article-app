@@ -1,14 +1,14 @@
 import { getSession } from "@/utils/getSession";
-import ShareTodoListContent from "@/components/todo/share/share-todo-list-content";
-import { type TodoList } from "@/components/todo/type";
+import ShareArticleListContent from "@/components/article/share/share-article-list-content";
+import { type ArticleList } from "@/components/article/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 
 export default async function Share() {
   const session = await getSession();
-  const todos = await prisma.todo.findMany();
-  const allTodos = todos || [];
-  const activeTodos = allTodos.filter((todo) => todo.isPublic) as TodoList[];
+  const articles = await prisma.article.findMany();
+  const allArticles = articles || [];
+  const activeArticles = allArticles.filter((article) => article.isPublic) as ArticleList[];
   const user = await prisma.user.findMany();
   const likes = await prisma.likes.findMany();
   const userSession = session?.user;
@@ -17,8 +17,8 @@ export default async function Share() {
   }
 
   return (
-    <ShareTodoListContent
-      todos={activeTodos}
+    <ShareArticleListContent
+      articles={activeArticles}
       session={session}
       user={user}
       likes={likes}

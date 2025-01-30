@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "TodoStatus" AS ENUM ('UNREAD', 'READING', 'COMPLETED');
+CREATE TYPE "ArticleStatus" AS ENUM ('UNREAD', 'READING', 'COMPLETED');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -15,12 +15,12 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "todos" (
+CREATE TABLE "articles" (
     "id" UUID NOT NULL,
     "title" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "text" TEXT,
-    "status" "TodoStatus" NOT NULL DEFAULT 'UNREAD',
+    "status" "ArticleStatus" NOT NULL DEFAULT 'UNREAD',
     "category" TEXT NOT NULL DEFAULT '未分類',
     "dueDate" TIMESTAMP(3) NOT NULL,
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
@@ -31,14 +31,14 @@ CREATE TABLE "todos" (
     "completedAt" TIMESTAMP(3),
     "sharedAt" TIMESTAMP(3),
     "isToday" BOOLEAN NOT NULL DEFAULT false,
-    CONSTRAINT "todos_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "articles_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "likes" (
     "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
-    "todoId" UUID NOT NULL,
+    "articleId" UUID NOT NULL,
     CONSTRAINT "likes_pkey" PRIMARY KEY ("id")
 );
 
@@ -46,8 +46,8 @@ CREATE TABLE "likes" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
-ALTER TABLE "todos" ADD CONSTRAINT "todos_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "articles" ADD CONSTRAINT "articles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "likes" ADD CONSTRAINT "likes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE "likes" ADD CONSTRAINT "likes_todoId_fkey" FOREIGN KEY ("todoId") REFERENCES "todos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "likes" ADD CONSTRAINT "likes_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "articles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

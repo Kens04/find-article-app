@@ -1,29 +1,29 @@
 import { Alert, Flex, Progress } from "@mantine/core";
-import { TodoStatus, TodoList } from "@/components/todo/type";
+import { ArticleStatus, ArticleList } from "@/components/article/type";
 import { Container, Paper, Text, Title } from "@mantine/core";
 import { PieChart, DonutChart } from "@mantine/charts";
-import calculateCategoryData from "@/components/todo/components/calculate-category-data";
+import calculateCategoryData from "@/components/article/components/calculate-category-data";
 import { Session } from "@supabase/auth-helpers-nextjs";
-import AuthGuard from "@/components/todo/components/auth-auard";
+import AuthGuard from "@/components/article/components/auth-auard";
 import { IconCalendar } from "@tabler/icons-react";
 import styles from "@/components/layout/dashboard.module.css";
 
 const TopDashboardContent = ({
-  todos,
+  articles,
   session,
 }: {
-  todos: TodoList[];
+  articles: ArticleList[];
   session: Session | null;
 }) => {
   const user = session?.user;
-  const userTodos = todos.filter((todo) => todo.userId === user?.id);
-  // ステータスごとのTODO数を集計
+  const userArticles = articles.filter((article) => article.userId === user?.id);
+  // ステータスごとの記事数を集計
   const statusCounts = {
-    unread: userTodos.filter((todo) => todo.status === TodoStatus.UNREAD)
+    unread: userArticles.filter((article) => article.status === ArticleStatus.UNREAD)
       .length,
-    reading: userTodos.filter((todo) => todo.status === TodoStatus.READING)
+    reading: userArticles.filter((article) => article.status === ArticleStatus.READING)
       .length,
-    completed: userTodos.filter((todo) => todo.status === TodoStatus.COMPLETED)
+    completed: userArticles.filter((article) => article.status === ArticleStatus.COMPLETED)
       .length,
   };
 
@@ -39,27 +39,27 @@ const TopDashboardContent = ({
     month: "2-digit",
     day: "2-digit",
   });
-  const todayTodos = userTodos.filter((todo) => {
-    const todoDueDate = todo.dueDate.toLocaleDateString("ja-JP", {
+  const todayArticles = userArticles.filter((article) => {
+    const articleDueDate = article.dueDate.toLocaleDateString("ja-JP", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
     });
-    return todoDueDate === todayDate;
+    return articleDueDate === todayDate;
   });
 
-  const unreadCount = todayTodos.filter(
-    (todo) => todo.status === TodoStatus.UNREAD
+  const unreadCount = todayArticles.filter(
+    (article) => article.status === ArticleStatus.UNREAD
   ).length;
-  const readingCount = todayTodos.filter(
-    (todo) => todo.status === TodoStatus.READING
+  const readingCount = todayArticles.filter(
+    (article) => article.status === ArticleStatus.READING
   ).length;
-  const completedCount = todayTodos.filter(
-    (todo) => todo.status === TodoStatus.COMPLETED
+  const completedCount = todayArticles.filter(
+    (article) => article.status === ArticleStatus.COMPLETED
   ).length;
-  const unreadProgress = (unreadCount / todayTodos.length) * 100;
-  const readingProgress = (readingCount / todayTodos.length) * 100;
-  const completedProgress = (completedCount / todayTodos.length) * 100;
+  const unreadProgress = (unreadCount / todayArticles.length) * 100;
+  const readingProgress = (readingCount / todayArticles.length) * 100;
+  const completedProgress = (completedCount / todayArticles.length) * 100;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -67,19 +67,19 @@ const TopDashboardContent = ({
   const oneWeekFromNow = new Date();
   oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
   oneWeekFromNow.setHours(23, 59, 59, 999);
-  const nonCompletedTodos = userTodos.filter(
-    (todo) => todo.status !== TodoStatus.COMPLETED
+  const nonCompletedArticles = userArticles.filter(
+    (article) => article.status !== ArticleStatus.COMPLETED
   );
-  const upcomingTodos = nonCompletedTodos.filter((todo) => {
-    const dueDate = new Date(todo.dueDate);
+  const upcomingArticles = nonCompletedArticles.filter((article) => {
+    const dueDate = new Date(article.dueDate);
     return dueDate <= oneWeekFromNow && dueDate >= today;
   });
 
   return (
     <Container size="lg" w="100%" mt="xl" mb="xl">
-      {upcomingTodos.length > 0 && (
+      {upcomingArticles.length > 0 && (
         <Alert color="yellow" mb="md">
-          残り1週間のTODOが{upcomingTodos.length}件あります
+          残り1週間の記事が{upcomingArticles.length}件あります
         </Alert>
       )}
       <Title order={2} mb="md">
@@ -88,13 +88,13 @@ const TopDashboardContent = ({
       <Alert
         variant="light"
         color="blue"
-        title={`本日期日のTODO：${todayTodos.length}件`}
+        title={`本日期日の記事：${todayArticles.length}件`}
         icon={<IconCalendar />}
       >
-        {todayTodos.length > 0 ? (
+        {todayArticles.length > 0 ? (
           <>
-            {todayTodos.map((todo) => (
-              <div key={todo.id}>・{todo.title}</div>
+            {todayArticles.map((article) => (
+              <div key={article.id}>・{article.title}</div>
             ))}
             <Flex direction="column" gap="xs" mt="md">
               <Text fw={700} fz="lg">
@@ -124,10 +124,10 @@ const TopDashboardContent = ({
             </Flex>
           </>
         ) : (
-          <Text>本日期日のTODOはありません。</Text>
+          <Text>本日期日の記事はありません。</Text>
         )}
       </Alert>
-      <AuthGuard todos={todos} session={session}>
+      <AuthGuard articles={articles} session={session}>
         <Flex mt="xl" className={styles.chartWrapper}>
           {/* ステータス分布 */}
           <div className={styles.chartContent}>
@@ -153,7 +153,7 @@ const TopDashboardContent = ({
                 カテゴリ分布
               </Title>
               <PieChart
-                data={calculateCategoryData(userTodos)}
+                data={calculateCategoryData(userArticles)}
                 size={250}
                 withLabels
                 withTooltip

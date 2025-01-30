@@ -1,14 +1,14 @@
 import "@mantine/tiptap/styles.css";
 import "@mantine/dates/styles.css";
-import { handleEdit } from "@/components/todo/action";
-import EditForm from "@/components/todo/edit/edit-form";
+import { handleEdit } from "@/components/article/action";
+import EditForm from "@/components/article/edit/edit-form";
 
-export default async function EditTodoListPage({
+export default async function EditArticleListPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const todo = await handleEdit(id);
-  return <EditForm todo={todo} />;
+  const article = await handleEdit(id);
+  return <EditForm article={article} />;
 }

@@ -3,7 +3,7 @@ import { Notifications } from "@mantine/notifications";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "@mantine/notifications/styles.css";
 
-export default function CompleteTodoListLayout({
+export default function CompleteArticleListLayout({
   children,
 }: {
   children: React.ReactNode;

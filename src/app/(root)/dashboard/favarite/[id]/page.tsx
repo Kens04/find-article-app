@@ -1,13 +1,13 @@
 import "@mantine/tiptap/styles.css";
-import { TodoDetail } from "@/components/todo/action";
-import TodoDetailContent from "@/components/todo/todo-detail-content";
+import { ArticleDetail } from "@/components/article/action";
+import ArticleDetailContent from "@/components/article/article-detail-content";
 
-export default async function TodoDetailPage({
+export default async function ArticleDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const data = await TodoDetail({ params });
-  const todo = data.data;
-  return <TodoDetailContent todo={todo} />;
+  const data = await ArticleDetail({ params });
+  const article = data.data;
+  return <ArticleDetailContent article={article} />;
 }
