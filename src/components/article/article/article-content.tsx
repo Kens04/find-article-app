@@ -22,18 +22,16 @@ const ArticleContent = ({
       article.status === ArticleStatus.READING && article.userId === session?.user?.id
   );
 
-  // 本日の記事のみをフィルタリング
-  // const TodayArticles = articles.filter(
-  //   (article) => article.isToday && article.userId === session?.user?.id
-  // );
-
   return (
     <Container maw="100%" w="100%" mt="lg">
       <Title order={2} mb="md">
         本日の記事
       </Title>
       <AuthGuard articles={articles} session={session}>
-        <ArticleTabs unreadArticles={unreadArticles} readingArticles={readingArticles} />
+        <ArticleTabs
+          unreadArticles={unreadArticles}
+          readingArticles={readingArticles}
+        />
       </AuthGuard>
     </Container>
   );

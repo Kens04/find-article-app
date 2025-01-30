@@ -53,17 +53,17 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
   const [search, setSearch] = useQueryState("search");
 
   // 本日の記事のフィルタリング
-  const unreadTodayArticles = unreadArticles.filter((article) => article.isToday);
-  const readingTodayArticles = readingArticles.filter((article) => article.isToday);
+  // const unreadTodayArticles = unreadArticles.filter((article) => article.isToday);
+  // const readingTodayArticles = readingArticles.filter((article) => article.isToday);
 
   // 本日の記事のページネーション設定
   const unreadPagination = usePagination({
-    total: Math.ceil(unreadTodayArticles.length / PAGINATION.ITEMS_PER_PAGE),
+    total: Math.ceil(unreadArticles.length / PAGINATION.ITEMS_PER_PAGE),
     initialPage: 1,
   });
 
   const readingPagination = usePagination({
-    total: Math.ceil(readingTodayArticles.length / PAGINATION.ITEMS_PER_PAGE),
+    total: Math.ceil(readingArticles.length / PAGINATION.ITEMS_PER_PAGE),
     initialPage: 1,
   });
 
@@ -81,16 +81,16 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
   // カテゴリーでフィルタリングした本日の記事を取得
   const filteredUnreadArticles = getSortedArticles(
     selectedCategories.length === 0
-      ? unreadTodayArticles
-      : unreadTodayArticles.filter((article) =>
+      ? unreadArticles
+      : unreadArticles.filter((article) =>
           selectedCategories.includes(article.category || "")
         )
   );
 
   const filteredReadingArticles = getSortedArticles(
     selectedCategories.length === 0
-      ? readingTodayArticles
-      : readingTodayArticles.filter((article) =>
+      ? readingArticles
+      : readingArticles.filter((article) =>
           selectedCategories.includes(article.category || "")
         )
   );
@@ -149,10 +149,10 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
     }
   };
 
-  const unreadFiltered = unreadTodayArticles.filter((article) =>
+  const unreadFiltered = unreadArticles.filter((article) =>
     article.title.toLowerCase().includes(search?.toLowerCase() || "")
   );
-  const readingFiltered = readingTodayArticles.filter((article) =>
+  const readingFiltered = readingArticles.filter((article) =>
     article.title.toLowerCase().includes(search?.toLowerCase() || "")
   );
 
