@@ -1,6 +1,6 @@
 "use client";
 
-import { handleIsPublic } from "@/components/article/action";
+import { handleIsPublic } from "@/utils/action";
 import { Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
@@ -25,9 +25,11 @@ const IsPublicButton = ({ id }: { id: string }) => {
   return (
     <>
       <Modal opened={opened} onClose={close} title="共有設定" centered>
-        <Text ta="center" fw={500} fs="lg">共有を解除しますか？</Text>
+        <Text ta="center" fw={500} fs="lg">
+          共有を解除しますか？
+        </Text>
         <Group justify="center" mt="xl">
-          <Button onClick={close} color="green" variant="outline" >
+          <Button onClick={close} color="green" variant="outline">
             いいえ
           </Button>
           <Button onClick={handleClick} color="red">

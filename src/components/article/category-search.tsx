@@ -1,6 +1,6 @@
 "use client";
 
-import { CategorySearchProps } from "@/components/article/type";
+import { CategorySearchProps } from "@/types/type";
 import { Flex, MultiSelect, Select } from "@mantine/core";
 
 const CategorySearch = ({

@@ -1,6 +1,6 @@
 "use client";
 
-import { handleDeleteClick } from "@/components/article/action";
+import { handleDeleteClick } from "@/utils/action";
 import { Button } from "@mantine/core";
 import { useRouter } from "next/navigation";
 

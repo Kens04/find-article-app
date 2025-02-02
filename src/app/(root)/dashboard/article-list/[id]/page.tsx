@@ -1,5 +1,5 @@
 import "@mantine/tiptap/styles.css";
-import { ArticleDetail } from "@/components/article/action";
+import { ArticleDetail } from "@/utils/action";
 import ArticleDetailContent from "@/components/article/article-detail-content";
 
 export default async function ArticleDetailPage({

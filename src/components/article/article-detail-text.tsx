@@ -8,8 +8,8 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
-import { ArticleList } from "@/components/article/type";
-import { handleTextSave } from "@/components/article/action";
+import { ArticleList } from "@/types/type";
+import { handleTextSave } from "@/utils/action";
 import { Button, Card, Group, TypographyStylesProvider } from "@mantine/core";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -125,7 +125,9 @@ const ArticleDetailText = ({ article }: { article: ArticleList }) => {
             </>
           ) : (
             <Group mb="md">
-              <Button onClick={() => setIsEdit(true)} color="orange">テキスト追加</Button>
+              <Button onClick={() => setIsEdit(true)} color="orange">
+                テキスト追加
+              </Button>
             </Group>
           )}
           <Group justify="center" mt="lg">

@@ -1,4 +1,4 @@
-import { ArticleStatus, type ArticleList } from "@/components/article/type";
+import { ArticleStatus, type ArticleList } from "@/types/type";
 import { Container, Title } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import AuthGuard from "@/components/article/components/auth-auard";
@@ -13,13 +13,15 @@ const ArticleContent = ({
 }) => {
   const unreadArticles = articles.filter((article) => {
     return (
-      article.status === ArticleStatus.UNREAD && article.userId === session?.user?.id
+      article.status === ArticleStatus.UNREAD &&
+      article.userId === session?.user?.id
     );
   });
 
   const readingArticles = articles.filter(
     (article) =>
-      article.status === ArticleStatus.READING && article.userId === session?.user?.id
+      article.status === ArticleStatus.READING &&
+      article.userId === session?.user?.id
   );
 
   return (

@@ -6,7 +6,7 @@ import {
   handleFavorite,
   handleShareClick,
   handleToday,
-} from "@/components/article/action";
+} from "@/utils/action";
 import {
   ActionIcon,
   Button,
@@ -31,14 +31,14 @@ import {
 import { notifications } from "@mantine/notifications";
 import CategorySearch from "@/components/article/category-search";
 import StatusButton from "@/components/article/status-button";
-import { type ArticleList } from "@/components/article/type";
+import { type ArticleList } from "@/types/type";
 import { Text, Group, Anchor } from "@mantine/core";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePagination } from "@mantine/hooks";
-import { PAGINATION } from "@/components/article/pagination";
+import { PAGINATION } from "@/utils/pagination";
 import { useQueryState } from "nuqs";
 
 interface ArticleListTabsProps {
@@ -46,7 +46,10 @@ interface ArticleListTabsProps {
   readingArticles: ArticleList[];
 }
 
-const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsProps) => {
+const ArticleListTabs = ({
+  unreadArticles,
+  readingArticles,
+}: ArticleListTabsProps) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
@@ -86,8 +89,8 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
     addTodaysArticles();
   }, []);
 
-      // ソート関数を適用した記事リストを取得
-    const getSortedArticles = (articles: ArticleList[]) => {
+  // ソート関数を適用した記事リストを取得
+  const getSortedArticles = (articles: ArticleList[]) => {
     if (!sort) return articles;
 
     return [...articles].sort((a, b) => {
@@ -103,7 +106,8 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
       ? unreadArticles.filter((article) => !article.isToday)
       : unreadArticles.filter(
           (article) =>
-            !article.isToday && selectedCategories.includes(article.category || "")
+            !article.isToday &&
+            selectedCategories.includes(article.category || "")
         )
   );
 
@@ -112,7 +116,8 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
       ? readingArticles.filter((article) => !article.isToday)
       : readingArticles.filter(
           (article) =>
-            !article.isToday && selectedCategories.includes(article.category || "")
+            !article.isToday &&
+            selectedCategories.includes(article.category || "")
         )
   );
 
@@ -122,7 +127,9 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
   });
 
   const readingPagination = usePagination({
-    total: Math.ceil(filteredReadingArticles.length / PAGINATION.ITEMS_PER_PAGE),
+    total: Math.ceil(
+      filteredReadingArticles.length / PAGINATION.ITEMS_PER_PAGE
+    ),
     initialPage: 1,
   });
 
@@ -187,8 +194,12 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
     article.title.toLowerCase().includes(search?.toLowerCase() || "")
   );
 
-  const displayUnreadArticles = search ? unreadFiltered : paginatedUnreadArticles;
-  const displayReadingArticles = search ? readingFiltered : paginatedReadingArticles;
+  const displayUnreadArticles = search
+    ? unreadFiltered
+    : paginatedUnreadArticles;
+  const displayReadingArticles = search
+    ? readingFiltered
+    : paginatedReadingArticles;
   const paginatedUnread = search ? unreadFiltered : filteredUnreadArticles;
   const paginatedReading = search ? readingFiltered : filteredReadingArticles;
 
@@ -324,7 +335,10 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
 
                           <Menu.Item
                             onClick={() =>
-                              handleFavoriteClick(article.id, article.isFavorite)
+                              handleFavoriteClick(
+                                article.id,
+                                article.isFavorite
+                              )
                             }
                             leftSection={
                               article.isFavorite ? (
@@ -358,7 +372,9 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
                           <Menu.Item
                             color="red"
                             leftSection={<IconTrash size={16} />}
-                            onClick={() => handleDeleteClick(router, article.id)}
+                            onClick={() =>
+                              handleDeleteClick(router, article.id)
+                            }
                           >
                             削除
                           </Menu.Item>
@@ -367,7 +383,7 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
                     </Group>
                   </Table.Td>
                 </Table.Tr>
-                ))}
+              ))}
             </Table.Tbody>
           </Table>
         </Table.ScrollContainer>
@@ -505,7 +521,10 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
 
                           <Menu.Item
                             onClick={() =>
-                              handleFavoriteClick(article.id, article.isFavorite)
+                              handleFavoriteClick(
+                                article.id,
+                                article.isFavorite
+                              )
                             }
                             leftSection={
                               article.isFavorite ? (
@@ -539,7 +558,9 @@ const ArticleListTabs = ({ unreadArticles, readingArticles }: ArticleListTabsPro
                           <Menu.Item
                             color="red"
                             leftSection={<IconTrash size={16} />}
-                            onClick={() => handleDeleteClick(router, article.id)}
+                            onClick={() =>
+                              handleDeleteClick(router, article.id)
+                            }
                           >
                             削除
                           </Menu.Item>

@@ -1,6 +1,6 @@
 import "@mantine/tiptap/styles.css";
 import "@mantine/dates/styles.css";
-import { handleEdit } from "@/components/article/action";
+import { handleEdit } from "@/utils/action";
 import EditForm from "@/components/article/edit/edit-form";
 
 export default async function EditArticlePage({

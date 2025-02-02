@@ -1,4 +1,4 @@
-import { ArticleStatus, type ArticleList } from "@/components/article/type";
+import { ArticleStatus, type ArticleList } from "@/types/type";
 import { Container, Title } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import AuthGuard from "@/components/article/components/auth-auard";

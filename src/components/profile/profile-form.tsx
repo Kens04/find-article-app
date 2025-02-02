@@ -11,7 +11,7 @@ import {
   Title,
 } from "@mantine/core";
 import { Text } from "@mantine/core";
-import { handleProfileUpdate } from "@/components/article/action";
+import { handleProfileUpdate } from "@/utils/action";
 import { useState } from "react";
 import { supabaseClient } from "@/utils/supabase-client";
 import { Session } from "@supabase/auth-helpers-nextjs";

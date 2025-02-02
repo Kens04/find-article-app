@@ -1,4 +1,4 @@
-import { ArticleList } from "@/components/article/type";
+import { ArticleList } from "@/types/type";
 
 // カラーパレットの定義
 const colorPalette = [

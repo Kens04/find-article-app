@@ -1,5 +1,5 @@
 import AuthGuard from "@/components/article/components/auth-auard";
-import { ArticleList, ArticleStatus } from "../type";
+import { ArticleList, ArticleStatus } from "../../../types/type";
 import { Container, Title } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import CompleteArticleListTabs from "@/components/article/complete-article-list/complete-article-list-tabs";

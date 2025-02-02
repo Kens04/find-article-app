@@ -1,5 +1,5 @@
 import { Alert, Flex, Progress } from "@mantine/core";
-import { ArticleStatus, ArticleList } from "@/components/article/type";
+import { ArticleStatus, ArticleList } from "@/types/type";
 import { Container, Paper, Text, Title } from "@mantine/core";
 import { PieChart, DonutChart } from "@mantine/charts";
 import calculateCategoryData from "@/components/article/components/calculate-category-data";
@@ -16,15 +16,20 @@ const TopDashboardContent = ({
   session: Session | null;
 }) => {
   const user = session?.user;
-  const userArticles = articles.filter((article) => article.userId === user?.id);
+  const userArticles = articles.filter(
+    (article) => article.userId === user?.id
+  );
   // ステータスごとの記事数を集計
   const statusCounts = {
-    unread: userArticles.filter((article) => article.status === ArticleStatus.UNREAD)
-      .length,
-    reading: userArticles.filter((article) => article.status === ArticleStatus.READING)
-      .length,
-    completed: userArticles.filter((article) => article.status === ArticleStatus.COMPLETED)
-      .length,
+    unread: userArticles.filter(
+      (article) => article.status === ArticleStatus.UNREAD
+    ).length,
+    reading: userArticles.filter(
+      (article) => article.status === ArticleStatus.READING
+    ).length,
+    completed: userArticles.filter(
+      (article) => article.status === ArticleStatus.COMPLETED
+    ).length,
   };
 
   // ステータスチャートのデータ

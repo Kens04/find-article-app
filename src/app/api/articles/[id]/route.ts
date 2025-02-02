@@ -1,4 +1,4 @@
-import { ArticleStatus } from "@/components/article/type";
+import { ArticleStatus } from "@/types/type";
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
@@ -104,7 +104,10 @@ export async function PATCH(
           sharedAt: isPublic ? new Date() : null,
         },
       });
-      return NextResponse.json({ success: true, data: article }, { status: 200 });
+      return NextResponse.json(
+        { success: true, data: article },
+        { status: 200 }
+      );
     }
 
     // お気に入りのみの更新の場合
@@ -117,7 +120,10 @@ export async function PATCH(
           isFavorite,
         },
       });
-      return NextResponse.json({ success: true, data: article }, { status: 200 });
+      return NextResponse.json(
+        { success: true, data: article },
+        { status: 200 }
+      );
     }
 
     // ステータスの更新の場合
@@ -141,7 +147,10 @@ export async function PATCH(
         },
       });
 
-      return NextResponse.json({ success: true, data: article }, { status: 200 });
+      return NextResponse.json(
+        { success: true, data: article },
+        { status: 200 }
+      );
     }
 
     // 本日のみの更新の場合
@@ -154,7 +163,10 @@ export async function PATCH(
           isToday,
         },
       });
-      return NextResponse.json({ success: true, data: article }, { status: 200 });
+      return NextResponse.json(
+        { success: true, data: article },
+        { status: 200 }
+      );
     }
 
     return NextResponse.json(

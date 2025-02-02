@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArticleList } from "../type";
+import { ArticleList } from "../../../types/type";
 import {
   Text,
   Group,
@@ -32,12 +32,12 @@ import {
   handleFavorite,
   handleShareClick,
   handleToday,
-} from "@/components/article/action";
+} from "@/utils/action";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
 import StatusButton from "@/components/article/status-button";
 import { usePagination } from "@mantine/hooks";
-import { PAGINATION } from "@/components/article/pagination";
+import { PAGINATION } from "@/utils/pagination";
 import { useQueryState } from "nuqs";
 
 interface ArticleListContentProps {

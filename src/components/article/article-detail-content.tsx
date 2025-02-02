@@ -1,4 +1,4 @@
-import { ArticleStatus, type ArticleList } from "@/components/article/type";
+import { ArticleStatus, type ArticleList } from "@/types/type";
 import {
   Container,
   Title,
@@ -48,7 +48,11 @@ const ArticleDetailContent = ({ article }: { article: ArticleList }) => {
       <Stack>
         <Group>
           <Title order={2}>{article.title}</Title>
-          <Badge size="lg" color={getStatusColor(article.status)} variant="light">
+          <Badge
+            size="lg"
+            color={getStatusColor(article.status)}
+            variant="light"
+          >
             {getStatusLabel(article.status)}
           </Badge>
         </Group>
@@ -65,7 +69,13 @@ const ArticleDetailContent = ({ article }: { article: ArticleList }) => {
               {article.url}
             </Anchor>
           </Flex>
-          <Card key={article.id} shadow="sm" padding="md" radius="md" withBorder>
+          <Card
+            key={article.id}
+            shadow="sm"
+            padding="md"
+            radius="md"
+            withBorder
+          >
             <TypographyStylesProvider>
               <div
                 dangerouslySetInnerHTML={{ __html: article.text || "" }}

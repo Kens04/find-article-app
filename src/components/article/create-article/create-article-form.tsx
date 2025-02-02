@@ -12,8 +12,8 @@ import { useState } from "react";
 import { DateInput } from "@mantine/dates";
 import { useRouter } from "next/navigation";
 import "@mantine/dates/styles.css";
-import { createArticle } from "@/components/article/action";
-import { type CreateArticleInput, ArticleStatus } from "@/components/article/type";
+import { createArticle } from "@/utils/action";
+import { type CreateArticleInput, ArticleStatus } from "@/types/type";
 
 const CreateArticleForm = () => {
   const router = useRouter();

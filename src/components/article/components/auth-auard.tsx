@@ -1,4 +1,4 @@
-import { ArticleList } from "@/components/article/type";
+import { ArticleList } from "@/types/type";
 import { Button, Flex, Text } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
@@ -10,7 +10,9 @@ interface AuthGuardProps {
 
 const AuthGuard = ({ articles, session, children }: AuthGuardProps) => {
   const user = session?.user;
-  const userArticles = articles.filter(article => article.userId === user?.id);
+  const userArticles = articles.filter(
+    (article) => article.userId === user?.id
+  );
   if (userArticles.length === 0) {
     return (
       <Flex mt="xl" justify="center" align="center" direction="column" gap="md">

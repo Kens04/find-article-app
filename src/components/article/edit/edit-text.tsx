@@ -8,7 +8,7 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
-import { ArticleList } from "@/components/article/type";
+import { ArticleList } from "@/types/type";
 
 const EditText = ({
   article,

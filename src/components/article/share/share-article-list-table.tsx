@@ -1,9 +1,9 @@
 "use client";
 
 import CategorySearch from "@/components/article/category-search";
-import { PAGINATION } from "@/components/article/pagination";
+import { PAGINATION } from "@/utils/pagination";
 import IsPublicButton from "@/components/article/share/ispublic-button";
-import { Like, User, type ArticleList } from "@/components/article/type";
+import { Like, User, type ArticleList } from "@/types/type";
 import {
   Text,
   Anchor,
@@ -56,7 +56,9 @@ const ShareArticleListTable = ({
   const filteredArticles = getSortedArticles(
     selectedCategories.length === 0
       ? articles // カテゴリ未選択時は全て表示
-      : articles.filter((article) => selectedCategories.includes(article.category || ""))
+      : articles.filter((article) =>
+          selectedCategories.includes(article.category || "")
+        )
   );
 
   const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;

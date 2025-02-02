@@ -5,10 +5,10 @@ import {
   handleFavorite,
   handleShareClick,
   handleToday,
-} from "@/components/article/action";
+} from "@/utils/action";
 import CategorySearch from "@/components/article/category-search";
-import { PAGINATION } from "@/components/article/pagination";
-import { type ArticleList } from "@/components/article/type";
+import { PAGINATION } from "@/utils/pagination";
+import { type ArticleList } from "@/types/type";
 import {
   Text,
   Group,

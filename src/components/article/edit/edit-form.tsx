@@ -1,8 +1,8 @@
 "use client";
 
-import { handleEdit } from "@/components/article/action";
+import { handleEdit } from "@/utils/action";
 import EditText from "@/components/article/edit/edit-text";
-import { ArticleList } from "@/components/article/type";
+import { ArticleList } from "@/types/type";
 import {
   TextInput,
   Button,

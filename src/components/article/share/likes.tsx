@@ -1,6 +1,6 @@
 "use client";
 
-import { Like } from "@/components/article/type";
+import { Like } from "@/types/type";
 import { Button } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
@@ -33,7 +33,7 @@ const Likes = ({
           headers: {
             "Content-Type": "application/json",
           },
-            body: JSON.stringify({ articleId: id, userId: loginUserId }),
+          body: JSON.stringify({ articleId: id, userId: loginUserId }),
         }
       );
 

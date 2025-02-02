@@ -1,8 +1,8 @@
 "use client";
 
 import { Select } from "@mantine/core";
-import { handleUpdateStatus } from "@/components/article/action";
-import { ArticleList, ArticleStatus } from "./type";
+import { handleUpdateStatus } from "@/utils/action";
+import { ArticleList, ArticleStatus } from "../../types/type";
 import { useRouter } from "next/navigation";
 
 interface StatusButtonProps {
@@ -25,7 +25,8 @@ const StatusButton = ({ article }: StatusButtonProps) => {
       await handleUpdateStatus({
         id: article.id,
         status: newStatus,
-        isToday: newStatus === ArticleStatus.COMPLETED ? false : article.isToday,
+        isToday:
+          newStatus === ArticleStatus.COMPLETED ? false : article.isToday,
       });
       router.refresh();
     } catch (error) {

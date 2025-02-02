@@ -6,7 +6,7 @@ import {
   handleFavorite,
   handleShareClick,
   handleToday,
-} from "@/components/article/action";
+} from "@/utils/action";
 import {
   ActionIcon,
   Button,
@@ -31,14 +31,14 @@ import {
 import { notifications } from "@mantine/notifications";
 import CategorySearch from "@/components/article/category-search";
 import StatusButton from "@/components/article/status-button";
-import { type ArticleList } from "@/components/article/type";
+import { type ArticleList } from "@/types/type";
 import { Text, Group, Anchor } from "@mantine/core";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { usePagination } from "@mantine/hooks";
-import { PAGINATION } from "@/components/article/pagination";
+import { PAGINATION } from "@/utils/pagination";
 import { useQueryState } from "nuqs";
 
 interface ArticleTabsProps {
@@ -98,7 +98,7 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
   // ページネーション処理
   const unreadStart = (unreadPagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const unreadEnd = unreadStart + PAGINATION.ITEMS_PER_PAGE;
-    const paginatedUnreadArticles = filteredUnreadArticles.slice(
+  const paginatedUnreadArticles = filteredUnreadArticles.slice(
     unreadStart,
     unreadEnd
   );
@@ -156,8 +156,12 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
     article.title.toLowerCase().includes(search?.toLowerCase() || "")
   );
 
-  const displayUnreadArticles = search ? unreadFiltered : paginatedUnreadArticles;
-  const displayReadingArticles = search ? readingFiltered : paginatedReadingArticles;
+  const displayUnreadArticles = search
+    ? unreadFiltered
+    : paginatedUnreadArticles;
+  const displayReadingArticles = search
+    ? readingFiltered
+    : paginatedReadingArticles;
   const paginatedUnread = search ? unreadFiltered : filteredUnreadArticles;
   const paginatedReading = search ? readingFiltered : filteredReadingArticles;
 
@@ -292,7 +296,10 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
 
                           <Menu.Item
                             onClick={() =>
-                              handleFavoriteClick(article.id, article.isFavorite)
+                              handleFavoriteClick(
+                                article.id,
+                                article.isFavorite
+                              )
                             }
                             leftSection={
                               article.isFavorite ? (
@@ -326,7 +333,9 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
                           <Menu.Item
                             color="red"
                             leftSection={<IconTrash size={16} />}
-                            onClick={() => handleDeleteClick(router, article.id)}
+                            onClick={() =>
+                              handleDeleteClick(router, article.id)
+                            }
                           >
                             削除
                           </Menu.Item>
@@ -473,7 +482,10 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
 
                           <Menu.Item
                             onClick={() =>
-                              handleFavoriteClick(article.id, article.isFavorite)
+                              handleFavoriteClick(
+                                article.id,
+                                article.isFavorite
+                              )
                             }
                             leftSection={
                               article.isFavorite ? (
@@ -507,7 +519,9 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
                           <Menu.Item
                             color="red"
                             leftSection={<IconTrash size={16} />}
-                            onClick={() => handleDeleteClick(router, article.id)}
+                            onClick={() =>
+                              handleDeleteClick(router, article.id)
+                            }
                           >
                             削除
                           </Menu.Item>

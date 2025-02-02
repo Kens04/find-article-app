@@ -2,7 +2,7 @@ import {
   CreateArticleInput,
   EditArticleInput,
   ArticleStatus,
-} from "@/components/article/type";
+} from "@/types/type";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export const handleDelete = async (id: string) => {
@@ -219,7 +219,7 @@ export const handleIsPublic = async ({
     );
 
     if (!response.ok) {
-          throw new Error(`Failed to update public`);
+      throw new Error(`Failed to update public`);
     }
 
     const { data } = await response.json();

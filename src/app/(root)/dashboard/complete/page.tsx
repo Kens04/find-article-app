@@ -1,6 +1,6 @@
 import { getSession } from "@/utils/getSession";
 import CompleteArticleListContent from "@/components/article/complete-article-list/complete-article-list-content";
-import { ArticleStatus, type ArticleList } from "@/components/article/type";
+import { ArticleStatus, type ArticleList } from "@/types/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 
@@ -16,5 +16,10 @@ export default async function CompletedArticleList() {
     return redirect("/login");
   }
 
-  return <CompleteArticleListContent articles={completedArticles} session={session} />;
+  return (
+    <CompleteArticleListContent
+      articles={completedArticles}
+      session={session}
+    />
+  );
 }

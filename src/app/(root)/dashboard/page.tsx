@@ -1,6 +1,6 @@
 import TopDashboardContent from "@/components/dashboard/top-dashboard-content";
 import { getSession } from "@/utils/getSession";
-import { type ArticleList } from "@/components/article/type";
+import { type ArticleList } from "@/types/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 
