@@ -56,26 +56,39 @@ const CompleteArticleListTabs = ({
     initialPage: 1,
   });
 
-  // ソート関数を適用した記事リストを取得
-  const getSortedArticles = (articles: ArticleList[]) => {
-    if (!sort) return articles;
+  // ソート、カテゴリ、検索を適用した記事リストを取得
+  const getFilteredArticles = (articles: ArticleList[]) => {
+    // 検索フィルター
+    let filtered = articles;
+    if (search) {
+      filtered = filtered.filter((article) =>
+        article.title.toLowerCase().includes(search.toLowerCase())
+      );
+    }
 
-    return [...articles].sort((a, b) => {
-      const dateA = new Date(a.completedAt).getTime();
-      const dateB = new Date(b.completedAt).getTime();
-      return sort === "asc" ? dateA - dateB : dateB - dateA;
-    });
+    // カテゴリフィルター
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((article) =>
+        selectedCategories.includes(article.category || "")
+      );
+    }
+
+    // ソート
+    if (sort) {
+      filtered = [...filtered].sort((a, b) => {
+        const dateA = new Date(a.completedAt).getTime();
+        const dateB = new Date(b.completedAt).getTime();
+        return sort === "asc" ? dateA - dateB : dateB - dateA;
+      });
+    }
+
+    return filtered;
   };
 
-  // 表示する記事をフィルタリング
-  const filteredArticles = getSortedArticles(
-    selectedCategories.length === 0
-      ? completedArticles // カテゴリ未選択時は全て表示
-      : completedArticles.filter((article) =>
-          selectedCategories.includes(article.category || "")
-        )
-  );
+  // フィルタリングを適用
+  const filteredArticles = getFilteredArticles(completedArticles);
 
+  // ページネーション処理
   const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const end = start + PAGINATION.ITEMS_PER_PAGE;
   const paginatedArticles = filteredArticles.slice(start, end);
@@ -118,15 +131,6 @@ const CompleteArticleListTabs = ({
     }
   };
 
-  const completedFiltered = completedArticles.filter((article) =>
-    article.title.toLowerCase().includes(search?.toLowerCase() || "")
-  );
-
-  const displayCompletedArticles = search
-    ? completedFiltered
-    : paginatedArticles;
-  const paginatedCompleted = search ? completedFiltered : filteredArticles;
-
   return (
     <>
       <Group mt="md">
@@ -168,7 +172,7 @@ const CompleteArticleListTabs = ({
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {displayCompletedArticles.map((article) => (
+            {paginatedArticles.map((article) => (
               <Table.Tr key={article.id}>
                 <Table.Td>
                   <Text>
@@ -293,13 +297,13 @@ const CompleteArticleListTabs = ({
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
-      {paginatedCompleted.length > PAGINATION.ITEMS_PER_PAGE && (
+      {filteredArticles.length > PAGINATION.ITEMS_PER_PAGE && (
         <Group justify="center" mt="md">
           <Pagination
             value={pagination.active}
             onChange={pagination.setPage}
             total={Math.ceil(
-              paginatedCompleted.length / PAGINATION.ITEMS_PER_PAGE
+              filteredArticles.length / PAGINATION.ITEMS_PER_PAGE
             )}
             siblings={PAGINATION.SIBLINGS}
           />

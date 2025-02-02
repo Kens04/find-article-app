@@ -52,10 +52,6 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
   const [sort, setSort] = useState<"asc" | "desc" | null>(null);
   const [search, setSearch] = useQueryState("search");
 
-  // 本日の記事のフィルタリング
-  // const unreadTodayArticles = unreadArticles.filter((article) => article.isToday);
-  // const readingTodayArticles = readingArticles.filter((article) => article.isToday);
-
   // 本日の記事のページネーション設定
   const unreadPagination = usePagination({
     total: Math.ceil(unreadArticles.length / PAGINATION.ITEMS_PER_PAGE),
@@ -67,49 +63,13 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
     initialPage: 1,
   });
 
-  // ソート関数を適用した記事リストを取得
-  const getSortedArticles = (articles: ArticleList[]) => {
-    if (!sort) return articles;
-
-    return [...articles].sort((a, b) => {
-      const dateA = new Date(a.dueDate).getTime();
-      const dateB = new Date(b.dueDate).getTime();
-      return sort === "asc" ? dateA - dateB : dateB - dateA;
-    });
-  };
-
-  // カテゴリーでフィルタリングした本日の記事を取得
-  const filteredUnreadArticles = getSortedArticles(
-    selectedCategories.length === 0
-      ? unreadArticles
-      : unreadArticles.filter((article) =>
-          selectedCategories.includes(article.category || "")
-        )
-  );
-
-  const filteredReadingArticles = getSortedArticles(
-    selectedCategories.length === 0
-      ? readingArticles
-      : readingArticles.filter((article) =>
-          selectedCategories.includes(article.category || "")
-        )
-  );
-
   // ページネーション処理
   const unreadStart = (unreadPagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const unreadEnd = unreadStart + PAGINATION.ITEMS_PER_PAGE;
-  const paginatedUnreadArticles = filteredUnreadArticles.slice(
-    unreadStart,
-    unreadEnd
-  );
 
   const readingStart =
     (readingPagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const readingEnd = readingStart + PAGINATION.ITEMS_PER_PAGE;
-  const paginatedReadingArticles = filteredReadingArticles.slice(
-    readingStart,
-    readingEnd
-  );
 
   const handleFavoriteClick = async (id: string, isFavorite: boolean) => {
     try {
@@ -149,21 +109,49 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
     }
   };
 
-  const unreadFiltered = unreadArticles.filter((article) =>
-    article.title.toLowerCase().includes(search?.toLowerCase() || "")
-  );
-  const readingFiltered = readingArticles.filter((article) =>
-    article.title.toLowerCase().includes(search?.toLowerCase() || "")
+  // ソート、カテゴリ、検索を適用した記事リストを取得
+  const getFilteredArticles = (articles: ArticleList[]) => {
+    // 検索フィルター
+    let filtered = articles;
+    if (search) {
+      filtered = filtered.filter((article) =>
+        article.title.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    // カテゴリフィルター
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((article) =>
+        selectedCategories.includes(article.category || "")
+      );
+    }
+
+    // ソート
+    if (sort) {
+      filtered = [...filtered].sort((a, b) => {
+        const dateA = new Date(a.dueDate).getTime();
+        const dateB = new Date(b.dueDate).getTime();
+        return sort === "asc" ? dateA - dateB : dateB - dateA;
+      });
+    }
+
+    return filtered;
+  };
+
+  // フィルタリングを適用
+  const filteredUnreadArticles = getFilteredArticles(unreadArticles);
+  const filteredReadingArticles = getFilteredArticles(readingArticles);
+
+  // ページネーション処理
+  const paginatedUnreadArticles = filteredUnreadArticles.slice(
+    unreadStart,
+    unreadEnd
   );
 
-  const displayUnreadArticles = search
-    ? unreadFiltered
-    : paginatedUnreadArticles;
-  const displayReadingArticles = search
-    ? readingFiltered
-    : paginatedReadingArticles;
-  const paginatedUnread = search ? unreadFiltered : filteredUnreadArticles;
-  const paginatedReading = search ? readingFiltered : filteredReadingArticles;
+  const paginatedReadingArticles = filteredReadingArticles.slice(
+    readingStart,
+    readingEnd
+  );
 
   return (
     <Tabs defaultValue="article" mt="md">
@@ -220,7 +208,7 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {displayUnreadArticles.map((article) => (
+              {paginatedUnreadArticles.map((article) => (
                 <Table.Tr key={article.id}>
                   <Table.Td>
                     <Text>
@@ -348,13 +336,13 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
             </Table.Tbody>
           </Table>
         </Table.ScrollContainer>
-        {paginatedUnread.length > PAGINATION.ITEMS_PER_PAGE && (
+        {paginatedUnreadArticles.length > PAGINATION.ITEMS_PER_PAGE && (
           <Group justify="center" mt="md">
             <Pagination
               value={unreadPagination.active}
               onChange={unreadPagination.setPage}
               total={Math.ceil(
-                paginatedUnread.length / PAGINATION.ITEMS_PER_PAGE
+                paginatedUnreadArticles.length / PAGINATION.ITEMS_PER_PAGE
               )}
               siblings={PAGINATION.SIBLINGS}
             />
@@ -406,7 +394,7 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {displayReadingArticles.map((article) => (
+              {paginatedReadingArticles.map((article) => (
                 <Table.Tr key={article.id}>
                   <Table.Td>
                     <Text>
@@ -534,13 +522,13 @@ const ArticleTabs = ({ unreadArticles, readingArticles }: ArticleTabsProps) => {
             </Table.Tbody>
           </Table>
         </Table.ScrollContainer>
-        {paginatedReading.length > PAGINATION.ITEMS_PER_PAGE && (
+        {paginatedReadingArticles.length > PAGINATION.ITEMS_PER_PAGE && (
           <Group justify="center" mt="md">
             <Pagination
               value={readingPagination.active}
               onChange={readingPagination.setPage}
               total={Math.ceil(
-                paginatedReading.length / PAGINATION.ITEMS_PER_PAGE
+                paginatedReadingArticles.length / PAGINATION.ITEMS_PER_PAGE
               )}
               siblings={PAGINATION.SIBLINGS}
             />

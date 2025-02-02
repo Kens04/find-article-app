@@ -46,20 +46,46 @@ const FavariteArticleListTabs = ({
 }) => {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [sort, setSort] = useState<"asc" | "desc" | null>(null);
   const [search, setSearch] = useQueryState("search");
   const pagination = usePagination({
     total: Math.ceil(favariteArticles.length / PAGINATION.ITEMS_PER_PAGE),
     initialPage: 1,
   });
 
-  // 表示する記事をフィルタリング
-  const filteredArticles =
-    selectedCategories.length === 0
-      ? favariteArticles // カテゴリ未選択時は全て表示
-      : favariteArticles.filter((article) =>
-          selectedCategories.includes(article.category || "")
-        );
+  // ソート、カテゴリ、検索を適用した記事リストを取得
+  const getFilteredArticles = (articles: ArticleList[]) => {
+    // 検索フィルター
+    let filtered = articles;
+    if (search) {
+      filtered = filtered.filter((article) =>
+        article.title.toLowerCase().includes(search.toLowerCase())
+      );
+    }
 
+    // カテゴリフィルター
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((article) =>
+        selectedCategories.includes(article.category || "")
+      );
+    }
+
+    // ソート
+    if (sort) {
+      filtered = [...filtered].sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return sort === "asc" ? dateA - dateB : dateB - dateA;
+      });
+    }
+
+    return filtered;
+  };
+
+  // フィルタリングを適用
+  const filteredArticles = getFilteredArticles(favariteArticles);
+
+  // ページネーション処理
   const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const end = start + PAGINATION.ITEMS_PER_PAGE;
   const paginatedArticles = filteredArticles.slice(start, end);
@@ -101,20 +127,15 @@ const FavariteArticleListTabs = ({
     }
   };
 
-  const favariteFiltered = favariteArticles.filter((article) =>
-    article.title.toLowerCase().includes(search?.toLowerCase() || "")
-  );
-
-  const displayFavariteArticles = search ? favariteFiltered : paginatedArticles;
-  const paginatedFavarite = search ? favariteFiltered : filteredArticles;
-
   return (
     <>
       <Group mt="md">
         <CategorySearch
-          articles={filteredArticles}
+          articles={favariteArticles}
           selectedCategories={selectedCategories}
           onCategoryChange={setSelectedCategories}
+          onSortChange={setSort}
+          sort={sort}
           label="お気に入り"
         />
         <Input.Wrapper label="記事を検索">
@@ -145,7 +166,7 @@ const FavariteArticleListTabs = ({
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {displayFavariteArticles.map((article) => (
+            {paginatedArticles.map((article) => (
               <Table.Tr key={article.id}>
                 <Table.Td>
                   <Text>
@@ -262,13 +283,13 @@ const FavariteArticleListTabs = ({
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
-      {paginatedFavarite.length > PAGINATION.ITEMS_PER_PAGE && (
+      {filteredArticles.length > PAGINATION.ITEMS_PER_PAGE && (
         <Group justify="center" mt="md">
           <Pagination
             value={pagination.active}
             onChange={pagination.setPage}
             total={Math.ceil(
-              paginatedFavarite.length / PAGINATION.ITEMS_PER_PAGE
+              filteredArticles.length / PAGINATION.ITEMS_PER_PAGE
             )}
             siblings={PAGINATION.SIBLINGS}
           />

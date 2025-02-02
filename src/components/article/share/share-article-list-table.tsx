@@ -41,42 +41,48 @@ const ShareArticleListTable = ({
     initialPage: 1,
   });
 
-  // ソート関数を適用した記事リストを取得
-  const getSortedArticles = (articles: ArticleList[]) => {
-    if (!sort) return articles;
+  // ソート、カテゴリ、検索を適用した記事リストを取得
+  const getFilteredArticles = (articles: ArticleList[]) => {
+    // 検索フィルター
+    let filtered = articles;
+    if (search) {
+      filtered = filtered.filter((article) =>
+        article.title.toLowerCase().includes(search.toLowerCase())
+      );
+    }
 
-    return [...articles].sort((a, b) => {
-      const dateA = new Date(a.sharedAt).getTime();
-      const dateB = new Date(b.sharedAt).getTime();
-      return sort === "asc" ? dateA - dateB : dateB - dateA;
-    });
+    // カテゴリフィルター
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((article) =>
+        selectedCategories.includes(article.category || "")
+      );
+    }
+
+    // ソート
+    if (sort) {
+      filtered = [...filtered].sort((a, b) => {
+        const dateA = new Date(a.sharedAt).getTime();
+        const dateB = new Date(b.sharedAt).getTime();
+        return sort === "asc" ? dateA - dateB : dateB - dateA;
+      });
+    }
+
+    return filtered;
   };
 
-  // 表示する記事をフィルタリング
-  const filteredArticles = getSortedArticles(
-    selectedCategories.length === 0
-      ? articles // カテゴリ未選択時は全て表示
-      : articles.filter((article) =>
-          selectedCategories.includes(article.category || "")
-        )
-  );
+  // フィルタリングを適用
+  const filteredArticles = getFilteredArticles(articles);
 
+  // ページネーション処理
   const start = (pagination.active - 1) * PAGINATION.ITEMS_PER_PAGE;
   const end = start + PAGINATION.ITEMS_PER_PAGE;
   const paginatedArticles = filteredArticles.slice(start, end);
-
-  const shareFiltered = articles.filter((article) =>
-    article.title.toLowerCase().includes(search?.toLowerCase() || "")
-  );
-
-  const displayShareArticles = search ? shareFiltered : paginatedArticles;
-  const paginatedShare = search ? shareFiltered : filteredArticles;
 
   return (
     <>
       <Group mt="md">
         <CategorySearch
-          articles={filteredArticles}
+          articles={articles}
           selectedCategories={selectedCategories}
           onCategoryChange={setSelectedCategories}
           onSortChange={setSort}
@@ -114,7 +120,7 @@ const ShareArticleListTable = ({
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {displayShareArticles.map((article) => (
+            {paginatedArticles.map((article) => (
               <Table.Tr key={article.id}>
                 <Table.Td>
                   {user.map((u) =>
@@ -165,12 +171,14 @@ const ShareArticleListTable = ({
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
-      {paginatedShare.length > PAGINATION.ITEMS_PER_PAGE && (
+      {filteredArticles.length > PAGINATION.ITEMS_PER_PAGE && (
         <Group justify="center" mt="md">
           <Pagination
             value={pagination.active}
             onChange={pagination.setPage}
-            total={Math.ceil(paginatedShare.length / PAGINATION.ITEMS_PER_PAGE)}
+            total={Math.ceil(
+              filteredArticles.length / PAGINATION.ITEMS_PER_PAGE
+            )}
             siblings={PAGINATION.SIBLINGS}
           />
         </Group>
