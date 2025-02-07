@@ -2,7 +2,7 @@ import { getSession } from "@/utils/getSession";
 import { ArticleStatus, type ArticleList } from "@/types/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
-import ArticleListContent from "@/components/article/article-list/article-list-content";
+import ArticleListContent from "@/app/(root)/dashboard/article-list/article-list-content";
 
 export default async function ArticleList() {
   return <ArticleListInner />;

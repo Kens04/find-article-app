@@ -2,9 +2,9 @@ import { Alert, Flex, Progress } from "@mantine/core";
 import { ArticleStatus, ArticleList } from "@/types/type";
 import { Container, Paper, Text, Title } from "@mantine/core";
 import { PieChart, DonutChart } from "@mantine/charts";
-import calculateCategoryData from "@/components/article/components/calculate-category-data";
+import calculateCategoryData from "@/components/article/calculate-category-data";
 import { Session } from "@supabase/auth-helpers-nextjs";
-import AuthGuard from "@/components/article/components/auth-auard";
+import AuthGuard from "@/components/article/auth-auard";
 import { IconCalendar } from "@tabler/icons-react";
 import styles from "@/components/layout/dashboard.module.css";
 

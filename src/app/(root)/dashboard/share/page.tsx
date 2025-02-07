@@ -1,5 +1,5 @@
 import { getSession } from "@/utils/getSession";
-import ShareArticleListContent from "@/components/article/share/share-article-list-content";
+import ShareArticleListContent from "@/app/(root)/dashboard/share/share-article-list-content";
 import { type ArticleList } from "@/types/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";

@@ -1,8 +1,8 @@
-import AuthGuard from "@/components/article/components/auth-auard";
-import { ArticleList, ArticleStatus } from "../../../types/type";
+import AuthGuard from "@/components/article/auth-auard";
+import { ArticleList, ArticleStatus } from "../../../../types/type";
 import { Container, Title } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
-import CompleteArticleListTabs from "@/components/article/complete-article-list/complete-article-list-tabs";
+import CompleteArticleListTabs from "@/app/(root)/dashboard/complete/complete-article-list-tabs";
 
 interface ArticleListContentProps {
   articles: ArticleList[];

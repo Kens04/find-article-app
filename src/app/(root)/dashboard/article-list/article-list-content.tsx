@@ -1,8 +1,8 @@
 import { ArticleStatus, type ArticleList } from "@/types/type";
 import { Container, Title } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";
-import AuthGuard from "@/components/article/components/auth-auard";
-import ArticleTabs from "@/components/article/article/article-tabs";
+import AuthGuard from "@/components/article/auth-auard";
+import ArticleTabs from "@/app/(root)/dashboard/article/article-tabs";
 
 const ArticleListContent = ({
   articles,

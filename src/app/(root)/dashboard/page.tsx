@@ -1,4 +1,4 @@
-import TopDashboardContent from "@/components/dashboard/top-dashboard-content";
+import TopDashboardContent from "@/app/(root)/dashboard/top-dashboard-content";
 import { getSession } from "@/utils/getSession";
 import { type ArticleList } from "@/types/type";
 import { prisma } from "@/lib/db";
