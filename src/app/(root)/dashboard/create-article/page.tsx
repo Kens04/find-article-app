@@ -1,6 +1,6 @@
 import { Container, Title } from "@mantine/core";
 import "@mantine/dates/styles.css";
-import CreateArticleForm from "@/app/(root)/dashboard/create-article/create-article-form";
+import CreateArticleForm from "@/app/(root)/dashboard/create-article/components/create-article-form";
 import { redirect } from "next/navigation";
 import { getSession } from "@/utils/getSession";
 

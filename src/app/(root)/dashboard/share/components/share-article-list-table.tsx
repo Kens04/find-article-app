@@ -2,7 +2,6 @@
 
 import CategorySearch from "@/components/article/category-search";
 import { PAGINATION } from "@/utils/pagination";
-import IsPublicButton from "@/app/(root)/dashboard/share/ispublic-button";
 import { Like, User, type ArticleList } from "@/types/type";
 import {
   Text,
@@ -19,7 +18,8 @@ import { usePagination } from "@mantine/hooks";
 import { Session } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 import { useQueryState } from "nuqs";
-import Likes from "@/app/(root)/dashboard/share/likes";
+import Likes from "@/app/(root)/dashboard/share/components/likes";
+import IsPublicButton from "@/app/(root)/dashboard/share/components/ispublic-button";
 
 const ShareArticleListTable = ({
   articles,

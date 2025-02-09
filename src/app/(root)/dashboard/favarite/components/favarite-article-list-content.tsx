@@ -1,5 +1,5 @@
 import AuthGuard from "@/components/article/auth-auard";
-import FavariteArticleListTabs from "@/app/(root)/dashboard/favarite/favarite-article-list-tabs";
+import FavariteArticleListTabs from "@/app/(root)/dashboard/favarite/components/favarite-article-list-tabs";
 import { type ArticleList } from "@/types/type";
 import { Title, Container } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";

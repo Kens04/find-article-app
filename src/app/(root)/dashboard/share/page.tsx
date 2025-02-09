@@ -1,8 +1,8 @@
 import { getSession } from "@/utils/getSession";
-import ShareArticleListContent from "@/app/(root)/dashboard/share/share-article-list-content";
 import { type ArticleList } from "@/types/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
+import ShareArticleListContent from "@/app/(root)/dashboard/share/components/share-article-list-content";
 
 export default async function Share() {
   const session = await getSession();

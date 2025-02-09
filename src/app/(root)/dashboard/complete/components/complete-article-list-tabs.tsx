@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArticleList } from "../../../../types/type";
+import { ArticleList } from "../../../../../types/type";
 import {
   Text,
   Group,

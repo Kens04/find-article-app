@@ -1,4 +1,4 @@
-import ShareArticleListTable from "@/app/(root)/dashboard/share/share-article-list-table";
+import ShareArticleListTable from "@/app/(root)/dashboard/share/components/share-article-list-table";
 import { Like, User, type ArticleList } from "@/types/type";
 import { Title, Container } from "@mantine/core";
 import { Session } from "@supabase/auth-helpers-nextjs";

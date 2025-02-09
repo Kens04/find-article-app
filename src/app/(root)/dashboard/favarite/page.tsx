@@ -1,5 +1,5 @@
 import { getSession } from "@/utils/getSession";
-import FavariteArticleListContent from "@/app/(root)/dashboard/favarite/favarite-article-list-content";
+import FavariteArticleListContent from "@/app/(root)/dashboard/favarite/components/favarite-article-list-content";
 import { type ArticleList } from "@/types/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";

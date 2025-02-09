@@ -1,5 +1,5 @@
 import { getSession } from "@/utils/getSession";
-import ArticleContent from "@/app/(root)/dashboard/article/article-content";
+import ArticleContent from "@/app/(root)/dashboard/article/components/article-content";
 import { type ArticleList } from "@/types/type";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
